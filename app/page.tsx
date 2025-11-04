@@ -1,201 +1,226 @@
 'use client';
 
-import { Button, Card, Text, Title, Container, Group, Stack, Badge, TextInput, Select } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
-import { useForm } from '@mantine/form';
-import { nprogress } from '@mantine/nprogress';
+import { Container, Title, Text, Button, Card, Group, Stack, Badge, SimpleGrid } from '@mantine/core';
+import { IconCreditCard, IconShield, IconChartLine, IconWallet, IconClock, IconDeviceMobile } from '@tabler/icons-react';
 
-export default function Home() {
-  const form = useForm({
-    initialValues: {
-      name: '',
-      email: '',
-      type: '',
+export default function LandingPage() {
+  const features = [
+    {
+      icon: IconCreditCard,
+      title: 'Transaksi Mudah',
+      description: 'Lakukan transaksi keuangan dengan cepat dan mudah kapan saja, dimana saja.'
     },
-    validate: {
-      name: (value) => (value.length < 2 ? 'Nama minimal 2 karakter' : null),
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Email tidak valid'),
+    {
+      icon: IconShield,
+      title: 'Keamanan Terjamin',
+      description: 'Sistem keamanan berlapis untuk melindungi data dan transaksi Anda.'
     },
-  });
-
-  const handleSubmit = (values: typeof form.values) => {
-    nprogress.start();
-    
-    notifications.show({
-      title: 'Berhasil!',
-      message: `Selamat datang, ${values.name}! 🎉`,
-      color: 'teal',
-    });
-    
-    console.log(values);
-    
-    setTimeout(() => {
-      nprogress.complete();
-    }, 1000);
-  };
-
-  const showNotification = () => {
-    notifications.show({
-      title: 'Demo Notifikasi',
-      message: 'Ini adalah contoh notifikasi dari Mantine UI!',
-      color: 'blue',
-    });
-  };
+    {
+      icon: IconChartLine,
+      title: 'Investasi Cerdas',
+      description: 'Platform investasi yang mudah dipahami untuk masa depan finansial yang lebih baik.'
+    },
+    {
+      icon: IconWallet,
+      title: 'Dompet Digital',
+      description: 'Kelola semua keuangan Anda dalam satu aplikasi yang terintegrasi.'
+    },
+    {
+      icon: IconClock,
+      title: 'Proses Cepat',
+      description: 'Verifikasi dan persetujuan transaksi dalam hitungan menit.'
+    },
+    {
+      icon: IconDeviceMobile,
+      title: 'Mobile Friendly',
+      description: 'Akses dari berbagai perangkat dengan pengalaman yang optimal.'
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <Container size="lg" className="py-12">
-        <Stack gap="xl">
-          {/* Header dengan kombinasi Tailwind + Mantine */}
-          <div className="text-center mb-8">
-            <Title order={1} className="mb-4 text-4xl font-bold text-gray-800 dark:text-white">
-              🚀 Dayton Fintech
-            </Title>
-            <Text size="lg" c="dimmed" className="max-w-2xl mx-auto">
-              Demo integrasi Next.js 16 + Mantine UI + Tailwind CSS
-            </Text>
-            <Group justify="center" mt="md">
-              <Badge size="lg" variant="gradient" gradient={{ from: 'blue', to: 'cyan' }}>
-                Next.js 16
-              </Badge>
-              <Badge size="lg" variant="gradient" gradient={{ from: 'teal', to: 'lime' }}>
-                Mantine UI
-              </Badge>
-              <Badge size="lg" variant="gradient" gradient={{ from: 'pink', to: 'orange' }}>
-                Tailwind CSS
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      {/* Header */}
+      <header className="border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50">
+        <Container size="xl">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg"></div>
+              <Text size="xl" fw={700} className="text-gray-800 dark:text-white">
+                Dayton Fintech
+              </Text>
+            </div>
+            <Group gap="md">
+              <Badge size="lg" variant="light" color="blue">
+                Terpercaya & Aman
               </Badge>
             </Group>
           </div>
+        </Container>
+      </header>
 
-          {/* Grid dengan Tailwind */}
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Card 1: Form Demo */}
-            <Card shadow="sm" padding="lg" radius="md" withBorder>
-              <Title order={3} mb="md">
-                📝 Form Demo (Mantine Form)
-              </Title>
-              <form onSubmit={form.onSubmit(handleSubmit)}>
+      {/* Hero Section */}
+      <section className="py-20">
+        <Container size="lg">
+          <Stack gap="xl" align="center" className="text-center">
+            <Badge size="xl" variant="gradient" gradient={{ from: 'blue', to: 'cyan' }}>
+              Platform Fintech Terpercaya
+            </Badge>
+            
+            <Title order={1} className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white max-w-4xl">
+              Solusi Keuangan Digital untuk{' '}
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                Masa Depan Anda
+              </span>
+            </Title>
+            
+            <Text size="xl" c="dimmed" className="max-w-2xl">
+              Platform fintech modern yang memudahkan transaksi keuangan, investasi, 
+              dan pengelolaan aset digital Anda dengan aman dan efisien.
+            </Text>
+            
+            <Group gap="md" className="mt-4">
+              <Button 
+                size="xl" 
+                variant="gradient" 
+                gradient={{ from: 'blue', to: 'cyan' }}
+                className="shadow-lg hover:shadow-xl transition-shadow"
+              >
+                Mulai Sekarang
+              </Button>
+              <Button 
+                size="xl" 
+                variant="outline" 
+                color="blue"
+              >
+                Pelajari Lebih Lanjut
+              </Button>
+            </Group>
+          </Stack>
+        </Container>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-white dark:bg-gray-800">
+        <Container size="xl">
+          <Stack gap="xl" align="center" className="mb-12">
+            <Title order={2} className="text-4xl font-bold text-center text-gray-900 dark:text-white">
+              Mengapa Memilih Dayton Fintech?
+            </Title>
+            <Text size="lg" c="dimmed" className="text-center max-w-2xl">
+              Kami menyediakan layanan fintech terlengkap dengan teknologi terdepan
+            </Text>
+          </Stack>
+          
+          <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="lg">
+            {features.map((feature, index) => (
+              <Card 
+                key={index}
+                shadow="sm" 
+                padding="xl" 
+                radius="md" 
+                withBorder
+                className="hover:shadow-lg transition-shadow cursor-pointer"
+              >
                 <Stack gap="md">
-                  <TextInput
-                    label="Nama"
-                    placeholder="Masukkan nama Anda"
-                    {...form.getInputProps('name')}
-                  />
-                  <TextInput
-                    label="Email"
-                    placeholder="email@example.com"
-                    type="email"
-                    {...form.getInputProps('email')}
-                  />
-                  <Select
-                    label="Tipe Akun"
-                    placeholder="Pilih tipe akun"
-                    data={[
-                      { value: 'personal', label: 'Personal' },
-                      { value: 'business', label: 'Bisnis' },
-                      { value: 'corporate', label: 'Corporate' },
-                    ]}
-                    {...form.getInputProps('type')}
-                  />
-                  <Button type="submit" fullWidth variant="gradient" gradient={{ from: 'blue', to: 'cyan' }}>
-                    Submit Form
-                  </Button>
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                    <feature.icon size={24} color="white" />
+                  </div>
+                  <Title order={4} className="text-gray-900 dark:text-white">
+                    {feature.title}
+                  </Title>
+                  <Text size="sm" c="dimmed">
+                    {feature.description}
+                  </Text>
                 </Stack>
-              </form>
-            </Card>
+              </Card>
+            ))}
+          </SimpleGrid>
+        </Container>
+      </section>
 
-            {/* Card 2: Komponen Demo */}
-            <Card shadow="sm" padding="lg" radius="md" withBorder>
-              <Title order={3} mb="md">
-                🎨 Komponen Demo
-              </Title>
-              <Stack gap="md">
-                <div>
-                  <Text size="sm" fw={500} mb="xs">
-                    Buttons
-                  </Text>
-                  <Group>
-                    <Button variant="filled" color="blue">
-                      Filled
-                    </Button>
-                    <Button variant="outline" color="teal">
-                      Outline
-                    </Button>
-                    <Button variant="light" color="grape">
-                      Light
-                    </Button>
-                  </Group>
-                </div>
-
-                <div>
-                  <Text size="sm" fw={500} mb="xs">
-                    Notifications
-                  </Text>
-                  <Button onClick={showNotification} variant="gradient" gradient={{ from: 'pink', to: 'orange' }}>
-                    Tampilkan Notifikasi
-                  </Button>
-                </div>
-
-                <div>
-                  <Text size="sm" fw={500} mb="xs">
-                    Badges & Text
-                  </Text>
-                  <Group>
-                    <Badge color="green">Success</Badge>
-                    <Badge color="red">Error</Badge>
-                    <Badge color="yellow">Warning</Badge>
-                    <Badge color="blue">Info</Badge>
-                  </Group>
-                </div>
+      {/* Stats Section */}
+      <section className="py-20">
+        <Container size="lg">
+          <Card shadow="xl" padding="xl" radius="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600">
+            <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xl">
+              <Stack gap="xs" align="center" className="text-white">
+                <Text size="3rem" fw={700}>100K+</Text>
+                <Text size="lg">Pengguna Aktif</Text>
               </Stack>
-            </Card>
-          </div>
-
-          {/* Info Card dengan Tailwind styling */}
-          <Card shadow="md" padding="xl" radius="md" className="bg-gradient-to-r from-purple-500 to-pink-500">
-            <div className="text-white">
-              <Title order={2} className="text-white mb-4">
-                ✨ Fitur yang Terinstall
-              </Title>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div>
-                  <Text className="font-semibold text-white text-lg mb-2">Core</Text>
-                  <ul className="space-y-1 text-sm">
-                    <li>✅ @mantine/core</li>
-                    <li>✅ @mantine/hooks</li>
-                    <li>✅ @mantine/form</li>
-                  </ul>
-                </div>
-                <div>
-                  <Text className="font-semibold text-white text-lg mb-2">UI Components</Text>
-                  <ul className="space-y-1 text-sm">
-                    <li>✅ @mantine/notifications</li>
-                    <li>✅ @mantine/modals</li>
-                    <li>✅ @mantine/carousel</li>
-                    <li>✅ @mantine/dropzone</li>
-                  </ul>
-                </div>
-                <div>
-                  <Text className="font-semibold text-white text-lg mb-2">Features</Text>
-                  <ul className="space-y-1 text-sm">
-                    <li>✅ @mantine/charts</li>
-                    <li>✅ @mantine/nprogress</li>
-                    <li>✅ Tailwind CSS v4</li>
-                    <li>✅ TypeScript</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+              <Stack gap="xs" align="center" className="text-white">
+                <Text size="3rem" fw={700}>500M+</Text>
+                <Text size="lg">Transaksi Diproses</Text>
+              </Stack>
+              <Stack gap="xs" align="center" className="text-white">
+                <Text size="3rem" fw={700}>99.9%</Text>
+                <Text size="lg">Uptime System</Text>
+              </Stack>
+            </SimpleGrid>
           </Card>
+        </Container>
+      </section>
 
-          {/* Footer */}
-          <div className="text-center mt-8">
+      {/* CTA Section */}
+      <section className="py-20 bg-gray-50 dark:bg-gray-800">
+        <Container size="lg">
+          <Card shadow="md" padding="xl" radius="lg" withBorder>
+            <Stack gap="lg" align="center" className="text-center">
+              <Title order={2} className="text-3xl font-bold text-gray-900 dark:text-white">
+                Siap Memulai Perjalanan Finansial Anda?
+              </Title>
+              <Text size="lg" c="dimmed" className="max-w-2xl">
+                Bergabunglah dengan ribuan pengguna yang telah mempercayai 
+                Dayton Fintech untuk kebutuhan keuangan digital mereka.
+              </Text>
+              <Button 
+                size="xl" 
+                variant="gradient" 
+                gradient={{ from: 'blue', to: 'cyan' }}
+                className="shadow-lg"
+              >
+                Daftar Gratis Sekarang
+              </Button>
+            </Stack>
+          </Card>
+        </Container>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 bg-gray-900 text-white">
+        <Container size="xl">
+          <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="lg">
+            <Stack gap="sm">
+              <Text fw={700} size="lg">Dayton Fintech</Text>
+              <Text size="sm" c="dimmed">
+                Platform fintech terpercaya untuk solusi keuangan digital Anda.
+              </Text>
+            </Stack>
+            <Stack gap="xs">
+              <Text fw={600}>Produk</Text>
+              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Pembayaran Digital</Text>
+              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Investasi</Text>
+              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Pinjaman</Text>
+            </Stack>
+            <Stack gap="xs">
+              <Text fw={600}>Perusahaan</Text>
+              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Tentang Kami</Text>
+              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Karir</Text>
+              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Blog</Text>
+            </Stack>
+            <Stack gap="xs">
+              <Text fw={600}>Bantuan</Text>
+              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Pusat Bantuan</Text>
+              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Kontak</Text>
+              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">FAQ</Text>
+            </Stack>
+          </SimpleGrid>
+          <div className="mt-12 pt-8 border-t border-gray-700 text-center">
             <Text size="sm" c="dimmed">
-              Selamat coding! 🎉 Semua komponen Mantine dan Tailwind sudah siap digunakan.
+              © 2025 Dayton Fintech. All rights reserved.
             </Text>
           </div>
-        </Stack>
-      </Container>
+        </Container>
+      </footer>
     </div>
   );
 }

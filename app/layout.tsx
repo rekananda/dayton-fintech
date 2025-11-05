@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
 // Import styles Mantine
@@ -10,20 +10,18 @@ import '@mantine/carousel/styles.css';
 import '@mantine/dropzone/styles.css';
 import '@mantine/charts/styles.css';
 
-import { ColorSchemeScript, MantineProvider, mantineHtmlProps, createTheme } from '@mantine/core';
+import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { ModalsProvider } from '@mantine/modals';
 import { NavigationProgress } from '@mantine/nprogress';
 import { AuthProvider } from '@/lib/auth-context';
+import { mainTheme } from '@/config/mantineTheme';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+  weight: ["400", "600", "700"], // Regular, SemiBold, Bold
 });
 
 export const metadata: Metadata = {
@@ -31,26 +29,21 @@ export const metadata: Metadata = {
   description: "Aplikasi Fintech dengan Next.js, Mantine UI, dan Tailwind CSS",
 };
 
-const theme = createTheme({
-  /** Konfigurasi theme Mantine di sini */
-  fontFamily: 'var(--font-geist-sans), sans-serif',
-  fontFamilyMonospace: 'var(--font-geist-mono), monospace',
-});
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" {...mantineHtmlProps}>
+    <html lang="id" {...mantineHtmlProps} className={inter.variable}>
       <head>
         <ColorSchemeScript defaultColorScheme="auto" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="font-sans antialiased"
+        suppressHydrationWarning
       >
-        <MantineProvider theme={theme}>
+        <MantineProvider theme={mainTheme}>
           <ModalsProvider>
             <AuthProvider>
               <Notifications />

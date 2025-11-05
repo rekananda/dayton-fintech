@@ -14,6 +14,7 @@ import { ColorSchemeScript, MantineProvider, mantineHtmlProps, createTheme } fro
 import { Notifications } from '@mantine/notifications';
 import { ModalsProvider } from '@mantine/modals';
 import { NavigationProgress } from '@mantine/nprogress';
+import { AuthProvider } from '@/lib/auth-context';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,9 +52,11 @@ export default function RootLayout({
       >
         <MantineProvider theme={theme}>
           <ModalsProvider>
-            <Notifications />
-            <NavigationProgress />
-            {children}
+            <AuthProvider>
+              <Notifications />
+              <NavigationProgress />
+              {children}
+            </AuthProvider>
           </ModalsProvider>
         </MantineProvider>
       </body>

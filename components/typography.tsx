@@ -1,3 +1,4 @@
+import React from 'react';
 import { Title, Text, type TitleProps, type TextProps } from '@mantine/core';
 
 // Heading Components
@@ -40,6 +41,7 @@ export function Heading4({ children, className, ...props }: HeadingProps) {
 // Body Components
 interface BodyProps extends TextProps {
   variant?: 'regular' | 'semibold' | 'bold';
+  children?: React.ReactNode;
 }
 
 export function Body({ children, variant = 'regular', className, ...props }: BodyProps) {

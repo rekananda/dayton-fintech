@@ -13,7 +13,7 @@ export function LandingLayout({ children }: LandingLayoutProps) {
       header={{ height: 60 }}
       padding={0}
     >
-      <AppHeader variant="landing" badgeText="Terpercaya & Aman" />
+      <AppHeader variant="landing"/>
 
       <AppShell.Main className="flex flex-col min-h-[calc(100vh-var(--app-shell-header-height))]">
         <div className="flex-grow">

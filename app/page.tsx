@@ -2,6 +2,7 @@
 
 import { Container, Title, Text, Button, Card, Group, Stack, Badge, SimpleGrid } from '@mantine/core';
 import { IconCreditCard, IconShield, IconChartLine, IconWallet, IconClock, IconDeviceMobile } from '@tabler/icons-react';
+import { LandingLayout } from '@/components/layouts/LandingLayout';
 
 export default function LandingPage() {
   const features = [
@@ -38,25 +39,8 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      {/* Header */}
-      <header className="border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50">
-        <Container size="xl">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg"></div>
-              <Text size="xl" fw={700} className="text-gray-800 dark:text-white">
-                Dayton Fintech
-              </Text>
-            </div>
-            <Group gap="md">
-              <Badge size="lg" variant="light" color="blue">
-                Terpercaya & Aman
-              </Badge>
-            </Group>
-          </div>
-        </Container>
-      </header>
+    <LandingLayout>
+      <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
 
       {/* Hero Section */}
       <section className="py-20">
@@ -185,42 +169,7 @@ export default function LandingPage() {
         </Container>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 bg-gray-900 text-white">
-        <Container size="xl">
-          <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="lg">
-            <Stack gap="sm">
-              <Text fw={700} size="lg">Dayton Fintech</Text>
-              <Text size="sm" c="dimmed">
-                Platform fintech terpercaya untuk solusi keuangan digital Anda.
-              </Text>
-            </Stack>
-            <Stack gap="xs">
-              <Text fw={600}>Produk</Text>
-              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Pembayaran Digital</Text>
-              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Investasi</Text>
-              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Pinjaman</Text>
-            </Stack>
-            <Stack gap="xs">
-              <Text fw={600}>Perusahaan</Text>
-              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Tentang Kami</Text>
-              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Karir</Text>
-              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Blog</Text>
-            </Stack>
-            <Stack gap="xs">
-              <Text fw={600}>Bantuan</Text>
-              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Pusat Bantuan</Text>
-              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">Kontak</Text>
-              <Text size="sm" c="dimmed" className="cursor-pointer hover:text-blue-400">FAQ</Text>
-            </Stack>
-          </SimpleGrid>
-          <div className="mt-12 pt-8 border-t border-gray-700 text-center">
-            <Text size="sm" c="dimmed">
-              © 2025 Dayton Fintech. All rights reserved.
-            </Text>
-          </div>
-        </Container>
-      </footer>
-    </div>
+      </div>
+    </LandingLayout>
   );
 }

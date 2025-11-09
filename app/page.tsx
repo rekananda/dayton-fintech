@@ -1,48 +1,57 @@
 'use client';
 
-import { Container, Title, Text, Button, Card, Group, Stack, Badge, SimpleGrid } from '@mantine/core';
-import { IconCreditCard, IconShield, IconChartLine, IconWallet, IconClock, IconDeviceMobile } from '@tabler/icons-react';
+import { Group, Stack, Badge, Box, Button } from '@mantine/core';
 import { LandingLayout } from '@/components/layouts/LandingLayout';
+import MainText from '@/components/Atoms/MainText';
+import './landingpage.css';
+import { useViewportSize } from '@mantine/hooks';
+import RippleEffect from '@/components/Atoms/Effect/RippleEffect';
+import Ornament from '@/components/Atoms/Effect/Ornament';
 
 export default function LandingPage() {
-  const features = [
-    {
-      icon: IconCreditCard,
-      title: 'Transaksi Mudah',
-      description: 'Lakukan transaksi keuangan dengan cepat dan mudah kapan saja, dimana saja.'
-    },
-    {
-      icon: IconShield,
-      title: 'Keamanan Terjamin',
-      description: 'Sistem keamanan berlapis untuk melindungi data dan transaksi Anda.'
-    },
-    {
-      icon: IconChartLine,
-      title: 'Investasi Cerdas',
-      description: 'Platform investasi yang mudah dipahami untuk masa depan finansial yang lebih baik.'
-    },
-    {
-      icon: IconWallet,
-      title: 'Dompet Digital',
-      description: 'Kelola semua keuangan Anda dalam satu aplikasi yang terintegrasi.'
-    },
-    {
-      icon: IconClock,
-      title: 'Proses Cepat',
-      description: 'Verifikasi dan persetujuan transaksi dalam hitungan menit.'
-    },
-    {
-      icon: IconDeviceMobile,
-      title: 'Mobile Friendly',
-      description: 'Akses dari berbagai perangkat dengan pengalaman yang optimal.'
-    },
-  ];
+  const { width } = useViewportSize();
+  const isMobile = width < 768;
 
   return (
     <LandingLayout>
-      <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <Stack pt={isMobile ? 130 : 90}>
+        <Box  className={`home-section ${isMobile ? 'home-section-mobile' : ''}`} pt={80}>
+          <RippleEffect className="home-section-ripple-l" position='left' size={isMobile ? 250 : 350}/>
+          <RippleEffect className="home-section-ripple-r" position='center' size={isMobile ? 300 : 380}/>
 
-      {/* Hero Section */}
+          <Ornament className='home-ornament ornament-1' size={isMobile ? 30 : 45} type='candle' angle={-15}/>
+          <Ornament className='home-ornament ornament-2' size={isMobile ? 30 : 45} type='coin' angle={15}/>
+          <Ornament className='home-ornament ornament-3' size={isMobile ? 30 : 45} type='graph' angle={15}/>
+          <Ornament className='home-ornament ornament-4' size={isMobile ? 30 : 45} type='waterfall' angle={-15}/>
+
+          <Stack gap={0}>
+            <Stack id="home" className='home-section-content' align='center' gap={isMobile ? 28 : 40}>
+              <Badge variant="outline" className='main-badge'>Gold • XAUUSD • H1 • Tren</Badge>
+              <MainText className='home-main-text' variant={isMobile ? 'heading3' : 'heading1'} maw={isMobile ? 320 : 990} ta='center'>Trading Emas Otomatis, Aman dan Terukur</MainText>
+              <MainText variant='body' maw={isMobile ? 320 : 650} ta='center' fz={20}>
+                Pendekatan trend-following yang disiplin dengan target adaptif mengikuti volatilitas, pengendalian eksposur, serta jeda otomatis saat rilis data berdampak tinggi.
+              </MainText>
+              <Group maw={isMobile ? 400 : 650} justify='center'>
+                <Badge variant="outline" className='main-badge2'>Profit Sharing <b>25%</b></Badge>
+                <Badge variant="outline" className='main-badge2'>Referral hingga <b>10%</b></Badge>
+                <Badge variant="outline" className='main-badge2'><b>Broker MT4 • H1</b></Badge>
+              </Group>
+            </Stack>
+            <Group id="daftar" className='home-section-content' pt={isMobile ? 32 : 80} pb={isMobile ? 182 : 80} justify='center'>
+              <Button size="xl" color='primary' radius='xl'>
+                Daftar via WhatsApp
+              </Button>
+            </Group>
+          </Stack>
+        </Box>
+
+      </Stack>
+      {/* <Ornament className='home-ornament' type='graph' angle={0}/>
+      <Ornament className='home-ornament' type='waterfall' angle={0}/>
+      <Ornament className='home-ornament' type='coin' angle={0}/> */}
+      
+      {/* <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+
       <section className="py-20">
         <Container size="lg">
           <Stack gap="xl" align="center" className="text-center">
@@ -83,7 +92,6 @@ export default function LandingPage() {
         </Container>
       </section>
 
-      {/* Features Section */}
       <section className="py-20 bg-white dark:bg-gray-800">
         <Container size="xl">
           <Stack gap="xl" align="center" className="mb-12">
@@ -122,7 +130,6 @@ export default function LandingPage() {
         </Container>
       </section>
 
-      {/* Stats Section */}
       <section className="py-20">
         <Container size="lg">
           <Card shadow="xl" padding="xl" radius="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600">
@@ -144,7 +151,6 @@ export default function LandingPage() {
         </Container>
       </section>
 
-      {/* CTA Section */}
       <section className="py-20 bg-gray-50 dark:bg-gray-800">
         <Container size="lg">
           <Card shadow="md" padding="xl" radius="lg" withBorder>
@@ -169,7 +175,7 @@ export default function LandingPage() {
         </Container>
       </section>
 
-      </div>
+      </div> */}
     </LandingLayout>
   );
 }

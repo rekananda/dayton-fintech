@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-// Import styles Mantine
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/nprogress/styles.css';
@@ -10,18 +9,14 @@ import '@mantine/carousel/styles.css';
 import '@mantine/dropzone/styles.css';
 import '@mantine/charts/styles.css';
 
-import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
-import { Notifications } from '@mantine/notifications';
-import { ModalsProvider } from '@mantine/modals';
-import { NavigationProgress } from '@mantine/nprogress';
-import { AuthProvider } from '@/lib/auth-context';
-import { mainTheme } from '@/config/mantineTheme';
+import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
+import { AppProviders } from './providers';
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
-  weight: ["400", "600", "700"], // Regular, SemiBold, Bold
+  weight: ["400", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -37,21 +32,13 @@ export default function RootLayout({
   return (
     <html lang="id" {...mantineHtmlProps} className={inter.variable}>
       <head>
-        <ColorSchemeScript defaultColorScheme="auto" />
+        <ColorSchemeScript defaultColorScheme="dark" />
       </head>
       <body
         className="font-sans antialiased"
         suppressHydrationWarning
       >
-        <MantineProvider theme={mainTheme}>
-          <ModalsProvider>
-            <AuthProvider>
-              <Notifications />
-              <NavigationProgress />
-              {children}
-            </AuthProvider>
-          </ModalsProvider>
-        </MantineProvider>
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );

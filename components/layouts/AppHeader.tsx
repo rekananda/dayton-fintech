@@ -1,10 +1,16 @@
 'use client';
 
-import { AppShell, Group, Text, Badge, Container, Button, Avatar, Menu, Burger, ActionIcon, Tooltip, useMantineColorScheme } from '@mantine/core';
-import { IconChevronLeft, IconChevronRight, IconUser, IconSettings, IconLogout, IconSun, IconMoon } from '@tabler/icons-react';
+import { AppShell, Group, Text, Container, Button, Avatar, Menu, Burger, ActionIcon, Tooltip, Stack, Box } from '@mantine/core';
+import { IconChevronLeft, IconChevronRight, IconUser, IconSettings, IconLogout} from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
+import Icon from '../Atoms/Icon';
+import MainText from '../Atoms/MainText';
+import ColorSchemeToggle from '../Atoms/Button/ColorSchemeToggle';
+import { useViewportSize } from '@mantine/hooks';
+import LandingPageNavbar from '../Molecules/Menus/LandingPageNavbar';
+import LandingPageMenu from '../Molecules/Menus/LandingPageMenu';
 
-interface AppHeaderProps {
+interface AppHeaderPropsI {
   variant?: 'landing' | 'backoffice';
   user?: {
     name: string;
@@ -17,7 +23,7 @@ interface AppHeaderProps {
   onLogout?: () => void;
 }
 
-export function AppHeader({
+const AppHeader = ({
   variant = 'landing',
   user,
   mobileOpened = false,
@@ -25,13 +31,15 @@ export function AppHeader({
   desktopCollapsed = false,
   onDesktopToggle,
   onLogout,
-}: AppHeaderProps) {
+}: AppHeaderPropsI ) => {
   const router = useRouter();
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const { width } = useViewportSize();
+  const isMobile = width < 768;
+  const isDesktop = width >= 1200;
 
   return (
-    <AppShell.Header>
-      <Container size="xl" h="100%">
+    <AppShell.Header className='glassmorphism'>
+      <Container size="1440px" h="100%" px={isMobile ? 20 : 100}>
         <Group h="100%" justify="space-between">
           <Group gap="sm">
             {onMobileToggle && variant === 'backoffice' && (
@@ -57,16 +65,21 @@ export function AppHeader({
                 </ActionIcon>
               </Tooltip>
             )}
-            <div className="w-8 h-8 bg-gradient-to-br from-primary-4 to-primary-6 rounded-lg"></div>
-            <Text size="xl" fw={700}>
-              {variant === 'landing' ? 'Dayton Fintech' : 'Dayton Backoffice'}
-            </Text>
+            <Group>
+              <Icon className='w-8 h-8' name='IconBrandLoom'/>
+              <Stack gap={2}>
+                <MainText variant="body-bold" size='20px'>
+                  {variant === 'landing' ? 'Dayton Fintech' : 'Dayton Backoffice'}
+                </MainText>
+                <MainText variant="body" size='14px'>
+                  AAUSD Trend Strategy
+                </MainText>
+              </Stack>
+            </Group>
           </Group>
-          <Group gap="sm">
-            {variant === 'landing' && (
-              <Badge size="lg" variant="light" color="primary">
-                Terpercaya & Aman
-              </Badge>
+          <Group gap={41}>
+            {variant === 'landing' && isDesktop && (
+              <LandingPageNavbar/>
             )}
             {user && onLogout && (
               <Menu shadow="md" width={200}>
@@ -97,17 +110,10 @@ export function AppHeader({
                 </Menu.Dropdown>
               </Menu>
             )}
-            <Tooltip label={colorScheme === 'dark' ? 'Light mode' : 'Dark mode'} position="bottom" withArrow>
-              <ActionIcon
-                variant="subtle"
-                color="gray"
-                onClick={() => toggleColorScheme()}
-                size="lg"
-                className="hover:bg-gray-100 dark:hover:bg-gray-800"
-              >
-                {colorScheme === 'dark' ? <IconSun size={20} /> : <IconMoon size={20} />}
-              </ActionIcon>
-            </Tooltip>
+            <ColorSchemeToggle/>
+            {variant === 'landing' && !isDesktop && (
+              <LandingPageMenu  />
+            )}
           </Group>
         </Group>
       </Container>
@@ -115,3 +121,4 @@ export function AppHeader({
   );
 }
 
+export default AppHeader;

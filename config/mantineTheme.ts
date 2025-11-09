@@ -1,4 +1,4 @@
-import { DEFAULT_THEME, DefaultMantineColor, MantineColorsTuple, createTheme, em, mergeMantineTheme, MantineThemeOverride } from '@mantine/core';
+import { CSSVariablesResolver, DEFAULT_THEME, DefaultMantineColor, MantineColorsTuple, MantineTheme, createTheme, em, mergeMantineTheme, MantineThemeOverride } from '@mantine/core';
 
 type ExtendedColors = "primary" | DefaultMantineColor;
 
@@ -33,7 +33,7 @@ const themeOverride: MantineThemeOverride = createTheme({
   fontFamilyMonospace: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
   primaryColor: "primary",
   primaryShade: defaultShades,
-  black: "#1f1f1f",
+  black: "#000",
   white: "#fff",
   colors: mantineColor,
   headings: {
@@ -87,6 +87,36 @@ const themeOverride: MantineThemeOverride = createTheme({
 })
 
 export const mainTheme = mergeMantineTheme(DEFAULT_THEME, themeOverride);
+
+export const cssVariablesResolver: CSSVariablesResolver = () => {
+  return {
+    variables: {
+      '--main-badge-2-border-color': 'var(--mantine-color-dark-2)',
+    },
+    light: {
+      '--mantine-color-body': '#fff',
+      '--text-color': '#000',
+      '--mantine-color-text': '#000',
+      '--mantine-color-dark-outline': '#000',
+      '--mantine-color-dark-light-color': '#000',
+      '--main-badge-bg': 'transparent',
+      '--main-badge-color': 'var(--mantine-color-primary-6)',
+      '--main-badge-border-color': 'var(--mantine-color-primary-6)',
+      '--main-badge-2-color': 'var(--mantine-color-dark-7)',
+    },
+    dark: {
+      '--mantine-color-body': '#000',
+      '--text-color': '#fff',
+      '--mantine-color-text': '#fff',
+      '--mantine-color-dark-outline': '#fff',
+      '--mantine-color-dark-light-color': '#fff', 
+      '--main-badge-bg': 'linear-gradient(91.29deg, rgba(255, 255, 255, 0.16) -7.61%, rgba(255, 255, 255, 0.04) 109.66%)',
+      '--main-badge-color': '#fff',
+      '--main-badge-border-color': 'var(--mantine-color-dark-2)',
+      '--main-badge-2-color': '#ffffffd0',
+    },
+  };
+};
 
 export default mainTheme
 

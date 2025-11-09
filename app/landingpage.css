@@ -1,0 +1,134 @@
+.home-section {
+  position: relative;
+}
+
+.home-section-ripple-l {
+  position: absolute;
+  top: 58%;
+  left: 0;
+  z-index: 1;
+}
+
+.home-section-ripple-r {
+  position: absolute;
+  top: -400px;
+  right: -235px;
+  z-index: 1;
+}
+
+.home-section-content {
+  position: relative;
+  z-index: 2;
+}
+
+.home-ornament {
+  position: absolute;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+}
+
+.ornament-1 {
+  top: 152px;
+  left: 100px;
+}
+
+.ornament-2 {
+  top: 308px;
+  right: 72px;
+}
+
+.ornament-3 {
+  top: 467px;
+  left: 185px;
+}
+
+.ornament-4 {
+  top: 521px;
+  right: 140px;
+}
+
+.home-section-mobile {
+  .home-section-ripple-l {
+    top: 597px;
+    left: 0;
+  }
+
+  .home-section-ripple-r {
+    top: -310px;
+    right: -245px;
+  }
+
+  .ornament-1 {
+    top: 17px;
+    left: 52px;
+  }
+  
+  .ornament-3 {
+    top: 67px;
+    right: 20px;
+    left: unset;
+  }
+  
+  .ornament-2 {
+    top: 705px;
+    left: 91px;
+    right: unset;
+  }
+  
+  .ornament-4 {
+    top: 740px;
+    right: 46px;
+  }
+}
+
+.main-badge {
+  padding: 15px;
+  padding-inline: 16px;
+  background: var(--main-badge-bg) !important;
+  border-color: var(--main-badge-border-color) !important;
+}
+
+.main-badge2 {
+  padding: 15px;
+  padding-inline: 16px;
+  background: var(--main-badge-bg) !important;
+  border-color: var(--main-badge-2-border-color) !important;
+}
+
+.main-badge>.mantine-Badge-label {
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: none !important;
+  color: var(--main-badge-color) !important;
+}
+
+.main-badge2>.mantine-Badge-label {
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: none !important;
+  color: var(--main-badge-2-color) !important;
+}
+
+.main-badge>.mantine-Badge-label>b {
+  font-weight: 700;
+}
+
+
+.main-badge2>.mantine-Badge-label>b {
+  color: var(--main-badge-color) !important;
+  font-weight: 400;
+}
+
+.home-main-text {
+  display: inline-block;
+  background-image: linear-gradient(
+    180deg,
+    var(--text-color) 0%,
+    rgba(153, 153, 153, 0.6)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+

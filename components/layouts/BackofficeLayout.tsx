@@ -20,17 +20,15 @@ import {
   IconSettings
 } from '@tabler/icons-react';
 import { useAuth } from '@/lib/auth-context';
-import { AppHeader } from './AppHeader';
+import AppHeader from './AppHeader';
 
 interface BackofficeLayoutProps {
   children: React.ReactNode;
 }
 
 export function BackofficeLayout({ children }: BackofficeLayoutProps) {
-  // All hooks must be called before any conditional returns
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   
-  // Load collapsed state from localStorage, default to false
   const [desktopCollapsed, setDesktopCollapsed] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('navbar_collapsed');
@@ -51,18 +49,15 @@ export function BackofficeLayout({ children }: BackofficeLayoutProps) {
   const router = useRouter();
   const pathname = usePathname();
   
-  // Ensure pathname is always a string for stable dependency array
   const stablePathname = useMemo(() => pathname || '', [pathname]);
 
   useEffect(() => {
-    // Redirect immediately if not loading and no user (except public pages)
     const publicPages = ['/backoffice/login', '/backoffice/register'];
     if (!isLoading && !user && stablePathname && !publicPages.includes(stablePathname)) {
       window.location.href = '/backoffice/login';
     }
   }, [user, isLoading, stablePathname]);
 
-  // Public pages (login and register) - no layout
   const publicPages = ['/backoffice/login', '/backoffice/register'];
   const isPublicPage = publicPages.includes(pathname);
   
@@ -70,7 +65,6 @@ export function BackofficeLayout({ children }: BackofficeLayoutProps) {
     return <>{children}</>;
   }
 
-  // Show loading while checking auth
   if (isLoading) {
     return (
       <AppShell padding={0}>
@@ -90,7 +84,6 @@ export function BackofficeLayout({ children }: BackofficeLayoutProps) {
     );
   }
 
-  // If no user after loading, show redirecting message
   if (!user) {
     return (
       <AppShell padding={0}>
@@ -110,7 +103,6 @@ export function BackofficeLayout({ children }: BackofficeLayoutProps) {
     );
   }
 
-  // Authenticated user - show full layout with sidebar
   const navigation = [
     { icon: IconDashboard, label: 'Dashboard', href: '/backoffice' },
     { icon: IconUsers, label: 'Pengguna', href: '/backoffice/users' },

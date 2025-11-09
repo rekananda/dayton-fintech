@@ -1,26 +1,32 @@
 'use client';
 
-import { AppShell, Container, Stack, Group, Text } from '@mantine/core';
-import { AppHeader } from './AppHeader';
+import { AppShell, Container, Stack, Group, Text, Box } from '@mantine/core';
+import AppHeader from './AppHeader';
+import { useHeadroom, useInViewport } from '@mantine/hooks';
+import { useEffect, useMemo, useState } from 'react';
 
 interface LandingLayoutProps {
   children: React.ReactNode;
 }
 
 export function LandingLayout({ children }: LandingLayoutProps) {
+  const pinned = useHeadroom({ fixedAt: 180 });
+
   return (
     <AppShell
-      header={{ height: 60 }}
+      header={{ height: 90, collapsed: !pinned, offset: false }}
       padding={0}
     >
       <AppHeader variant="landing"/>
 
-      <AppShell.Main className="flex flex-col min-h-[calc(100vh-var(--app-shell-header-height))]">
-        <div className="flex-grow">
-          {children}
-        </div>
-        
-        <footer className="bg-gray-900 text-white mt-auto">
+      <AppShell.Main className="relative flex flex-col min-h-[100dvh]" pt={0}>
+        <Box className="flex-grow">
+          <Container size="1440px" className="overflow-hidden" p={0}>
+            {children}
+          </Container>
+        </Box>
+
+        <footer>
           <Container size="xl" py="xl">
             <Group justify="space-between" align="flex-start" mb="xl">
               <Stack gap="sm">

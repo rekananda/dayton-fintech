@@ -11,7 +11,6 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-<<<<<<< HEAD
     "@mantine/carousel": "^8.3.7",
     "@mantine/charts": "^8.3.7",
     "@mantine/core": "^8.3.7",
@@ -22,17 +21,6 @@
     "@mantine/modals": "^8.3.7",
     "@mantine/notifications": "^8.3.7",
     "@mantine/nprogress": "^8.3.7",
-=======
-    "@mantine/carousel": "^8.3.6",
-    "@mantine/charts": "^8.3.6",
-    "@mantine/core": "^8.3.6",
-    "@mantine/dropzone": "^8.3.6",
-    "@mantine/form": "^8.3.6",
-    "@mantine/hooks": "^8.3.6",
-    "@mantine/modals": "^8.3.6",
-    "@mantine/notifications": "^8.3.6",
-    "@mantine/nprogress": "^8.3.6",
->>>>>>> origin/stagging
     "@mui/icons-material": "^7.3.5",
     "@mui/material": "^7.3.5",
     "@tabler/icons-react": "^3.35.0",

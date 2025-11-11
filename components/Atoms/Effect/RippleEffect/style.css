@@ -3,6 +3,20 @@
   overflow: hidden;
 }
 
+.ripple-effect-main:has(.ripple-effect-inner-center) {
+  border-radius: 50%;
+}
+
+.ripple-effect-main:has(.ripple-effect-inner-left) {
+  border-radius: 0 var(--width-ripple) var(--width-ripple) 0;
+}
+
+
+.ripple-effect-main:has(.ripple-effect-inner-right) {
+  border-radius: 0;
+  clip-path: inset(0 50% 0 0 round 50% 0 0 50%);
+}
+
 .ripple-effect-inner {
   position: absolute;
 }
@@ -44,8 +58,10 @@
 
 .ripple-effect-glass {
   height: 100%;
-  background: rgba(255, 255, 255, 0.00) !important;
-  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1) !important;
-  backdrop-filter: blur(20px);
-  --webkit-backdrop-filter: blur(20px);
+  background: color-mix(in srgb, var(--mantine-color-body) 2%, transparent) !important;
+  box-shadow: 
+    2px 0px 20px 0px color-mix(in srgb, var(--mantine-color-body) 20%, transparent),
+    12px 0px 20px 12px color-mix(in srgb, var(--mantine-color-body) 20%, transparent) inset !important;
+  backdrop-filter: blur(23px);
+  --webkit-backdrop-filter: blur(23px);
 }

@@ -1,8 +1,8 @@
 import { Burger, Menu } from "@mantine/core";
-import { listMenus } from "./listmenus";
+import { listMenus } from "@/variables/dummy";
 import { useState } from "react";
 
-const LandingPageMenu = () => {
+const MenuLandingPage = () => {
   const [opened, setOpened] = useState(false);
 
   return (
@@ -30,4 +30,4 @@ const LandingPageMenu = () => {
   );
 }
 
-export default LandingPageMenu;
+export default MenuLandingPage;

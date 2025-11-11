@@ -1,7 +1,7 @@
 import { Group } from "@mantine/core";
-import { listMenus } from "./listmenus";
+import { listMenus } from "@/variables/dummy";
 
-const LandingPageNavbar = () => {
+const NavbarLandingPage = () => {
   return (
     <Group gap={41}>
       {listMenus.map((item, key) => (
@@ -25,4 +25,4 @@ const LandingPageNavbar = () => {
   );
 }
 
-export default LandingPageNavbar;
+export default NavbarLandingPage;

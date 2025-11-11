@@ -26,9 +26,12 @@
   --text-heading4: 32px;
   --text-heading4--line-height: 1.2;
   --text-heading4--font-weight: 600;
+  --text-heading5: 28px;
+  --text-heading5--line-height: 1.2;
+  --text-heading5--font-weight: 600;
   --text-body: 1rem;
   --text-body--line-height: 1.5;
-  --text-body--font-weight: 400;
+  --text-body--font-weight: 300;
   --text-body-semibold: 1rem;
   --text-body-semibold--line-height: 1.5;
   --text-body-semibold--font-weight: 600;
@@ -216,4 +219,59 @@ body {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
   backdrop-filter: blur(20px);
   --webkit-backdrop-filter: blur(20px);
+}
+
+.mantine-Badge-root {
+  padding: 15px !important;
+  padding-inline: 16px;
+}
+
+.mantine-Badge-label {
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: none !important;
+}
+
+.mantine-Badge-label>b {
+  font-weight: 700;
+}
+
+.main-button {
+  background: linear-gradient(180deg, var(--mantine-color-primary-6) 0%, var(--mantine-color-primary-9) 100%);
+}
+
+.main-badge {
+  background: var(--main-badge-bg) !important;
+  border-color: var(--main-badge-border-color) !important;
+}
+
+.main-badge2 {
+  background: var(--main-badge-bg) !important;
+  border-color: var(--main-badge-2-border-color) !important;
+}
+
+.title-badge {
+  border-color: var(--main-badge-border-color) !important;
+}
+
+.light-badge {
+  background: linear-gradient(91.29deg, color-mix(in srgb, var(--badge-bg) 30%, transparent) 0%, color-mix(in srgb, var(--badge-bg) 4%, transparent) 100%) !important;
+  border-color: color-mix(in srgb, var(--text-color) 20%, transparent) !important;
+}
+
+.main-badge>.mantine-Badge-label {
+  color: var(--main-badge-color) !important;
+}
+
+.main-badge2>.mantine-Badge-label {
+  color: var(--main-badge-2-color) !important;
+}
+
+.title-badge>.mantine-Badge-label {
+  color: var(--mantine-color-primary-6) !important;
+}
+
+.light-badge>.mantine-Badge-label {
+  color: var(--badge-bg) !important;
+  font-weight: 700;
 }

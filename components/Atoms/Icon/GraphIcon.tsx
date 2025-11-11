@@ -1,12 +1,7 @@
 import { memo } from 'react';
-import type { SVGProps } from 'react';
+import { SVGIconT } from './type';
 
-type GraphIconProps = {
-  size?: number;
-  color?: string;
-} & SVGProps<SVGSVGElement>;
-
-const GraphIcon = ({ size = 52, color = 'currentColor', ...props }: GraphIconProps) => (
+const GraphIcon = ({ size = 52, color = 'currentColor', ...props }: SVGIconT) => (
   <svg
     width={size}
     height={size}

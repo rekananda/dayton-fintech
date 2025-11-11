@@ -1,17 +1,10 @@
 'use client';
 
-import { Box, BoxProps, Group, MantineColor } from "@mantine/core";
+import { Box, Group } from "@mantine/core";
 import './style.css';
+import { RippleEffectT } from "./type";
 
-export type RippleShapeT = 'circle' | 'diamond';
-type RippleEffectPropsT = BoxProps & {
-  color?: MantineColor;
-  size?: number;
-  position?: 'center' | 'left' | 'right';
-  shape?: RippleShapeT;
-};
-
-const RippleEffect = ({ color = 'primary', size = 350, position = 'center', shape = 'diamond', ...rest }: RippleEffectPropsT) => {
+const RippleEffect = ({ color = 'primary', size = 350, position = 'center', shape = 'diamond', ...rest }: RippleEffectT) => {
   const isFull = ['center'].includes(position);
   const outerSize = isFull ? size*2 : size*1.3;
   const rippleCount = isFull ? 13 : 6;

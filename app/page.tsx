@@ -1,16 +1,17 @@
 'use client';
 
-import { Group, Stack, Badge, Box, Button, Grid } from '@mantine/core';
+import { Group, Stack, Badge, Box, Button, Grid, Divider } from '@mantine/core';
 import { LandingLayout } from '@/components/layouts/LandingLayout';
 import MainText from '@/components/Atoms/MainText';
 import './landingpage.css';
 import RippleEffect from '@/components/Atoms/Effect/RippleEffect';
 import Ornament from '@/components/Atoms/Effect/Ornament';
 import TimelineCard from '@/components/Molecules/Cards/TimelineCard';
-import { listRippleCard, listTimeline } from '@/variables/dummy';
+import { listLegal, listQnA, listRippleCard, listTimeline } from '@/variables/dummy';
 import useViewport from '@/hooks/useViewport';
 import TopicTitle from '@/components/Molecules/Text/TopicTitle';
 import RippleCard from '@/components/Molecules/Cards/RippleCard';
+import Accordion from '@/components/Atoms/Accordion';
 
 export default function LandingPage() {
   const { isMobile } = useViewport();
@@ -92,6 +93,49 @@ export default function LandingPage() {
             })}
           </Grid>
         </Stack>
+
+        <Stack align='center' py={80} px={isMobile ? 20 : 100}>
+          <TopicTitle title="Belajar Bareng, Raih Hasil Lebih Baik" badge="Acara Mendatang" />
+        </Stack>
+
+        <Stack align='center' py={80} px={isMobile ? 20 : 100}>
+          <TopicTitle title="Ketentuan Layanan & Perlindungan Data" badge="Legal" />
+          
+          <Grid gutter={isMobile ? 32 : 40} justify='center'>
+            {listLegal.map((item, key) => (
+              <Grid.Col span={{ base: 12, md: 6 }} key={key}>
+                <TimelineCard {...item} withIndicator={false} h='100%'/>
+              </Grid.Col>
+            ))}
+          </Grid>
+        </Stack>
+
+        <Grid justify='center' py={80} px={isMobile ? 20 : 100} gutter={isMobile ? 32 : 40} w='100%'>
+          <Grid.Col span={{ base: 12, md: 4 }}>
+            <TopicTitle title="Pertanyaan yang Sering Diajukan" badge="F.A.Q" align='left' />
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, md: 8 }}>
+            <Box>
+              <Accordion items={listQnA} />
+            </Box>
+          </Grid.Col>
+        </Grid>
+
+        <Box py={80} px={isMobile ? 20 : 100}> 
+          <RippleCard 
+            ripple={['bottom-left', 'top-right']} 
+            rippleProps={{ type: 'circle', rippleSize: isMobile ? [300, 300] : [500, 500] }}
+          > 
+            <Stack align='center' gap={isMobile ? 24 : 48} py={50}>
+              <MainText variant={isMobile ? 'heading4' : 'heading2'} ta='center' maw={isMobile ? 320 : 720}>
+                Mulai Langkah Pertamamu, Menuju Trading yang Terukur
+              </MainText>
+              <Button className='main-button' size="xl" radius='xl'>
+                Daftar via WhatsApp
+              </Button>
+            </Stack>
+          </RippleCard>
+        </Box>
       </Stack>
     </LandingLayout>
   );

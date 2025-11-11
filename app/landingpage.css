@@ -2,18 +2,23 @@
   position: relative;
 }
 
-.home-section-ripple-l {
+.home-section-content > * {
+  z-index: 2;
+}
+
+.home-section > .home-ripple {
   position: absolute;
-  top: 58%;
-  left: 0;
   z-index: 1;
 }
 
-.home-section-ripple-r {
-  position: absolute;
-  top: -400px;
-  right: -235px;
-  z-index: 1;
+.home-ripple.ripple-l {
+  top: 355px;
+  left: 0;
+}
+
+.home-ripple.ripple-r {
+  top: -478px;
+  right: -300px;
 }
 
 .home-section-content {
@@ -48,75 +53,37 @@
 }
 
 .home-section-mobile {
-  .home-section-ripple-l {
+  .ripple-l {
     top: 597px;
     left: 0;
   }
 
-  .home-section-ripple-r {
+  .ripple-r {
     top: -310px;
     right: -245px;
   }
 
   .ornament-1 {
-    top: 17px;
+    top: 62px;
     left: 52px;
   }
   
   .ornament-3 {
-    top: 67px;
+    top: 112px;
     right: 20px;
     left: unset;
   }
   
   .ornament-2 {
-    top: 705px;
+    top: 750px;
     left: 91px;
     right: unset;
   }
   
   .ornament-4 {
-    top: 740px;
+    top: 785px;
     right: 46px;
   }
-}
-
-.main-badge {
-  padding: 15px;
-  padding-inline: 16px;
-  background: var(--main-badge-bg) !important;
-  border-color: var(--main-badge-border-color) !important;
-}
-
-.main-badge2 {
-  padding: 15px;
-  padding-inline: 16px;
-  background: var(--main-badge-bg) !important;
-  border-color: var(--main-badge-2-border-color) !important;
-}
-
-.main-badge>.mantine-Badge-label {
-  font-size: 14px;
-  font-weight: 400;
-  text-transform: none !important;
-  color: var(--main-badge-color) !important;
-}
-
-.main-badge2>.mantine-Badge-label {
-  font-size: 14px;
-  font-weight: 400;
-  text-transform: none !important;
-  color: var(--main-badge-2-color) !important;
-}
-
-.main-badge>.mantine-Badge-label>b {
-  font-weight: 700;
-}
-
-
-.main-badge2>.mantine-Badge-label>b {
-  color: var(--main-badge-color) !important;
-  font-weight: 400;
 }
 
 .home-main-text {
@@ -132,3 +99,28 @@
   -webkit-text-fill-color: transparent;
 }
 
+.timeline-container {
+  position: relative;
+  width: 100%;
+}
+
+.timeline-line {
+  height: 100%;
+  width: 2px;
+  position: absolute;
+  background: linear-gradient(
+    180deg, 
+    color-mix(in srgb, var(--text-color) 0%, transparent) -5%,
+    color-mix(in srgb, var(--text-color) 80%, transparent) 50%, 
+    color-mix(in srgb, var(--text-color) 0%, transparent) 105%
+  );
+  top: 0;
+  left: 34px;
+  transform: translateX(-50%);
+}
+
+.timeline-container.center .timeline-line {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}

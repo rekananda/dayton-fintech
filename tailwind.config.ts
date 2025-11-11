@@ -85,8 +85,9 @@ const config: Config = {
         'heading2': ['48px', { lineHeight: '1.2', fontWeight: '600' }],
         'heading3': ['40px', { lineHeight: '1.2', fontWeight: '600' }],
         'heading4': ['32px', { lineHeight: '1.2', fontWeight: '600' }],
+        'heading5': ['28px', { lineHeight: '1.2', fontWeight: '600' }],
         // Font Group - Body
-        'body': ['1rem', { lineHeight: '1.5', fontWeight: '400' }],
+        'body': ['1rem', { lineHeight: '1.5', fontWeight: '300' }],
         'body-semibold': ['1rem', { lineHeight: '1.5', fontWeight: '600' }],
         'body-bold': ['1rem', { lineHeight: '1.5', fontWeight: '700' }],
       },

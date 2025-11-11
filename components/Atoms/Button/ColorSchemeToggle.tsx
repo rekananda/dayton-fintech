@@ -3,11 +3,19 @@
 import { useEffect, useState } from "react";
 import { Tooltip, useMantineColorScheme, useComputedColorScheme, Button, Group, Text } from "@mantine/core";
 import Icon from "../Icon";
+<<<<<<< HEAD
 import useViewport from "@/hooks/useViewport";
 
 const ColorSchemeToggle = () => {
   const { toggleColorScheme } = useMantineColorScheme();
   const { isMobile } = useViewport();
+=======
+import { useViewportSize } from "@mantine/hooks";
+
+const ColorSchemeToggle = () => {
+  const { toggleColorScheme } = useMantineColorScheme();
+  const { width } = useViewportSize();
+>>>>>>> origin/stagging
   const computedColorScheme = useComputedColorScheme('dark', { getInitialValueInEffect: true });
   const [mounted, setMounted] = useState(false);
 
@@ -18,6 +26,10 @@ const ColorSchemeToggle = () => {
   }, []);
 
   const isDark = mounted ? computedColorScheme === 'dark' : true;
+<<<<<<< HEAD
+=======
+  const isMobile = width < 768;
+>>>>>>> origin/stagging
 
   return (
     <Tooltip label={isDark ? 'Light mode' : 'Dark mode'} position="bottom" withArrow>

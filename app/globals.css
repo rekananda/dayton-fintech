@@ -26,12 +26,18 @@
   --text-heading4: 32px;
   --text-heading4--line-height: 1.2;
   --text-heading4--font-weight: 600;
+<<<<<<< HEAD
   --text-heading5: 28px;
   --text-heading5--line-height: 1.2;
   --text-heading5--font-weight: 600;
   --text-body: 1rem;
   --text-body--line-height: 1.5;
   --text-body--font-weight: 300;
+=======
+  --text-body: 1rem;
+  --text-body--line-height: 1.5;
+  --text-body--font-weight: 400;
+>>>>>>> origin/stagging
   --text-body-semibold: 1rem;
   --text-body-semibold--line-height: 1.5;
   --text-body-semibold--font-weight: 600;
@@ -219,6 +225,7 @@ body {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
   backdrop-filter: blur(20px);
   --webkit-backdrop-filter: blur(20px);
+<<<<<<< HEAD
 }
 
 .mantine-Badge-root {
@@ -293,3 +300,6 @@ body {
     display: block;
   }
 }
+=======
+}
+>>>>>>> origin/stagging

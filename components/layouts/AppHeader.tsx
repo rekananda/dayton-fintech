@@ -1,5 +1,6 @@
 'use client';
 
+<<<<<<< HEAD
 import { AppShell, Group, Text, Container, Button, Avatar, Menu, Burger, ActionIcon, Tooltip, Stack } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight, IconUser, IconSettings, IconLogout} from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
@@ -11,6 +12,31 @@ import MenuLandingPage from '@/components/Molecules/Menus/MenuLandingPage';
 import useViewport from '@/hooks/useViewport';
 import { AppHeaderI } from './type';
 
+=======
+import { AppShell, Group, Text, Container, Button, Avatar, Menu, Burger, ActionIcon, Tooltip, Stack, Box } from '@mantine/core';
+import { IconChevronLeft, IconChevronRight, IconUser, IconSettings, IconLogout} from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
+import Icon from '../Atoms/Icon';
+import MainText from '../Atoms/MainText';
+import ColorSchemeToggle from '../Atoms/Button/ColorSchemeToggle';
+import { useViewportSize } from '@mantine/hooks';
+import LandingPageNavbar from '../Molecules/Menus/LandingPageNavbar';
+import LandingPageMenu from '../Molecules/Menus/LandingPageMenu';
+
+interface AppHeaderPropsI {
+  variant?: 'landing' | 'backoffice';
+  user?: {
+    name: string;
+    email: string;
+  };
+  mobileOpened?: boolean;
+  onMobileToggle?: () => void;
+  desktopCollapsed?: boolean;
+  onDesktopToggle?: () => void;
+  onLogout?: () => void;
+}
+
+>>>>>>> origin/stagging
 const AppHeader = ({
   variant = 'landing',
   user,
@@ -18,10 +44,19 @@ const AppHeader = ({
   onMobileToggle,
   desktopCollapsed = false,
   onDesktopToggle,
+<<<<<<< HEAD
   onLogout, 
 }: AppHeaderI ) => {
   const router = useRouter();
   const { isMobile, isDesktop } = useViewport();
+=======
+  onLogout,
+}: AppHeaderPropsI ) => {
+  const router = useRouter();
+  const { width } = useViewportSize();
+  const isMobile = width < 768;
+  const isDesktop = width >= 1200;
+>>>>>>> origin/stagging
 
   return (
     <AppShell.Header className='glassmorphism'>
@@ -65,7 +100,11 @@ const AppHeader = ({
           </Group>
           <Group gap={41}>
             {variant === 'landing' && isDesktop && (
+<<<<<<< HEAD
               <NavbarLandingPage />
+=======
+              <LandingPageNavbar/>
+>>>>>>> origin/stagging
             )}
             {user && onLogout && (
               <Menu shadow="md" width={200}>
@@ -98,7 +137,11 @@ const AppHeader = ({
             )}
             <ColorSchemeToggle/>
             {variant === 'landing' && !isDesktop && (
+<<<<<<< HEAD
               <MenuLandingPage />
+=======
+              <LandingPageMenu  />
+>>>>>>> origin/stagging
             )}
           </Group>
         </Group>

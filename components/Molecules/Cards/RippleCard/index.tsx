@@ -1,27 +1,45 @@
-import { RippleShapeT } from "@/components/Atoms/Effect/RippleEffect";
 import MainText from "@/components/Atoms/MainText";
 import useViewport from "@/hooks/useViewport";
-import { Badge, Box, BoxProps, Group, MantineColor, Stack } from "@mantine/core";
+import { Badge, Box, Group, Stack } from "@mantine/core";
 import './style.css';
+import { RippleBackgroundT, RippleCardT } from "./type";
 
-type RipplePositionT = 'top-right' | 'bottom-left' | 'top-left' | 'bottom-right';
-export type RippleCardT = BoxProps & {
-  title: string;
-  description?: string;
-  tags?: string[];
-  children?: React.ReactNode;
-  ripple?: RipplePositionT[];
+const RippleCard = ({ 
+  title, 
+  description, 
+  tags=[], 
+  children, 
+  ripple=[], 
+  rippleProps={ type: 'circle', bluredline: 24 } 
+}: RippleCardT) => {
+  const { isMobile } = useViewport();
+
+  return (
+    <Box className={`ripple-card-container`}>
+      <Stack className="ripple-card-content" p={isMobile ? 20 : 40}>
+        {tags.length > 0 && <Group>
+          {tags.map((tag) => (
+            <Badge key={tag} className='light-badge' color='primary.7'>{tag}</Badge>
+          ))}
+        </Group>}
+        {title && <MainText variant="heading5" fw="600" fz={isMobile ? 24 : 28}>{title}</MainText>}
+        {description && <MainText variant="body" fz={isMobile ? 14 : 16}>{description}</MainText>}
+        {children && <Box p={16}>
+          {children}
+        </Box>}
+      </Stack>
+      <RippleBackground position={ripple} bluredline={isMobile ? 12 : 20} {...rippleProps} />
+    </Box>
+  );
 };
 
-type RippleBackgroundT = {
-  position: RipplePositionT[];
-  type?: RippleShapeT;
-  color?: MantineColor;
-  rippleSize?: number[];
-  bluredline?: number
-};
-
-export const RippleBackground = ({ position, type = 'diamond', color = 'primary', rippleSize = [], bluredline = 24 }: RippleBackgroundT) => {
+export const RippleBackground = ({ 
+  position, 
+  type = 'diamond', 
+  color = 'primary', 
+  rippleSize = [], 
+  bluredline = 24 
+}: RippleBackgroundT) => {
   const { isMobile } = useViewport();
   const defaultRippleSize = isMobile ? 250 : 350;
 
@@ -45,28 +63,6 @@ export const RippleBackground = ({ position, type = 'diamond', color = 'primary'
           <Box key={index} className="blur-line"/>
         ))}
       </Group>
-    </Box>
-  );
-};
-
-const RippleCard = ({ title, description, tags=[], children, ripple=[], ...rest }: RippleCardT) => {
-  const { isMobile } = useViewport();
-
-  return (
-    <Box {...rest} className={`ripple-card-container ${rest.className}`}>
-      <Stack className="ripple-card-content" p={isMobile ? 20 : 40}>
-        {tags.length > 0 && <Group>
-          {tags.map((tag) => (
-            <Badge key={tag} className='light-badge' color='primary.7'>{tag}</Badge>
-          ))}
-        </Group>}
-        <MainText variant="heading5" fw="600" fz={isMobile ? 24 : 28}>{title}</MainText>
-        {description && <MainText variant="body" fz={isMobile ? 14 : 16}>{description}</MainText>}
-        {children && <Box p={16}>
-          {children}
-        </Box>}
-      </Stack>
-      <RippleBackground position={ripple} type="circle" bluredline={isMobile ? 12 : 20}/>
     </Box>
   );
 };

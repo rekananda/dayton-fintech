@@ -237,7 +237,7 @@ body {
 }
 
 .main-button {
-  background: linear-gradient(180deg, var(--mantine-color-primary-6) 0%, var(--mantine-color-primary-9) 100%);
+  background: linear-gradient(180deg, var(--mantine-color-primary-6) 0%, var(--mantine-color-primary-9) 100%) !important;
 }
 
 .main-badge {

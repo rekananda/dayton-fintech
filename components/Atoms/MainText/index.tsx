@@ -1,11 +1,7 @@
 import { Text, TextProps } from "@mantine/core"
+import { MainTextT } from "./type";
 
-type PropsMainTextT = TextProps & {
-  variant?: 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'body' | 'body-semibold' | 'body-bold';
-  children?: React.ReactNode;
-}
-
-const MainText = ({ variant, children, ...rest }: PropsMainTextT) => {
+const MainText = ({ variant, children, ...rest }: MainTextT) => {
   const setupProps : TextProps = {
     size: variant === 'heading1' ? '80px' : variant === 'heading2' ? '48px' : variant === 'heading3' ? '40px' : variant === 'heading4' ? '32px' : variant === 'heading5' ? '28px' : '1rem',
     lh: '1.2',

@@ -21,12 +21,9 @@ import {
 } from '@tabler/icons-react';
 import { useAuth } from '@/lib/auth-context';
 import AppHeader from './AppHeader';
+import { BackofficeLayoutI } from './type';
 
-interface BackofficeLayoutProps {
-  children: React.ReactNode;
-}
-
-export function BackofficeLayout({ children }: BackofficeLayoutProps) {
+export function BackofficeLayout({ children }: BackofficeLayoutI) {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   
   const [desktopCollapsed, setDesktopCollapsed] = useState(() => {

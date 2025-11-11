@@ -9,19 +9,7 @@ import ColorSchemeToggle from '@/components/Atoms/Button/ColorSchemeToggle';
 import NavbarLandingPage from '@/components/Molecules/Menus/NavbarLandingPage';
 import MenuLandingPage from '@/components/Molecules/Menus/MenuLandingPage';
 import useViewport from '@/hooks/useViewport';
-
-interface AppHeaderPropsI {
-  variant?: 'landing' | 'backoffice';
-  user?: {
-    name: string;
-    email: string;
-  };
-  mobileOpened?: boolean;
-  onMobileToggle?: () => void;
-  desktopCollapsed?: boolean;
-  onDesktopToggle?: () => void;
-  onLogout?: () => void;
-}
+import { AppHeaderI } from './type';
 
 const AppHeader = ({
   variant = 'landing',
@@ -30,8 +18,8 @@ const AppHeader = ({
   onMobileToggle,
   desktopCollapsed = false,
   onDesktopToggle,
-  onLogout,
-}: AppHeaderPropsI ) => {
+  onLogout, 
+}: AppHeaderI ) => {
   const router = useRouter();
   const { isMobile, isDesktop } = useViewport();
 

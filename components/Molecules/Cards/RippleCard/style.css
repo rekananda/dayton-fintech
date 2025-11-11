@@ -67,10 +67,10 @@
 }
 
 .blur-line {
-  background-color: color-mix(in srgb, var(--text-color) 20%, transparent);
+  background-color: color-mix(in srgb, var(--mantine-color-gray-6) 10%, transparent);
   box-shadow: 
     2px 0px 20px 0px color-mix(in srgb, var(--mantine-color-body) 20%, transparent),
-    12px 0px 20px 12px color-mix(in srgb, var(--mantine-color-body) 20%, transparent) inset !important;
+    12px 0px 20px 12px color-mix(in srgb, var(--mantine-color-body) 30%, transparent) inset !important;
   backdrop-filter: blur(25px);
   --webkit-backdrop-filter: blur(25px);
   height: 100%;

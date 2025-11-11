@@ -1,6 +1,6 @@
 'use client';
 
-import { Group, Stack, Badge, Box, Button, Grid, Divider } from '@mantine/core';
+import { Group, Stack, Badge, Box, Button, Grid } from '@mantine/core';
 import { LandingLayout } from '@/components/layouts/LandingLayout';
 import MainText from '@/components/Atoms/MainText';
 import './landingpage.css';
@@ -98,7 +98,7 @@ export default function LandingPage() {
           <TopicTitle title="Belajar Bareng, Raih Hasil Lebih Baik" badge="Acara Mendatang" />
         </Stack>
 
-        <Stack align='center' py={80} px={isMobile ? 20 : 100}>
+        <Stack align='center' py={80} px={isMobile ? 20 : 100} gap={isMobile ? 32 : 64}>
           <TopicTitle title="Ketentuan Layanan & Perlindungan Data" badge="Legal" />
           
           <Grid gutter={isMobile ? 32 : 40} justify='center'>

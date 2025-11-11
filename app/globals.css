@@ -275,3 +275,21 @@ body {
   color: var(--badge-bg) !important;
   font-weight: 700;
 }
+
+@media (max-width: 767px) {
+  .responsive-mobile-only {
+    display: block;
+  }
+  .responsive-desktop-only {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .responsive-mobile-only {
+    display: none;
+  }
+  .responsive-desktop-only {
+    display: block;
+  }
+}

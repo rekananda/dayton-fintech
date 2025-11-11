@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { CSSVariablesResolver, DEFAULT_THEME, DefaultMantineColor, MantineColorsTuple, createTheme, em, mergeMantineTheme, MantineThemeOverride } from '@mantine/core';
-=======
-import { CSSVariablesResolver, DEFAULT_THEME, DefaultMantineColor, MantineColorsTuple, MantineTheme, createTheme, em, mergeMantineTheme, MantineThemeOverride } from '@mantine/core';
->>>>>>> origin/stagging
 
 type ExtendedColors = "primary" | DefaultMantineColor;
 

@@ -2,7 +2,6 @@
   position: relative;
 }
 
-<<<<<<< HEAD
 .home-section-content > * {
   z-index: 2;
 }
@@ -20,20 +19,6 @@
 .home-ripple.ripple-r {
   top: -478px;
   right: -300px;
-=======
-.home-section-ripple-l {
-  position: absolute;
-  top: 58%;
-  left: 0;
-  z-index: 1;
-}
-
-.home-section-ripple-r {
-  position: absolute;
-  top: -400px;
-  right: -235px;
-  z-index: 1;
->>>>>>> origin/stagging
 }
 
 .home-section-content {
@@ -73,95 +58,34 @@
     left: 0;
   }
 
-<<<<<<< HEAD
   .ripple-r {
-=======
-  .home-section-ripple-r {
->>>>>>> origin/stagging
     top: -310px;
     right: -245px;
   }
 
   .ornament-1 {
-<<<<<<< HEAD
     top: 62px;
-=======
-    top: 17px;
->>>>>>> origin/stagging
     left: 52px;
   }
   
   .ornament-3 {
-<<<<<<< HEAD
     top: 112px;
-=======
-    top: 67px;
->>>>>>> origin/stagging
     right: 20px;
     left: unset;
   }
   
   .ornament-2 {
-<<<<<<< HEAD
     top: 750px;
-=======
-    top: 705px;
->>>>>>> origin/stagging
     left: 91px;
     right: unset;
   }
   
   .ornament-4 {
-<<<<<<< HEAD
     top: 785px;
-=======
-    top: 740px;
->>>>>>> origin/stagging
     right: 46px;
   }
 }
 
-<<<<<<< HEAD
-=======
-.main-badge {
-  padding: 15px;
-  padding-inline: 16px;
-  background: var(--main-badge-bg) !important;
-  border-color: var(--main-badge-border-color) !important;
-}
-
-.main-badge2 {
-  padding: 15px;
-  padding-inline: 16px;
-  background: var(--main-badge-bg) !important;
-  border-color: var(--main-badge-2-border-color) !important;
-}
-
-.main-badge>.mantine-Badge-label {
-  font-size: 14px;
-  font-weight: 400;
-  text-transform: none !important;
-  color: var(--main-badge-color) !important;
-}
-
-.main-badge2>.mantine-Badge-label {
-  font-size: 14px;
-  font-weight: 400;
-  text-transform: none !important;
-  color: var(--main-badge-2-color) !important;
-}
-
-.main-badge>.mantine-Badge-label>b {
-  font-weight: 700;
-}
-
-
-.main-badge2>.mantine-Badge-label>b {
-  color: var(--main-badge-color) !important;
-  font-weight: 400;
-}
-
->>>>>>> origin/stagging
 .home-main-text {
   display: inline-block;
   background-image: linear-gradient(
@@ -175,7 +99,6 @@
   -webkit-text-fill-color: transparent;
 }
 
-<<<<<<< HEAD
 .timeline-container {
   position: relative;
   width: 100%;
@@ -201,5 +124,3 @@
   left: 50%;
   transform: translateX(-50%);
 }
-=======
->>>>>>> origin/stagging

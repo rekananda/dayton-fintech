@@ -1,0 +1,14 @@
+.accordion-container {
+  & .mantine-Accordion-label {
+    padding-block: 24px;
+    font-weight: 600;
+    font-size: 20px;
+  }
+
+  & .mantine-Accordion-chevron {
+    color: var(--mantine-color-primary-6);
+    &[data-rotate] {
+      transform: rotate(45deg);
+    }
+  }
+}

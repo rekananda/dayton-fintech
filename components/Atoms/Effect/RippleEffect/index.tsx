@@ -1,23 +1,18 @@
 'use client';
 
-import { Box, BoxProps, Group, MantineColor } from "@mantine/core";
-import './index.css';
+import { Box, Group } from "@mantine/core";
+import './style.css';
+import { RippleEffectT } from "./type";
 
-type RippleEffectPropsT = BoxProps & {
-  color?: MantineColor;
-  size?: number;
-  position?: 'center' | 'left' | 'right';
-  shape?: 'circle' | 'diamond';
-};
-
-const RippleEffect = ({ color = 'primary', size = 350, position = 'center', shape = 'diamond', ...rest }: RippleEffectPropsT) => {
+const RippleEffect = ({ color = 'primary', size = 350, position = 'center', shape = 'diamond', ...rest }: RippleEffectT) => {
   const isFull = ['center'].includes(position);
   const outerSize = isFull ? size*2 : size*1.3;
-  const rippleCount = isFull ? 13 : 6;;
+  const rippleCount = isFull ? 13 : 6;
+  const widthRipple = isFull ? outerSize/1.3 : outerSize/2;
 
   return (
     <Box {...rest}>
-      <Box className="ripple-effect-main" h={outerSize} w={isFull ? outerSize/1.3 : outerSize/2}>
+      <Box className="ripple-effect-main" h={outerSize} w={widthRipple} style={{ '--width-ripple': widthRipple + 'px' }}>
         <Box
           className={[
             "ripple-effect-inner",

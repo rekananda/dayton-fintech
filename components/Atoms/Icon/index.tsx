@@ -1,15 +1,9 @@
 'use client';
 
 import { icons } from "@tabler/icons-react";
+import { IconT } from "./type";
 
-export type PropsIconT = {
-  name : keyof typeof icons;
-  size?: string | number;
-  stroke?: string | number;
-  className?: string;
-}
-
-const Icon = ({ name, ...rest }: PropsIconT) => {
+const Icon = ({ name, ...rest }: IconT) => {
   const IconWrapper = icons[name]
 
   return (

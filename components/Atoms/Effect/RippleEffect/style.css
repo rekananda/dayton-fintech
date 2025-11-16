@@ -1,0 +1,67 @@
+.ripple-effect-main {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect-main:has(.ripple-effect-inner-center) {
+  border-radius: 50%;
+}
+
+.ripple-effect-main:has(.ripple-effect-inner-left) {
+  border-radius: 0 var(--width-ripple) var(--width-ripple) 0;
+}
+
+
+.ripple-effect-main:has(.ripple-effect-inner-right) {
+  border-radius: 0;
+  clip-path: inset(0 50% 0 0 round 50% 0 0 50%);
+}
+
+.ripple-effect-inner {
+  position: absolute;
+}
+
+.ripple-effect-inner-circle {
+  border-radius: 50%;
+}
+
+.ripple-effect-inner-diamond {
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.ripple-effect-inner-center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ripple-effect-inner-left {
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.ripple-effect-inner-right {
+  top: 50%;
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+.ripple-effect-glass-group {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+.ripple-effect-glass {
+  height: 100%;
+  background: color-mix(in srgb, var(--mantine-color-body) 2%, transparent) !important;
+  box-shadow: 
+    2px 0px 20px 0px color-mix(in srgb, var(--mantine-color-body) 20%, transparent),
+    12px 0px 20px 12px color-mix(in srgb, var(--mantine-color-body) 20%, transparent) inset !important;
+  backdrop-filter: blur(23px);
+  --webkit-backdrop-filter: blur(23px);
+}

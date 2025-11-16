@@ -1,27 +1,15 @@
 'use client';
 
-import { AppShell, Group, Text, Container, Button, Avatar, Menu, Burger, ActionIcon, Tooltip, Stack, Box } from '@mantine/core';
+import { AppShell, Group, Text, Container, Button, Avatar, Menu, Burger, ActionIcon, Tooltip, Stack } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight, IconUser, IconSettings, IconLogout} from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import Icon from '../Atoms/Icon';
-import MainText from '../Atoms/MainText';
-import ColorSchemeToggle from '../Atoms/Button/ColorSchemeToggle';
-import { useViewportSize } from '@mantine/hooks';
-import LandingPageNavbar from '../Molecules/Menus/LandingPageNavbar';
-import LandingPageMenu from '../Molecules/Menus/LandingPageMenu';
-
-interface AppHeaderPropsI {
-  variant?: 'landing' | 'backoffice';
-  user?: {
-    name: string;
-    email: string;
-  };
-  mobileOpened?: boolean;
-  onMobileToggle?: () => void;
-  desktopCollapsed?: boolean;
-  onDesktopToggle?: () => void;
-  onLogout?: () => void;
-}
+import MainText from '@/components/Atoms/MainText';
+import ColorSchemeToggle from '@/components/Atoms/Button/ColorSchemeToggle';
+import NavbarLandingPage from '@/components/Molecules/Menus/NavbarLandingPage';
+import MenuLandingPage from '@/components/Molecules/Menus/MenuLandingPage';
+import useViewport from '@/hooks/useViewport';
+import { AppHeaderI } from './type';
+import MainLogo from '../Atoms/Logo';
 
 const AppHeader = ({
   variant = 'landing',
@@ -30,12 +18,10 @@ const AppHeader = ({
   onMobileToggle,
   desktopCollapsed = false,
   onDesktopToggle,
-  onLogout,
-}: AppHeaderPropsI ) => {
+  onLogout, 
+}: AppHeaderI ) => {
   const router = useRouter();
-  const { width } = useViewportSize();
-  const isMobile = width < 768;
-  const isDesktop = width >= 1200;
+  const { isMobile, isDesktop } = useViewport();
 
   return (
     <AppShell.Header className='glassmorphism'>
@@ -66,7 +52,7 @@ const AppHeader = ({
               </Tooltip>
             )}
             <Group>
-              <Icon className='w-8 h-8' name='IconBrandLoom'/>
+              <MainLogo size={40} />
               <Stack gap={2}>
                 <MainText variant="body-bold" size='20px'>
                   {variant === 'landing' ? 'Dayton Fintech' : 'Dayton Backoffice'}
@@ -79,7 +65,7 @@ const AppHeader = ({
           </Group>
           <Group gap={41}>
             {variant === 'landing' && isDesktop && (
-              <LandingPageNavbar/>
+              <NavbarLandingPage />
             )}
             {user && onLogout && (
               <Menu shadow="md" width={200}>
@@ -112,7 +98,7 @@ const AppHeader = ({
             )}
             <ColorSchemeToggle/>
             {variant === 'landing' && !isDesktop && (
-              <LandingPageMenu  />
+              <MenuLandingPage />
             )}
           </Group>
         </Group>

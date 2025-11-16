@@ -8,6 +8,8 @@ import '@mantine/nprogress/styles.css';
 import '@mantine/carousel/styles.css';
 import '@mantine/dropzone/styles.css';
 import '@mantine/charts/styles.css';
+import '@mantine/dates/styles.css';
+import 'mantine-datatable/styles.layer.css';
 
 import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import { AppProviders } from './providers';
@@ -21,7 +23,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Dayton Fintech",
-  description: "Aplikasi Fintech dengan Next.js, Mantine UI, dan Tailwind CSS",
+  description: "Trading Emas Otomatis, Aman dan Terukur",
 };
 
 export default function RootLayout({

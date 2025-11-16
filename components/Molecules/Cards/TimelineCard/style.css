@@ -1,0 +1,84 @@
+.timeline-card-container {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.timeline-card-content {
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--text-color) 20%, transparent);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
+}
+
+.timeline-card-content::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    0deg,
+    transparent,
+    transparent 30%,
+    color-mix(in srgb, var(--timeline-icon-color) 40%, transparent)
+  );
+  transform: rotate(-45deg);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.timeline-card-content:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--timeline-icon-color) 30%, transparent);
+  border-color: color-mix(in srgb, var(--timeline-icon-color) 45%, transparent);
+}
+
+.timeline-card-content:hover::before {
+  opacity: 1;
+  transform: rotate(-45deg) translateY(100%);
+}
+
+.timeline-card-icon {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--main-badge-color) 25%, transparent);
+  width: fit-content;
+  background: linear-gradient(134.43deg, 
+    color-mix(in srgb, var(--main-badge-color) 20%, transparent) -18.75%, 
+    color-mix(in srgb, var(--main-badge-color) 1%, transparent) 107.51%);
+  color: var(--timeline-icon-color);
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.timeline-card-container:hover .timeline-card-icon {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--timeline-icon-color) 35%, transparent));
+}
+
+.timeline-card-indicator {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--timeline-icon-color);
+  box-shadow: 0px 0px 18px 15px color-mix(in srgb, var(--timeline-icon-color) 20%, transparent);
+  top: 50%;
+  left: 14px;
+  transform: translate(-50%, -50%);
+}
+
+.timeline-container.center .timeline-card-indicator {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.timeline-container.center .timeline-item.odd .timeline-card-container {
+  justify-content: flex-end;
+}
+
+.timeline-container.left .timeline-card-container {
+  padding-left: 38px;
+}

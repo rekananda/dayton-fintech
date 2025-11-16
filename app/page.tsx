@@ -1,181 +1,210 @@
 'use client';
 
-import { Group, Stack, Badge, Box, Button } from '@mantine/core';
+import { Group, Stack, Badge, Box, Button, Grid } from '@mantine/core';
 import { LandingLayout } from '@/components/layouts/LandingLayout';
 import MainText from '@/components/Atoms/MainText';
 import './landingpage.css';
-import { useViewportSize } from '@mantine/hooks';
 import RippleEffect from '@/components/Atoms/Effect/RippleEffect';
 import Ornament from '@/components/Atoms/Effect/Ornament';
+import TimelineCard from '@/components/Molecules/Cards/TimelineCard';
+import useViewport from '@/hooks/useViewport';
+import TopicTitle from '@/components/Molecules/Text/TopicTitle';
+import RippleCard from '@/components/Molecules/Cards/RippleCard';
+import Accordion from '@/components/Atoms/Accordion';
+import Carousel, { CarouselCard } from '@/components/Molecules/Carousel';
+import { CarouselCardT, CarouselItemT } from '@/components/Molecules/Carousel/type';
+import Table from '@/components/Atoms/Table';
+import { DataTimeline, DataBussinessModel, DataEvents, DataLegal, DataQnA, mainWhatsappLink } from '@/variables/dummyData';
+import { useState } from 'react';
+import { TimelineCardT } from '@/components/Molecules/Cards/TimelineCard/type';
+import { TableColumnT } from '@/components/Atoms/Table/type';
+import { BussinessModelDataT, TableProfitSharingDataT, TableReferralDataT } from '@/config/types';
+import { AccordionItemT } from '@/components/Atoms/Accordion/type';
 
 export default function LandingPage() {
-  const { width } = useViewportSize();
-  const isMobile = width < 768;
+  const { isMobile } = useViewport();
+  const [listTimeline] = useState<TimelineCardT[]>(DataTimeline);
+  const [listBussinessModel] = useState<BussinessModelDataT[]>(DataBussinessModel);
+  const [listEvents] = useState<CarouselItemT<CarouselCardT>[]>(
+    DataEvents.map((item) => ({ 
+      image: item.image, 
+      detail: { date: item.date, title: item.title, description: item.description } 
+    }))
+  );
+  const [listLegal] = useState<TimelineCardT[]>(
+    DataLegal.map((item) => ({  
+      title: item.title, 
+      description: item.description, 
+      numberedIcon: item.order,
+      withIndicator: false
+    }))
+  );
+  const [listQnA] = useState<AccordionItemT[]>(
+    DataQnA.map((item) => ({ 
+      value: item.id.toString(), 
+      title: item.question, 
+      content: <MainText variant='body' fz={16}>{item.answer}</MainText>
+    }))
+  );
 
   return (
     <LandingLayout>
-      <Stack pt={isMobile ? 130 : 90}>
-        <Box  className={`home-section ${isMobile ? 'home-section-mobile' : ''}`} pt={80}>
-          <RippleEffect className="home-section-ripple-l" position='left' size={isMobile ? 250 : 350}/>
-          <RippleEffect className="home-section-ripple-r" position='center' size={isMobile ? 300 : 380}/>
+      <Stack pt={90} gap={0}>
+        <Box id="home" className={`home-section ${isMobile ? 'home-section-mobile' : ''}`} >
+          <Stack 
+            className='home-section-content' 
+            align='center' 
+            gap={isMobile ? 28 : 40} 
+            pt={isMobile ? 134 : 80}  
+            pb={isMobile ? 134 : 100}
+          >
+            <Badge variant="outline" className='main-badge'>Gold • XAUUSD • H1 • Tren</Badge>
+            <MainText 
+              className='home-main-text' 
+              variant={isMobile ? 'heading3' : 'heading1'} 
+              maw={isMobile ? 320 : 990} 
+              ta='center'
+              fw={isMobile ? '600' : '700'}
+            >
+              Trading Emas Otomatis, Aman dan Terukur
+            </MainText>
+            <MainText variant='body' maw={isMobile ? 320 : 650} ta='center' fz={20}>
+              Pendekatan trend-following yang disiplin dengan target adaptif mengikuti volatilitas, pengendalian eksposur, serta jeda otomatis saat rilis data berdampak tinggi.
+            </MainText>
+            <Group maw={isMobile ? 400 : 650} justify='center'>
+              <Badge variant="outline" className='main-badge2'>Profit Sharing <b>25%</b></Badge>
+              <Badge variant="outline" className='main-badge2'>Referral hingga <b>10%</b></Badge>
+              <Badge variant="outline" className='main-badge2'><b>Broker MT4 • H1</b></Badge>
+            </Group>
+            <Button className='main-button' size="xl" color='primary' radius='xl' mt={isMobile ? 4 : 40} onClick={() => window.open(mainWhatsappLink, '_blank')}>
+              Daftar via WhatsApp
+            </Button>
+          </Stack>
+
+          <RippleEffect className="home-ripple ripple-l" position='left' color='primary.8' size={isMobile ? 250 : 450}/>
+          <RippleEffect className="home-ripple ripple-r" position='center' color='primary.8' size={isMobile ? 300 : 460}/>
 
           <Ornament className='home-ornament ornament-1' size={isMobile ? 30 : 45} type='candle' angle={-15}/>
           <Ornament className='home-ornament ornament-2' size={isMobile ? 30 : 45} type='coin' angle={15}/>
           <Ornament className='home-ornament ornament-3' size={isMobile ? 30 : 45} type='graph' angle={15}/>
           <Ornament className='home-ornament ornament-4' size={isMobile ? 30 : 45} type='waterfall' angle={-15}/>
-
-          <Stack gap={0}>
-            <Stack id="home" className='home-section-content' align='center' gap={isMobile ? 28 : 40}>
-              <Badge variant="outline" className='main-badge'>Gold • XAUUSD • H1 • Tren</Badge>
-              <MainText className='home-main-text' variant={isMobile ? 'heading3' : 'heading1'} maw={isMobile ? 320 : 990} ta='center'>Trading Emas Otomatis, Aman dan Terukur</MainText>
-              <MainText variant='body' maw={isMobile ? 320 : 650} ta='center' fz={20}>
-                Pendekatan trend-following yang disiplin dengan target adaptif mengikuti volatilitas, pengendalian eksposur, serta jeda otomatis saat rilis data berdampak tinggi.
-              </MainText>
-              <Group maw={isMobile ? 400 : 650} justify='center'>
-                <Badge variant="outline" className='main-badge2'>Profit Sharing <b>25%</b></Badge>
-                <Badge variant="outline" className='main-badge2'>Referral hingga <b>10%</b></Badge>
-                <Badge variant="outline" className='main-badge2'><b>Broker MT4 • H1</b></Badge>
-              </Group>
-            </Stack>
-            <Group id="daftar" className='home-section-content' pt={isMobile ? 32 : 80} pb={isMobile ? 182 : 80} justify='center'>
-              <Button size="xl" color='primary' radius='xl'>
-                Daftar via WhatsApp
-              </Button>
-            </Group>
-          </Stack>
         </Box>
 
-      </Stack>
-      {/* <Ornament className='home-ornament' type='graph' angle={0}/>
-      <Ornament className='home-ornament' type='waterfall' angle={0}/>
-      <Ornament className='home-ornament' type='coin' angle={0}/> */}
-      
-      {/* <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <Stack id="explanation" align='center' py={80} px={isMobile ? 20 : 100}>
+          <TopicTitle title="Rahasia di Balik Performa Stabil Kami" badge="Strategi Kami" />
 
-      <section className="py-20">
-        <Container size="lg">
-          <Stack gap="xl" align="center" className="text-center">
-            <Badge size="xl" variant="gradient" gradient={{ from: 'blue', to: 'cyan' }}>
-              Platform Fintech Terpercaya
-            </Badge>
-            
-            <Title order={1} className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white max-w-4xl">
-              Solusi Keuangan Digital untuk{' '}
-              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                Masa Depan Anda
-              </span>
-            </Title>
-            
-            <Text size="xl" c="dimmed" className="max-w-2xl">
-              Platform fintech modern yang memudahkan transaksi keuangan, investasi, 
-              dan pengelolaan aset digital Anda dengan aman dan efisien.
-            </Text>
-            
-            <Group gap="md" className="mt-4">
-              <Button 
-                size="xl" 
-                variant="gradient" 
-                gradient={{ from: 'blue', to: 'cyan' }}
-                className="shadow-lg hover:shadow-xl transition-shadow"
+          <Box className={`timeline-container ${isMobile ? 'left' : 'center'}`} mt={isMobile ? 16 : 60}>
+            <Box className='timeline-ornament' w={isMobile ? '60dvw' : '30dvw'} />
+            <Box className='timeline-line' w={2}/>
+            {listTimeline.map((item, key) => (
+              <Box 
+                key={key} 
+                className={`timeline-item ${key%2==0? "even" : "odd"}`} 
+                pb={key !== listTimeline.length-1 ? isMobile ? 20 : 50 : 0}
               >
-                Mulai Sekarang
-              </Button>
-              <Button 
-                size="xl" 
-                variant="outline" 
-                color="blue"
-              >
-                Pelajari Lebih Lanjut
-              </Button>
-            </Group>
-          </Stack>
-        </Container>
-      </section>
-
-      <section className="py-20 bg-white dark:bg-gray-800">
-        <Container size="xl">
-          <Stack gap="xl" align="center" className="mb-12">
-            <Title order={2} className="text-4xl font-bold text-center text-gray-900 dark:text-white">
-              Mengapa Memilih Dayton Fintech?
-            </Title>
-            <Text size="lg" c="dimmed" className="text-center max-w-2xl">
-              Kami menyediakan layanan fintech terlengkap dengan teknologi terdepan
-            </Text>
-          </Stack>
-          
-          <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="lg">
-            {features.map((feature, index) => (
-              <Card 
-                key={index}
-                shadow="sm" 
-                padding="xl" 
-                radius="md" 
-                withBorder
-                className="hover:shadow-lg transition-shadow cursor-pointer"
-              >
-                <Stack gap="md">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                    <feature.icon size={24} color="white" />
-                  </div>
-                  <Title order={4} className="text-gray-900 dark:text-white">
-                    {feature.title}
-                  </Title>
-                  <Text size="sm" c="dimmed">
-                    {feature.description}
-                  </Text>
-                </Stack>
-              </Card>
+                <TimelineCard {...item} />
+              </Box>
             ))}
-          </SimpleGrid>
-        </Container>
-      </section>
+          </Box>
+        </Stack>
 
-      <section className="py-20">
-        <Container size="lg">
-          <Card shadow="xl" padding="xl" radius="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600">
-            <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xl">
-              <Stack gap="xs" align="center" className="text-white">
-                <Text size="3rem" fw={700}>100K+</Text>
-                <Text size="lg">Pengguna Aktif</Text>
-              </Stack>
-              <Stack gap="xs" align="center" className="text-white">
-                <Text size="3rem" fw={700}>500M+</Text>
-                <Text size="lg">Transaksi Diproses</Text>
-              </Stack>
-              <Stack gap="xs" align="center" className="text-white">
-                <Text size="3rem" fw={700}>99.9%</Text>
-                <Text size="lg">Uptime System</Text>
-              </Stack>
-            </SimpleGrid>
-          </Card>
-        </Container>
-      </section>
+        <Stack id="profit-sharing" align='center' py={80} px={isMobile ? 20 : 100} gap={isMobile ? 32 : 64}>
+          <TopicTitle title="Berbagi Profit, Bukan Risiko" badge="Model Bisnis" />
 
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
-        <Container size="lg">
-          <Card shadow="md" padding="xl" radius="lg" withBorder>
-            <Stack gap="lg" align="center" className="text-center">
-              <Title order={2} className="text-3xl font-bold text-gray-900 dark:text-white">
-                Siap Memulai Perjalanan Finansial Anda?
-              </Title>
-              <Text size="lg" c="dimmed" className="max-w-2xl">
-                Bergabunglah dengan ribuan pengguna yang telah mempercayai 
-                Dayton Fintech untuk kebutuhan keuangan digital mereka.
-              </Text>
-              <Button 
-                size="xl" 
-                variant="gradient" 
-                gradient={{ from: 'blue', to: 'cyan' }}
-                className="shadow-lg"
-              >
-                Daftar Gratis Sekarang
+          <Grid w='100%' gutter={isMobile ? 32 : 40} justify='center'>
+            {listBussinessModel.map((item, key) => {
+              const maxContent = 3;
+              const colSpan = listBussinessModel.length > maxContent ? maxContent : listBussinessModel.length;
+              const { tables, tnc, ...rest } = item;
+
+              return (
+                <Grid.Col span={{ base: 12, md: 12/colSpan }} key={key}>
+                  <RippleCard {...rest} ripple={key%2==0 ? ['bottom-left'] : ['top-right']}>
+                    <Stack>
+                      {tables?.map((tableprops, key) => {
+                        if (
+                          Array.isArray(tableprops.datas) &&
+                          tableprops.datas.length > 0 &&
+                          typeof (tableprops.datas[0] as unknown as TableProfitSharingDataT).profit !== 'undefined'
+                        ) {
+                          return (
+                            <Table<TableProfitSharingDataT>
+                              key={key}
+                              columns={tableprops.columns as TableColumnT<TableProfitSharingDataT>[]}
+                              datas={tableprops.datas as TableProfitSharingDataT[]}
+                            />
+                          );
+                        } else {
+                          return (
+                            <Table<TableReferralDataT>
+                              key={key}
+                              columns={tableprops.columns as TableColumnT<TableReferralDataT>[]}
+                              datas={(tableprops.datas as TableReferralDataT[]).map((item) => ({
+                                id: item.id,
+                                level: `Level ${item.level}`,
+                                commission: item.commission,
+                                order: item.order,
+                              }))}
+                            />
+                          );
+                        }
+                      })}
+                      {tnc && <MainText variant='body' fz={14}>{tnc}</MainText>}
+
+                    </Stack>
+                  </RippleCard>
+                  </Grid.Col>
+                );
+              })}
+            </Grid>
+          </Stack>
+
+        <Stack id="events" align='center' py={80} gap={isMobile ? 32 : 48}>
+          <TopicTitle title="Belajar Bareng, Raih Hasil Lebih Baik" badge="Acara Mendatang" px={isMobile ? 20 : 100}/>
+          <Stack gap={isMobile ? 24 : 32} w="100%">
+            <Carousel items={listEvents} renderDetail={ (props: CarouselCardT) => <CarouselCard {...props} />} />
+          </Stack>
+        </Stack>
+
+        <Stack id="legal" align='center' py={80} px={isMobile ? 20 : 100} gap={isMobile ? 32 : 64}>
+          <TopicTitle title="Ketentuan Layanan & Perlindungan Data" badge="Legal" />
+          
+          <Grid gutter={isMobile ? 32 : 40} justify='center'>
+            {listLegal.map((item, key) => (
+              <Grid.Col span={{ base: 12, md: 6 }} key={key}>
+                <TimelineCard {...item} withIndicator={false} h='100%'/>
+              </Grid.Col>
+            ))}
+          </Grid>
+        </Stack>
+
+        <Grid id="qna" justify='center' py={80} px={isMobile ? 20 : 100} gutter={isMobile ? 32 : 40} w='100%'>
+          <Grid.Col span={{ base: 12, md: 4 }}>
+            <TopicTitle title="Pertanyaan yang Sering Diajukan" badge="F.A.Q" align={isMobile ? 'center' : 'left'} />
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, md: 8 }}>
+            <Box>
+              <Accordion items={listQnA} />
+            </Box>
+          </Grid.Col>
+        </Grid>
+
+        <Box id="register" py={80} px={isMobile ? 20 : 100}> 
+          <RippleCard 
+            ripple={['bottom-left', 'top-right']} 
+            rippleProps={{ type: 'circle', rippleSize: isMobile ? [300, 300] : [500, 500] }}
+          > 
+            <Stack align='center' gap={isMobile ? 24 : 48} py={50}>
+              <MainText variant={isMobile ? 'heading4' : 'heading2'} ta='center' maw={isMobile ? 320 : 720}>
+                Mulai Langkah Pertamamu, Menuju Trading yang Terukur
+              </MainText>
+              <Button className='main-button' size="xl" radius='xl' onClick={() => window.open(mainWhatsappLink, '_blank')}>
+                Daftar via WhatsApp
               </Button>
             </Stack>
-          </Card>
-        </Container>
-      </section>
-
-      </div> */}
+          </RippleCard>
+        </Box>
+      </Stack>
     </LandingLayout>
   );
 }

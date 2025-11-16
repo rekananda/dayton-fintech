@@ -139,7 +139,12 @@ export default function LandingPage() {
                             <Table<TableReferralDataT>
                               key={key}
                               columns={tableprops.columns as TableColumnT<TableReferralDataT>[]}
-                              datas={tableprops.datas as TableReferralDataT[]}
+                              datas={(tableprops.datas as TableReferralDataT[]).map((item) => ({
+                                id: item.id,
+                                level: `Level ${item.level}`,
+                                commission: item.commission,
+                                order: item.order,
+                              }))}
                             />
                           );
                         }

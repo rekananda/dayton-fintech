@@ -1,10 +1,10 @@
 import { Group } from "@mantine/core";
-import { listMenus } from "@/variables/dummy";
+import { DataMenus } from "@/variables/dummyData";
 
 const NavbarLandingPage = () => {
   return (
     <Group gap={41}>
-      {listMenus.map((item, key) => (
+      {DataMenus.map((item, key) => (
         <span
           key={key}
           className="cursor-pointer text-body text-[14px] hover:text-primary-6"

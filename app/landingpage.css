@@ -110,17 +110,27 @@
   position: absolute;
   background: linear-gradient(
     180deg, 
-    color-mix(in srgb, var(--text-color) 0%, transparent) -5%,
-    color-mix(in srgb, var(--text-color) 80%, transparent) 50%, 
-    color-mix(in srgb, var(--text-color) 0%, transparent) 105%
+    color-mix(in srgb, var(--text-color) 20%, transparent) -5%,
+    color-mix(in srgb, var(--text-color) 50%, transparent) 50%, 
+    color-mix(in srgb, var(--text-color) 20%, transparent) 105%
   );
   top: 0;
-  left: 34px;
+  left: 15px;
   transform: translateX(-50%);
 }
 
-.timeline-container.center .timeline-line {
-  top: 0;
+.timeline-ornament {
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translate(-50%, -50%);
+  background: color-mix(in srgb, var(--mantine-color-primary-6) 20%, transparent);
+  box-shadow: 0px 0px 18px 15px color-mix(in srgb, var(--mantine-color-primary-6) 20%, transparent);
+}
+
+.timeline-container.center .timeline-line,
+.timeline-container.center .timeline-ornament {
   left: 50%;
-  transform: translateX(-50%);
 }

@@ -1,5 +1,5 @@
 import { Burger, Menu } from "@mantine/core";
-import { listMenus } from "@/variables/dummy";
+import { DataMenus } from "@/variables/dummyData";
 import { useState } from "react";
 
 const MenuLandingPage = () => {
@@ -12,7 +12,7 @@ const MenuLandingPage = () => {
       </Menu.Target>
 
       <Menu.Dropdown>
-        {listMenus.map((item, key) => (
+        {DataMenus.map((item, key) => (
           <div key={key}>
             <Menu.Item key={key} onClick={() => {
               const target = document.getElementById(item.href);

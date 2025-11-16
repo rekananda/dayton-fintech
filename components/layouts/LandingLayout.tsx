@@ -1,17 +1,15 @@
 'use client';
 
-import { AppShell, Container, Stack, Group, Text, Box } from '@mantine/core';
+import { AppShell, Container, Box } from '@mantine/core';
 import AppHeader from './AppHeader';
-import { useHeadroom } from '@mantine/hooks';
 import { LandingLayoutI } from './type';
 import AppFooter from './AppFooter';
 
 export function LandingLayout({ children }: LandingLayoutI) {
-  const pinned = useHeadroom({ fixedAt: 180 });
 
   return (
     <AppShell
-      header={{ height: 90, collapsed: !pinned, offset: false }}
+      header={{ height: 90, offset: false }}
       padding={0}
     >
       <AppHeader variant="landing"/>

@@ -3,13 +3,13 @@
 import { AppShell, Group, Text, Container, Button, Avatar, Menu, Burger, ActionIcon, Tooltip, Stack } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight, IconUser, IconSettings, IconLogout} from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import Icon from '@/components/Atoms/Icon';
 import MainText from '@/components/Atoms/MainText';
 import ColorSchemeToggle from '@/components/Atoms/Button/ColorSchemeToggle';
 import NavbarLandingPage from '@/components/Molecules/Menus/NavbarLandingPage';
 import MenuLandingPage from '@/components/Molecules/Menus/MenuLandingPage';
 import useViewport from '@/hooks/useViewport';
 import { AppHeaderI } from './type';
+import MainLogo from '../Atoms/Logo';
 
 const AppHeader = ({
   variant = 'landing',
@@ -52,7 +52,7 @@ const AppHeader = ({
               </Tooltip>
             )}
             <Group>
-              <Icon className='w-8 h-8' name='IconBrandLoom'/>
+              <MainLogo size={40} />
               <Stack gap={2}>
                 <MainText variant="body-bold" size='20px'>
                   {variant === 'landing' ? 'Dayton Fintech' : 'Dayton Backoffice'}

@@ -17,10 +17,15 @@ Platform fintech modern yang dibangun dengan Next.js 16, Mantine UI, dan Tailwin
 
 ### Landing Page
 - Halaman landing yang menarik dan responsive
-- Menampilkan fitur-fitur utama platform
+- Menampilkan fitur-fitur utama platform dengan Carousel
 - Statistik dan informasi perusahaan
 - Call-to-action untuk pendaftaran
 - Desain modern dengan gradient dan animasi
+- Komponen Logo custom
+- Navigation menu yang responsif
+- Footer dengan informasi lengkap
+- Ripple effect dan ornament effects
+- Atomic Design Pattern untuk struktur komponen
 
 ### Backoffice (Admin Panel)
 - **Sistem Autentikasi**: Login untuk admin dengan proteksi route
@@ -34,14 +39,21 @@ Platform fintech modern yang dibangun dengan Next.js 16, Mantine UI, dan Tailwin
 ## 🛠️ Tech Stack
 
 - **Framework**: Next.js 16 (App Router)
-- **UI Library**: Mantine UI v8.3.6
+- **UI Library**: Mantine UI v8.3.7
+- **Material UI**: MUI v7.3.5 (untuk komponen tambahan)
 - **Styling**: Tailwind CSS v4
-- **Icons**: Tabler Icons React
+- **Icons**: Tabler Icons React v3.35.0
 - **TypeScript**: Full type safety
 - **State Management**: React Context API
-- **Carousel**: Embla Carousel
-- **Charts**: Recharts
+- **Carousel**: Embla Carousel dengan Autoplay
+- **Charts**: Recharts & Mantine Charts
 - **Form Management**: Mantine Form
+- **Date Management**: Day.js
+- **Data Table**: Mantine DataTable
+- **Date Picker**: Mantine Dates
+- **File Upload**: Mantine Dropzone
+- **Notifications**: Mantine Notifications
+- **Progress**: Mantine NProgress
 
 ## 📦 Instalasi
 
@@ -98,12 +110,44 @@ dayton-fintech/
 │   │   └── page.tsx               # Dashboard backoffice
 │   ├── layout.tsx                 # Root layout dengan providers
 │   ├── page.tsx                   # Landing page
-│   └── globals.css                # Global styles
+│   ├── providers.tsx              # App providers (Mantine, Auth, dll)
+│   ├── globals.css                # Global styles
+│   ├── landingpage.css            # Styles khusus landing page
+│   └── tailwind.css               # Tailwind CSS imports
+├── components/
+│   ├── Atoms/                     # Komponen atom (terkecil)
+│   │   ├── Logo/                  # Komponen Logo
+│   │   ├── Button/                # Button components
+│   │   ├── Icon/                  # Icon components
+│   │   ├── MainText/              # Text typography component
+│   │   ├── Table/                 # Table component
+│   │   ├── Accordion/             # Accordion component
+│   │   └── Effect/                # Effect components (Ripple, Ornament)
+│   ├── Molecules/                 # Komponen molekul
+│   │   ├── Cards/                 # Card components (RippleCard, TimelineCard)
+│   │   ├── Carousel/              # Carousel component
+│   │   ├── Menus/                 # Menu components
+│   │   └── Text/                  # Text components
+│   └── layouts/                   # Layout components
+│       ├── AppHeader.tsx          # Header component
+│       ├── AppFooter.tsx          # Footer component
+│       ├── LandingLayout.tsx      # Layout untuk landing page
+│       └── BackofficeLayout.tsx   # Layout untuk backoffice
+├── config/
+│   └── mantineTheme.ts            # Mantine theme configuration
+├── hooks/
+│   └── useViewport.tsx            # Custom hook untuk viewport detection
 ├── lib/
 │   └── auth-context.tsx           # Auth context & provider
-├── middleware.ts                  # Route protection middleware
+├── variables/
+│   ├── dummy.ts                   # Dummy data
+│   └── dummyTable.tsx             # Dummy table data
+├── public/
+│   ├── logo.png                   # Logo aplikasi
+│   └── favicon.ico                # Favicon
 ├── next.config.ts                 # Next.js configuration
 ├── postcss.config.mjs             # PostCSS config (Mantine + Tailwind)
+├── tailwind.config.ts             # Tailwind configuration
 ├── tsconfig.json                  # TypeScript configuration
 └── package.json                   # Dependencies
 ```
@@ -129,9 +173,8 @@ Atau daftar akun admin baru di halaman register!
    - Email/username tidak boleh duplikat
 3. **Validasi**: Sistem memvalidasi credentials dari localStorage
 4. **Session**: Token disimpan di localStorage dan cookie
-5. **Middleware**: Middleware memeriksa cookie untuk proteksi route
-6. **Redirect**: User yang tidak login akan diredirect ke login page
-7. **Ubah Password**: Admin dapat mengubah password di `/backoffice/change-password`
+5. **Redirect**: User yang tidak login akan diredirect ke login page
+6. **Ubah Password**: Admin dapat mengubah password di `/backoffice/change-password`
 
 ### Security Notes
 
@@ -167,92 +210,41 @@ Untuk production, Anda harus:
 | `/backoffice/reports` | Laporan dan analytics (coming soon) |
 | `/backoffice/settings` | Pengaturan sistem (coming soon) |
 
-## 💻 Pengembangan
-
-### Menambah Halaman Baru
-
-**1. Halaman Public:**
-
-```tsx
-// app/new-page/page.tsx
-export default function NewPage() {
-  return <div>New Page Content</div>;
-}
-```
-
-**2. Halaman Backoffice (Protected):**
-
-```tsx
-// app/backoffice/new-feature/page.tsx
-'use client';
-
-export default function NewFeaturePage() {
-  return <div>Protected Content</div>;
-}
-```
-
-Tambahkan route di navigation array di `app/backoffice/layout.tsx`.
-
-### Menggunakan Mantine Components
-
-```tsx
-import { Button, Card, Text } from '@mantine/core';
-
-export default function Example() {
-  return (
-    <Card>
-      <Text>Hello World</Text>
-      <Button>Click Me</Button>
-    </Card>
-  );
-}
-```
-
-### Menggunakan Tailwind
-
-```tsx
-export default function Example() {
-  return (
-    <div className="flex items-center justify-center p-4 bg-blue-500">
-      <h1 className="text-white text-2xl">Tailwind Styling</h1>
-    </div>
-  );
-}
-```
-
-### Kombinasi Mantine + Tailwind
-
-```tsx
-import { Button } from '@mantine/core';
-
-export default function Example() {
-  return (
-    <div className="flex gap-4 p-8">
-      <Button className="bg-gradient-to-r from-blue-500 to-purple-600">
-        Mantine Button with Tailwind
-      </Button>
-    </div>
-  );
-}
-```
 
 ## 🎨 Customization
 
 ### Theme Mantine
 
-Edit di `app/layout.tsx`:
+Theme Mantine dikonfigurasi di `config/mantineTheme.ts` dengan custom color palette:
+
+- **Primary Color**: Custom orange color scheme untuk branding Dayton Fintech
+- **Dark Mode**: Default dark mode dengan custom color variables
+- **Typography**: Custom heading sizes dan font families
+- **Breakpoints**: Custom breakpoints termasuk mobile breakpoint
+
+Edit file `config/mantineTheme.ts` untuk mengubah theme:
 
 ```tsx
-const theme = createTheme({
-  fontFamily: 'var(--font-geist-sans), sans-serif',
-  primaryColor: 'blue',
-  // tambah customization lainnya
-});
+export const mantineColor: Record<ExtendedColors, MantineColorsTuple> = {
+  primary: ["#fff4e1", "#ffe7cc", ...], // Custom primary colors
+  // ... colors lainnya
+}
 ```
+
+Theme digunakan melalui `AppProviders` di `app/providers.tsx`.
 
 ### Tailwind Config
 
-Tailwind v4 menggunakan CSS variables. Edit di `app/globals.css`.
+Tailwind v4 menggunakan CSS variables. Edit di `app/globals.css` dan `tailwind.config.ts`.
+
+### Komponen Custom
+
+Aplikasi menggunakan **Atomic Design Pattern**:
+- **Atoms**: Komponen terkecil (Logo, Button, Icon, Text, dll)
+- **Molecules**: Kombinasi atoms (Cards, Carousel, Menus)
+- **Layouts**: Layout components (LandingLayout, BackofficeLayout)
+
+Semua komponen custom berada di folder `components/` dengan struktur yang terorganisir.
 
 ## 📚 Dokumentasi
 
@@ -285,8 +277,30 @@ Jika ada conflict antara Mantine dan Tailwind:
 - Gunakan Tailwind untuk layout dan spacing
 - Gunakan `className` untuk override styles jika perlu
 
+### Theme Issues
+
+Jika theme tidak ter-apply dengan benar:
+1. Pastikan `AppProviders` sudah wrap di root layout
+2. Cek `config/mantineTheme.ts` untuk konfigurasi theme
+3. Pastikan semua Mantine CSS sudah di-import di `app/layout.tsx`
+4. Restart development server setelah mengubah theme config
+
+### Komponen Custom Tidak Muncul
+
+Jika komponen custom tidak muncul atau error:
+1. Pastikan path import benar (gunakan `@/` alias)
+2. Cek TypeScript errors di terminal
+3. Pastikan semua dependencies sudah terinstall dengan `npm install`
+4. Pastikan struktur folder komponen sesuai dengan export/import
+
 ## 📝 TODO / Roadmap
 
+- [x] Implementasi Atomic Design Pattern untuk komponen
+- [x] Komponen Logo custom
+- [x] Komponen Carousel dengan autoplay
+- [x] Custom Mantine theme dengan primary color branding
+- [x] Landing page dengan layout yang responsive
+- [x] Custom hooks (useViewport)
 - [ ] Implementasi halaman Users Management
 - [ ] Implementasi halaman Transactions
 - [ ] Implementasi halaman Reports dengan charts
@@ -295,7 +309,7 @@ Jika ada conflict antara Mantine dan Tailwind:
 - [ ] Implementasi proper authentication (JWT)
 - [ ] Unit tests
 - [ ] E2E tests
-- [ ] Dark mode toggle
+- [x] Dark mode support (sudah ada di theme)
 - [ ] Multi-language support
 
 ## 👨‍💻 Development Team

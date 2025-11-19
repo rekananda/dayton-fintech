@@ -1,19 +1,12 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface User {
   email: string;
   name: string;
-  role: 'admin';
-}
-
-interface RegisteredUser {
-  email: string;
-  password: string;
-  name: string;
-  createdAt: string;
+  role: 'admin' | 'ADMIN';
 }
 
 interface AuthContextType {
@@ -32,147 +25,167 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
+  // Cookie helpers
+  const getCookie = (name: string): string | null => {
+    if (typeof document === 'undefined') return null;
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+    };
+  const setCookie = (name: string, value: string, maxAgeSeconds = 60 * 60 * 24) => {
+    const isProd = typeof window !== 'undefined' && window.location.protocol === 'https:';
+    document.cookie = `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAgeSeconds}; SameSite=Lax${isProd ? '; Secure' : ''}`;
+  };
+  const deleteCookie = (name: string) => {
+    document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
+  };
+
+  const clearSessionArtifacts = useCallback(() => {
+    setUser(null);
+    try {
+      localStorage.removeItem('auth_user');
+      localStorage.removeItem('auth_token');
+    } catch {}
+    deleteCookie('auth_user');
+    deleteCookie('auth_token');
+  }, []);
+
   useEffect(() => {
     // Check if user is logged in on mount
     const checkAuth = () => {
-      const storedUser = localStorage.getItem('auth_user');
-      if (storedUser) {
+      // Prefer cookies as source of truth
+      const userCookie = getCookie('auth_user');
+      if (userCookie) {
         try {
-          setUser(JSON.parse(storedUser));
-        } catch (error) {
-          console.error('Error parsing stored user:', error);
-          localStorage.removeItem('auth_user');
+          setUser(JSON.parse(userCookie));
+        } catch {
+          // fallback cleanup
+          clearSessionArtifacts();
+        }
+      } else {
+        // backward compatibility with previous localStorage implementation
+        const storedUser = typeof window !== 'undefined' ? localStorage.getItem('auth_user') : null;
+        if (storedUser) {
+          try {
+            setUser(JSON.parse(storedUser));
+            setCookie('auth_user', storedUser);
+            const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+            if (token) setCookie('auth_token', token);
+          } catch {
+            clearSessionArtifacts();
+          }
         }
       }
       setIsLoading(false);
     };
     
     checkAuth();
-  }, []);
+  }, [clearSessionArtifacts]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Simple demo authentication
-    // Dalam production, ini harus menggunakan API backend yang proper
-    
-    // Check default admin
-    if (email === 'admin' && password === 'admin') {
-      const userData: User = {
-        email: 'admin@dayton.com',
-        name: 'Administrator',
-        role: 'admin',
-      };
-      
-      const token = 'demo_token_' + Date.now();
-      
-      setUser(userData);
-      localStorage.setItem('auth_user', JSON.stringify(userData));
-      localStorage.setItem('auth_token', token);
-      
-      // Set cookie for middleware
-      document.cookie = `auth_token=${token}; path=/; max-age=86400; SameSite=Lax`;
-      
-      return true;
-    }
-    
-    // Check registered users in localStorage
-    const registeredUsersStr = localStorage.getItem('registered_users');
-    if (registeredUsersStr) {
-      try {
-        const registeredUsers: RegisteredUser[] = JSON.parse(registeredUsersStr);
-        const foundUser = registeredUsers.find(
-          (u) => u.email === email && u.password === password
-        );
-        
-        if (foundUser) {
-          const userData: User = {
-            email: foundUser.email,
-            name: foundUser.name,
-            role: 'admin',
-          };
-          
-          const token = 'demo_token_' + Date.now();
-          
-          setUser(userData);
-          localStorage.setItem('auth_user', JSON.stringify(userData));
-          localStorage.setItem('auth_token', token);
-          
-          // Set cookie for middleware
-          document.cookie = `auth_token=${token}; path=/; max-age=86400; SameSite=Lax`;
-          
-          return true;
-        }
-      } catch (error) {
-        console.error('Error parsing registered users:', error);
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok || !data?.success || !data.user) {
+        return false;
       }
+
+      const userData: User = data.user;
+
+      setUser(userData);
+
+      // Mirror to localStorage for backward compatibility with legacy reads
+      try {
+        localStorage.setItem('auth_user', JSON.stringify(userData));
+        if (data.token) {
+          localStorage.setItem('auth_token', data.token);
+        }
+      } catch {}
+
+      return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
     }
-    
-    return false;
   };
 
-  const register = async (email: string, password: string, name: string): Promise<{ success: boolean; message: string }> => {
+  const register = async (
+    email: string,
+    password: string,
+    name: string
+  ): Promise<{ success: boolean; message: string }> => {
     try {
-      // Check if email already exists
-      const registeredUsersStr = localStorage.getItem('registered_users');
-      let registeredUsers: RegisteredUser[] = [];
-      
-      if (registeredUsersStr) {
-        registeredUsers = JSON.parse(registeredUsersStr);
-      }
-      
-      // Check if email is already registered
-      const emailExists = registeredUsers.some((u) => u.email === email);
-      if (emailExists || email === 'admin') {
-        return { success: false, message: 'Email sudah terdaftar' };
-      }
-      
-      // Add new user
-      registeredUsers.push({
-        email,
-        password,
-        name,
-        createdAt: new Date().toISOString(),
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, name }),
       });
-      
-      localStorage.setItem('registered_users', JSON.stringify(registeredUsers));
-      
-      return { success: true, message: 'Registrasi berhasil! Silakan login.' };
+
+      if (response.status === 401) {
+        clearSessionArtifacts();
+        router.push('/backoffice/login');
+        return { success: false, message: 'Sesi berakhir. Silakan login kembali.' };
+      }
+
+      const data = await response.json().catch(() => null);
+      const success = Boolean(response.ok && data?.success);
+
+      return {
+        success,
+        message: data?.message ?? (success ? 'Registrasi berhasil! Silakan login.' : 'Registrasi gagal.'),
+      };
     } catch (error) {
       console.error('Registration error:', error);
       return { success: false, message: 'Terjadi kesalahan saat registrasi' };
     }
   };
 
-  const changePassword = async (oldPassword: string, newPassword: string): Promise<{ success: boolean; message: string }> => {
+  const changePassword = async (
+    oldPassword: string,
+    newPassword: string
+  ): Promise<{ success: boolean; message: string }> => {
     if (!user) {
       return { success: false, message: 'User tidak ditemukan' };
     }
-    
+
     try {
-      // For default admin
-      if (user.email === 'admin@dayton.com') {
-        return { success: false, message: 'Password admin default tidak dapat diubah' };
+      const token =
+        getCookie('auth_token') ??
+        (typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null);
+
+      if (!token) {
+        clearSessionArtifacts();
+        router.push('/backoffice/login');
+        return { success: false, message: 'Sesi tidak valid. Silakan login ulang.' };
       }
-      
-      // Check registered users
-      const registeredUsersStr = localStorage.getItem('registered_users');
-      if (registeredUsersStr) {
-        const registeredUsers: RegisteredUser[] = JSON.parse(registeredUsersStr);
-        const userIndex = registeredUsers.findIndex(
-          (u) => u.email === user.email && u.password === oldPassword
-        );
-        
-        if (userIndex === -1) {
-          return { success: false, message: 'Password lama tidak sesuai' };
-        }
-        
-        // Update password
-        registeredUsers[userIndex].password = newPassword;
-        localStorage.setItem('registered_users', JSON.stringify(registeredUsers));
-        
-        return { success: true, message: 'Password berhasil diubah' };
+
+      const response = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ oldPassword, newPassword }),
+      });
+
+      if (response.status === 401) {
+        clearSessionArtifacts();
+        router.push('/backoffice/login');
+        return { success: false, message: 'Sesi berakhir. Silakan login kembali.' };
       }
-      
-      return { success: false, message: 'User tidak ditemukan' };
+
+      const data = await response.json().catch(() => null);
+      const success = Boolean(response.ok && data?.success);
+
+      return {
+        success,
+        message: data?.message ?? (success ? 'Password berhasil diperbarui.' : 'Gagal memperbarui password.'),
+      };
     } catch (error) {
       console.error('Change password error:', error);
       return { success: false, message: 'Terjadi kesalahan saat mengubah password' };
@@ -180,13 +193,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem('auth_user');
-    localStorage.removeItem('auth_token');
-    
-    // Remove cookie
-    document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    
+    clearSessionArtifacts();
     router.push('/backoffice/login');
   };
 
@@ -207,11 +214,13 @@ export function useAuth() {
 
 // Helper function to check if user is authenticated (for server-side)
 export function checkAuth(): boolean {
-  if (typeof window === 'undefined') return false;
-  
-  const token = localStorage.getItem('auth_token');
-  const user = localStorage.getItem('auth_user');
-  
-  return !!(token && user);
+  if (typeof document === 'undefined') return false;
+  const getCookie = (name: string): string | null => {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+  };
+  const token = getCookie('auth_token');
+  const user = getCookie('auth_user');
+  return Boolean(token && user);
 }
 

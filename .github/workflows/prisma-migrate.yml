@@ -1,0 +1,41 @@
+name: Prisma Migrate & Seed
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+  workflow_dispatch:
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npm run prisma:generate
+
+      - name: Run Prisma Migrate (deploy)
+        env:
+          DATABASE_URL: ${{ github.ref == 'refs/heads/staging' && secrets.DATABASE_URL_STAGING || secrets.DATABASE_URL_PRODUCTION }}
+        run: npx prisma migrate deploy
+
+      - name: Seed (staging only)
+        if: github.ref == 'refs/heads/staging'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_STAGING }}
+          STAGING: 'true'
+        run: npm run prisma:seed
+
+

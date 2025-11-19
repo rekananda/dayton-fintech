@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   Container, 
@@ -13,7 +13,8 @@ import {
   Stack,
   Alert,
   Paper,
-  Group
+  Group,
+  Loader
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconLock, IconMail, IconAlertCircle, IconUser, IconCheck } from '@tabler/icons-react';
@@ -25,6 +26,7 @@ export default function RegisterPage() {
   const { register } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
 
   const form = useForm({
     initialValues: {
@@ -42,6 +44,17 @@ export default function RegisterPage() {
     },
   });
 
+  const clearClientSession = () => {
+    if (typeof document !== 'undefined') {
+      document.cookie = 'auth_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+      document.cookie = 'auth_user=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+    }
+    try {
+      localStorage.removeItem('auth_user');
+      localStorage.removeItem('auth_token');
+    } catch {}
+  };
+
   const handleSubmit = async (values: typeof form.values) => {
     setIsLoading(true);
     setError('');
@@ -57,10 +70,7 @@ export default function RegisterPage() {
           icon: <IconCheck size={18} />,
         });
         
-        // Redirect to login after 1.5 seconds
-        setTimeout(() => {
-          router.push('/backoffice/login');
-        }, 1500);
+        router.replace('/backoffice/login');
       } else {
         setError(result.message);
         notifications.show({
@@ -76,6 +86,52 @@ export default function RegisterPage() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkSession = async () => {
+      try {
+        const response = await fetch('/api/auth/session', { cache: 'no-store' });
+        if (!isMounted) return;
+
+        if (response.ok) {
+          router.replace('/backoffice');
+          return;
+        }
+
+        if (response.status === 401) {
+          clearClientSession();
+        }
+      } catch (error) {
+        console.error('Session check error:', error);
+        clearClientSession();
+      } finally {
+        if (isMounted) {
+          setIsCheckingSession(false);
+        }
+      }
+    };
+
+    checkSession();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [router]);
+
+  if (isCheckingSession) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+        <Stack align="center" gap="sm">
+          <Loader color="purple" />
+          <Text c="dimmed" size="sm">
+            Memeriksa sesi...
+          </Text>
+        </Stack>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
@@ -167,7 +223,7 @@ export default function RegisterPage() {
                 ℹ️ Informasi:
               </Text>
               <Text size="xs" className="text-purple-700 dark:text-purple-400">
-                • Data akan disimpan di localStorage browser
+                • Akun baru langsung tersimpan ke database
               </Text>
               <Text size="xs" className="text-purple-700 dark:text-purple-400">
                 • Setelah registrasi, gunakan email/username dan password untuk login

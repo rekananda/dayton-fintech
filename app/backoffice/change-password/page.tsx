@@ -172,11 +172,6 @@ export default function ChangePasswordPage() {
               <Text size="xs" className="text-blue-700 dark:text-blue-400">
                 • Pastikan Anda mengingat password baru
               </Text>
-              {user?.email === 'admin@dayton.com' && (
-                <Text size="xs" className="text-orange-600 dark:text-orange-400 font-semibold">
-                  ⚠️ Password admin default tidak dapat diubah
-                </Text>
-              )}
             </Stack>
           </Paper>
 

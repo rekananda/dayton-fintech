@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   Container, 
@@ -13,7 +13,8 @@ import {
   Stack,
   Alert,
   Paper,
-  Group
+  Group,
+  Loader
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconLock, IconMail, IconAlertCircle } from '@tabler/icons-react';
@@ -25,6 +26,17 @@ export default function LoginPage() {
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const clearClientSession = () => {
+    if (typeof document !== 'undefined') {
+      document.cookie = 'auth_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+      document.cookie = 'auth_user=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+    }
+    try {
+      localStorage.removeItem('auth_user');
+      localStorage.removeItem('auth_token');
+    } catch {}
+  };
 
   const form = useForm({
     initialValues: {
@@ -67,6 +79,52 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkSession = async () => {
+      try {
+        const response = await fetch('/api/auth/session', { cache: 'no-store' });
+        if (!isMounted) return;
+
+        if (response.ok) {
+          router.replace('/backoffice');
+          return;
+        }
+
+        if (response.status === 401) {
+          clearClientSession();
+        }
+      } catch (error) {
+        console.error('Session check error:', error);
+        clearClientSession();
+      } finally {
+        if (isMounted) {
+          setIsCheckingSession(false);
+        }
+      }
+    };
+
+    checkSession();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [router]);
+
+  if (isCheckingSession) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+        <Stack align="center" gap="sm">
+          <Loader color="blue" />
+          <Text c="dimmed" size="sm">
+            Memeriksa sesi...
+          </Text>
+        </Stack>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">

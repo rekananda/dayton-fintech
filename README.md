@@ -12,6 +12,7 @@ Platform fintech modern yang dibangun dengan Next.js 16, Mantine UI, dan Tailwin
 - [Autentikasi](#-autentikasi)
 - [Route](#-route)
 - [Pengembangan](#-pengembangan)
+- [Database & Prisma](#-database--prisma)
 
 ## ✨ Fitur
 
@@ -92,6 +93,45 @@ npm start
 
 ```bash
 npm run lint
+```
+
+## 🗄️ Database & Prisma
+
+Siapkan database PostgreSQL (rekomendasi: Neon atau Supabase), lalu set environment variable:
+
+1) Tambahkan file `.env` di root project:
+
+```
+# Opsi granular (isi sesuai kredensial DB kamu)
+DB_HOST="HOST"
+DB_PORT="5432"
+DB_USER="USER"
+DB_PASSWORD="PASSWORD"
+DB_NAME="DATABASE"
+
+# Prisma menggunakan DATABASE_URL. Isi langsung string koneksinya:
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE?sslmode=require"
+
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="ganti-dengan-secret-yang-kuat"
+
+# JWT untuk sesi custom API
+JWT_SECRET="ganti-dengan-secret-jwt-yang-kuat"
+# Opsional: default 1d
+JWT_EXPIRES_IN="1d"
+```
+
+2) Generate Prisma Client dan push schema:
+
+```bash
+npm run prisma:generate
+npm run prisma:push
+```
+
+3) (Opsional) Buka Prisma Studio:
+
+```bash
+npm run prisma:studio
 ```
 
 ## 📁 Struktur Folder

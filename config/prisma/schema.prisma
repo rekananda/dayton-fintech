@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Basic auth models for backoffice
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  username      String   @unique
+  name          String?
+  passwordHash  String
+  role          Role     @default(ADMIN)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+}
+
+model Menu {
+  id        Int      @id @default(autoincrement())
+  label     String
+  href      String
+  order     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  createdBy String?
+  updatedBy String?
+  deletedBy String?
+  createdByUser String?
+  updatedByUser String?
+  deletedByUser String?
+}
+
+model Timeline {
+  id          Int      @id @default(autoincrement())
+  icon        String
+  title       String
+  description String
+  color       String
+  order       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+  createdBy   String?
+  updatedBy   String?
+  deletedBy   String?
+  createdByUser String?
+  updatedByUser String?
+  deletedByUser String?
+}
+
+// Business Model can have nested tables with columns and rows.
+// For MVP simplicity, we store tables as JSON to avoid many relational tables.
+model BusinessModel {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  tags        String[]  // e.g. ["MINGGUAN"]
+  order       Int
+  tables      BusinessModelTable[]
+  tnc         String?   // terms & conditions or explanation
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  createdBy   String?
+  updatedBy   String?
+  deletedBy   String?
+}
+
+// A Business Model can have many logical tables displayed on landing/backoffice.
+model BusinessModelTable {
+  id               Int                         @id @default(autoincrement())
+  businessModelId  Int
+  name             String                      // e.g. "Profit Sharing (Mingguan)"
+  order            Int                         @default(1)
+  columns          BusinessModelTableColumn[]
+  rows             BusinessModelTableRow[]
+  createdAt        DateTime                    @default(now())
+  updatedAt        DateTime                    @updatedAt
+  deletedAt        DateTime?
+  createdBy        String?
+  updatedBy        String?
+  deletedBy        String?
+
+  businessModel    BusinessModel               @relation(fields: [businessModelId], references: [id], onDelete: Cascade)
+}
+
+// Table columns are dynamic per table (e.g., profit/calculation OR level/commission)
+model BusinessModelTableColumn {
+  id          Int                  @id @default(autoincrement())
+  tableId     Int
+  key         String               // machine key, e.g. "profit", "calculation"
+  label       String               // human label
+  order       Int                  @default(1)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  deletedAt   DateTime?
+  createdBy   String?
+  updatedBy   String?
+  deletedBy   String?
+
+  table       BusinessModelTable   @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  cells       BusinessModelTableCell[]
+}
+
+// Table rows are ordered records; cells store per-column values.
+model BusinessModelTableRow {
+  id          Int                  @id @default(autoincrement())
+  tableId     Int
+  order       Int                  @default(1)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  deletedAt   DateTime?
+  createdBy   String?
+  updatedBy   String?
+  deletedBy   String?
+
+  table       BusinessModelTable   @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  cells       BusinessModelTableCell[]
+}
+
+// Cell stores the value for a given (row x column)
+model BusinessModelTableCell {
+  id          Int                        @id @default(autoincrement())
+  rowId       Int
+  columnId    Int
+  value       String                     // store as text; UI can format (e.g., "$200", "5%")
+  createdAt   DateTime                   @default(now())
+  updatedAt   DateTime                   @updatedAt
+  deletedAt   DateTime?
+  createdBy   String?
+  updatedBy   String?
+  deletedBy   String?
+
+  row         BusinessModelTableRow      @relation(fields: [rowId], references: [id], onDelete: Cascade)
+  column      BusinessModelTableColumn   @relation(fields: [columnId], references: [id], onDelete: Cascade)
+
+  @@unique([rowId, columnId]) // one value per (row, column)
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  imageUrl    String   // store URL (GDrive/Cloudinary/etc.)
+  date        DateTime // tanggal dan waktu event
+  title       String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+  createdBy   String?
+  updatedBy   String?
+  deletedBy   String?
+}
+
+model Legal {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  order       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+  createdBy   String?
+  updatedBy   String?
+  deletedBy   String?
+}
+
+model QnA {
+  id        Int      @id @default(autoincrement())
+  question  String
+  answer    String
+  order     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  createdBy String?
+  updatedBy String?
+  deletedBy String?
+}
+
+model Config {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  value       String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+  createdBy   String?
+  updatedBy   String?
+  deletedBy   String?
+}
+
+

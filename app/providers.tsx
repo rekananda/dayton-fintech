@@ -5,8 +5,9 @@ import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { ModalsProvider } from '@mantine/modals';
 import { NavigationProgress } from '@mantine/nprogress';
-import { AuthProvider } from '@/lib/auth-context';
+import { AuthProvider } from '@/config/auth-context';
 import { cssVariablesResolver, mainTheme } from '@/config/mantineTheme';
+import StoreProvider from '@/store/StoreProvider';
 
 type AppProvidersProps = {
   children: ReactNode;
@@ -14,19 +15,21 @@ type AppProvidersProps = {
 
 export function AppProviders({ children }: AppProvidersProps) {
   return (
-    <MantineProvider
-      theme={mainTheme}
-      defaultColorScheme="dark"
-      cssVariablesResolver={cssVariablesResolver}
-    >
-      <ModalsProvider>
-        <AuthProvider>
-          <Notifications />
-          <NavigationProgress />
-          {children}
-        </AuthProvider>
-      </ModalsProvider>
-    </MantineProvider>
+    <StoreProvider>
+      <MantineProvider
+        theme={mainTheme}
+        defaultColorScheme="dark"
+        cssVariablesResolver={cssVariablesResolver}
+      >
+        <ModalsProvider>
+          <AuthProvider>
+            <Notifications />
+            <NavigationProgress />
+            {children}
+          </AuthProvider>
+        </ModalsProvider>
+      </MantineProvider>
+    </StoreProvider>
   );
 }
 

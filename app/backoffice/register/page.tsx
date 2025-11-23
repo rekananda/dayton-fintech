@@ -18,7 +18,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconLock, IconMail, IconAlertCircle, IconUser, IconCheck } from '@tabler/icons-react';
-import { useAuth } from '@/lib/auth-context';
+import { useAuth } from '@/config/auth-context';
 import { notifications } from '@mantine/notifications';
 
 export default function RegisterPage() {

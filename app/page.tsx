@@ -1,6 +1,6 @@
 'use client';
 
-import { Group, Stack, Badge, Box, Button, Grid } from '@mantine/core';
+import { Group, Stack, Badge, Box, Button, Grid, Loader, Center, Text } from '@mantine/core';
 import { LandingLayout } from '@/components/layouts/LandingLayout';
 import MainText from '@/components/Atoms/MainText';
 import './landingpage.css';
@@ -14,38 +14,99 @@ import Accordion from '@/components/Atoms/Accordion';
 import Carousel, { CarouselCard } from '@/components/Molecules/Carousel';
 import { CarouselCardT, CarouselItemT } from '@/components/Molecules/Carousel/type';
 import Table from '@/components/Atoms/Table';
-import { DataTimeline, DataBussinessModel, DataEvents, DataLegal, DataQnA, mainWhatsappLink } from '@/variables/dummyData';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { TimelineCardT } from '@/components/Molecules/Cards/TimelineCard/type';
 import { TableColumnT } from '@/components/Atoms/Table/type';
-import { BussinessModelDataT, TableProfitSharingDataT, TableReferralDataT } from '@/config/types';
+import { TableProfitSharingDataT, TableReferralDataT } from '@/config/types';
 import { AccordionItemT } from '@/components/Atoms/Accordion/type';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { setLoading, setLandingData, resetToDummy } from '@/store/landingSlice';
 
 export default function LandingPage() {
   const { isMobile } = useViewport();
-  const [listTimeline] = useState<TimelineCardT[]>(DataTimeline);
-  const [listBussinessModel] = useState<BussinessModelDataT[]>(DataBussinessModel);
-  const [listEvents] = useState<CarouselItemT<CarouselCardT>[]>(
-    DataEvents.map((item) => ({ 
-      image: item.image, 
-      detail: { date: item.date, title: item.title, description: item.description } 
-    }))
-  );
-  const [listLegal] = useState<TimelineCardT[]>(
-    DataLegal.map((item) => ({  
-      title: item.title, 
-      description: item.description, 
-      numberedIcon: item.order,
-      withIndicator: false
-    }))
-  );
-  const [listQnA] = useState<AccordionItemT[]>(
-    DataQnA.map((item) => ({ 
-      value: item.id.toString(), 
-      title: item.question, 
-      content: <MainText variant='body' fz={16}>{item.answer}</MainText>
-    }))
-  );
+  const dispatch = useAppDispatch();
+  const { menus, timelines, businessModels, events, legals, qnas, config, isLoading } = useAppSelector((state) => state.landing);
+
+  useEffect(() => {
+    const fetchLandingData = async () => {
+      try {
+        dispatch(setLoading(true));
+        const response = await fetch('/api/landing');
+        
+        if (!response.ok) {
+          console.log('Failed to fetch landing data');
+        }
+        
+        const data = await response.json();
+        dispatch(setLandingData(data));
+      } catch (err) {
+        console.error('Error fetching landing data:', err);
+        dispatch(resetToDummy());
+      } finally {
+        dispatch(setLoading(false));
+      }
+    };
+
+    fetchLandingData();
+  }, [dispatch]);
+
+  const listTimeline: TimelineCardT[] = timelines.map((item) => ({
+    icon: item.icon,
+    title: item.title,
+    description: item.description,
+    color: item.color,
+  }));
+
+  const listBussinessModel = businessModels;
+
+  const listEvents: CarouselItemT<CarouselCardT>[] = events.map((item) => ({
+    image: item.image,
+    detail: {
+      date: item.date,
+      title: item.title,
+      description: item.description,
+    },
+  }));
+
+  const listLegal: TimelineCardT[] = legals.map((item) => ({
+    title: item.title,
+    description: item.description,
+    numberedIcon: item.order,
+    withIndicator: false,
+  }));
+
+  const listQnA: AccordionItemT[] = qnas.map((item) => ({
+    value: item.id.toString(),
+    title: item.question,
+    content: <MainText variant='body' fz={16}>{item.answer}</MainText>,
+  }));
+
+  const mainWhatsappLink = config.whatsappLink;
+
+  const hasExplanationMenu = menus.some(menu => menu.href === 'explanation');
+  const shouldShowExplanation = timelines.length > 0 && hasExplanationMenu;
+  const hasProfitSharingMenu = menus.some(menu => menu.href === 'profit-sharing');
+  const shouldShowProfitSharing = businessModels.length > 0 && hasProfitSharingMenu;
+  const hasEventsMenu = menus.some(menu => menu.href === 'events');
+  const shouldShowEvents = events.length > 0 && hasEventsMenu;
+  const hasLegalMenu = menus.some(menu => menu.href === 'legal');
+  const shouldShowLegal = legals.length > 0 && hasLegalMenu;
+  const hasQnaMenu = menus.some(menu => menu.href === 'qna');
+  const shouldShowQna = qnas.length > 0 && hasQnaMenu;
+  const hasRegisterMenu = menus.some(menu => menu.href === 'register');
+
+  if (isLoading) {
+    return (
+      <LandingLayout>
+        <Center h="100vh">
+          <Stack align="center" gap="md">
+            <Loader size="lg" />
+            <Text>Memuat data...</Text>
+          </Stack>
+        </Center>
+      </LandingLayout>
+    );
+  }
 
   return (
     <LandingLayout>
@@ -58,7 +119,11 @@ export default function LandingPage() {
             pt={isMobile ? 134 : 80}  
             pb={isMobile ? 134 : 100}
           >
-            <Badge variant="outline" className='main-badge'>Gold • XAUUSD • H1 • Tren</Badge>
+            {config.mainBadges?.map((badge, index) => (
+              <Badge variant="outline" className='main-badge' key={`main-badge-${index}`}>
+                  <span dangerouslySetInnerHTML={{ __html: badge }} />
+              </Badge>
+            ))}
             <MainText 
               className='home-main-text' 
               variant={isMobile ? 'heading3' : 'heading1'} 
@@ -72,9 +137,11 @@ export default function LandingPage() {
               Pendekatan trend-following yang disiplin dengan target adaptif mengikuti volatilitas, pengendalian eksposur, serta jeda otomatis saat rilis data berdampak tinggi.
             </MainText>
             <Group maw={isMobile ? 400 : 650} justify='center'>
-              <Badge variant="outline" className='main-badge2'>Profit Sharing <b>25%</b></Badge>
-              <Badge variant="outline" className='main-badge2'>Referral hingga <b>10%</b></Badge>
-              <Badge variant="outline" className='main-badge2'><b>Broker MT4 • H1</b></Badge>
+              {config.secondaryBadges?.map((badge, index) => (
+                <Badge variant="outline" className='main-badge2' key={`secondary-badge-${index}`}>
+                  <span dangerouslySetInnerHTML={{ __html: badge }} />
+                </Badge>
+              ))}
             </Group>
             <Button className='main-button' size="xl" color='primary' radius='xl' mt={isMobile ? 4 : 40} onClick={() => window.open(mainWhatsappLink, '_blank')}>
               Daftar via WhatsApp
@@ -90,95 +157,99 @@ export default function LandingPage() {
           <Ornament className='home-ornament ornament-4' size={isMobile ? 30 : 45} type='waterfall' angle={-15}/>
         </Box>
 
-        <Stack id="explanation" align='center' py={80} px={isMobile ? 20 : 100}>
-          <TopicTitle title="Rahasia di Balik Performa Stabil Kami" badge="Strategi Kami" />
+        {shouldShowExplanation && (
+          <Stack id="explanation" align='center' py={80} px={isMobile ? 20 : 100}>
+            <TopicTitle title="Rahasia di Balik Performa Stabil Kami" badge="Strategi Kami" />
 
-          <Box className={`timeline-container ${isMobile ? 'left' : 'center'}`} mt={isMobile ? 16 : 60}>
-            <Box className='timeline-ornament' w={isMobile ? '60dvw' : '30dvw'} />
-            <Box className='timeline-line' w={2}/>
-            {listTimeline.map((item, key) => (
-              <Box 
-                key={key} 
-                className={`timeline-item ${key%2==0? "even" : "odd"}`} 
-                pb={key !== listTimeline.length-1 ? isMobile ? 20 : 50 : 0}
-              >
-                <TimelineCard {...item} />
-              </Box>
-            ))}
-          </Box>
-        </Stack>
+            <Box className={`timeline-container ${isMobile ? 'left' : 'center'}`} mt={isMobile ? 16 : 60}>
+              <Box className='timeline-ornament' w={isMobile ? '60dvw' : '30dvw'} />
+              <Box className='timeline-line' w={2}/>
+              {listTimeline.map((item, index) => (
+                <Box 
+                  key={`timeline-${timelines[index]?.id || index}`} 
+                  className={`timeline-item ${index%2==0? "even" : "odd"}`} 
+                  pb={index !== listTimeline.length-1 ? isMobile ? 20 : 50 : 0}
+                >
+                  <TimelineCard {...item} />
+                </Box>
+              ))}
+            </Box>
+          </Stack>
+        )}
 
-        <Stack id="profit-sharing" align='center' py={80} px={isMobile ? 20 : 100} gap={isMobile ? 32 : 64}>
-          <TopicTitle title="Berbagi Profit, Bukan Risiko" badge="Model Bisnis" />
+        {shouldShowProfitSharing && (
+          <Stack id="profit-sharing" align='center' py={80} px={isMobile ? 20 : 100} gap={isMobile ? 32 : 64}>
+            <TopicTitle title="Berbagi Profit, Bukan Risiko" badge="Model Bisnis" />
 
-          <Grid w='100%' gutter={isMobile ? 32 : 40} justify='center'>
-            {listBussinessModel.map((item, key) => {
-              const maxContent = 3;
-              const colSpan = listBussinessModel.length > maxContent ? maxContent : listBussinessModel.length;
-              const { tables, tnc, ...rest } = item;
+            <Grid w='100%' gutter={isMobile ? 32 : 40} justify='center'>
+              {listBussinessModel.map((item, index) => {
+                const maxContent = 3;
+                const colSpan = listBussinessModel.length > maxContent ? maxContent : listBussinessModel.length;
+                const { tables, tnc, ...rest } = item;
 
-              return (
-                <Grid.Col span={{ base: 12, md: 12/colSpan }} key={key}>
-                  <RippleCard {...rest} ripple={key%2==0 ? ['bottom-left'] : ['top-right']}>
-                    <Stack>
-                      {tables?.map((tableprops, key) => {
-                        if (
-                          Array.isArray(tableprops.datas) &&
-                          tableprops.datas.length > 0 &&
-                          typeof (tableprops.datas[0] as unknown as TableProfitSharingDataT).profit !== 'undefined'
-                        ) {
-                          return (
-                            <Table<TableProfitSharingDataT>
-                              key={key}
-                              columns={tableprops.columns as TableColumnT<TableProfitSharingDataT>[]}
-                              datas={tableprops.datas as TableProfitSharingDataT[]}
-                            />
-                          );
-                        } else {
-                          return (
-                            <Table<TableReferralDataT>
-                              key={key}
-                              columns={tableprops.columns as TableColumnT<TableReferralDataT>[]}
-                              datas={(tableprops.datas as TableReferralDataT[]).map((item) => ({
-                                id: item.id,
-                                level: `Level ${item.level}`,
-                                commission: item.commission,
-                                order: item.order,
-                              }))}
-                            />
-                          );
-                        }
-                      })}
-                      {tnc && <MainText variant='body' fz={14}>{tnc}</MainText>}
+                return (
+                  <Grid.Col span={{ base: 12, md: 12/colSpan }} key={`business-model-${item.id}`}>
+                    <RippleCard {...rest} ripple={index%2==0 ? ['bottom-left'] : ['top-right']}>
+                      <Stack>
+                        {tables?.map((tableprops, tableIndex) => {
+                          if (
+                            Array.isArray(tableprops.datas) &&
+                            tableprops.datas.length > 0 &&
+                            typeof (tableprops.datas[0] as unknown as TableProfitSharingDataT).profit !== 'undefined'
+                          ) {
+                            return (
+                              <Table<TableProfitSharingDataT>
+                                key={`table-profit-${item.id}-${tableIndex}`}
+                                columns={tableprops.columns as TableColumnT<TableProfitSharingDataT>[]}
+                                datas={tableprops.datas as TableProfitSharingDataT[]}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Table<TableReferralDataT>
+                                key={`table-referral-${item.id}-${tableIndex}`}
+                                columns={tableprops.columns as TableColumnT<TableReferralDataT>[]}
+                                datas={(tableprops.datas as TableReferralDataT[]).map((item) => ({
+                                  id: item.id,
+                                  level: `Level ${item.level}`,
+                                  commission: item.commission,
+                                  order: item.order,
+                                }))}
+                              />
+                            );
+                          }
+                        })}
+                        {tnc && <MainText variant='body' fz={14}>{tnc}</MainText>}
 
-                    </Stack>
-                  </RippleCard>
+                      </Stack>
+                    </RippleCard>
                   </Grid.Col>
                 );
               })}
             </Grid>
           </Stack>
+        )}
 
-        <Stack id="events" align='center' py={80} gap={isMobile ? 32 : 48}>
+        {shouldShowEvents && <Stack id="events" align='center' py={80} gap={isMobile ? 32 : 48}>
           <TopicTitle title="Belajar Bareng, Raih Hasil Lebih Baik" badge="Acara Mendatang" px={isMobile ? 20 : 100}/>
           <Stack gap={isMobile ? 24 : 32} w="100%">
             <Carousel items={listEvents} renderDetail={ (props: CarouselCardT) => <CarouselCard {...props} />} />
           </Stack>
-        </Stack>
+        </Stack>}
 
-        <Stack id="legal" align='center' py={80} px={isMobile ? 20 : 100} gap={isMobile ? 32 : 64}>
+        {shouldShowLegal && <Stack id="legal" align='center' py={80} px={isMobile ? 20 : 100} gap={isMobile ? 32 : 64}>
           <TopicTitle title="Ketentuan Layanan & Perlindungan Data" badge="Legal" />
           
           <Grid gutter={isMobile ? 32 : 40} justify='center'>
-            {listLegal.map((item, key) => (
-              <Grid.Col span={{ base: 12, md: 6 }} key={key}>
+            {listLegal.map((item, index) => (
+              <Grid.Col span={{ base: 12, md: 6 }} key={`legal-${legals[index]?.id || index}`}>
                 <TimelineCard {...item} withIndicator={false} h='100%'/>
               </Grid.Col>
             ))}
           </Grid>
-        </Stack>
+        </Stack>}
 
-        <Grid id="qna" justify='center' py={80} px={isMobile ? 20 : 100} gutter={isMobile ? 32 : 40} w='100%'>
+        {shouldShowQna && <Grid id="qna" justify='center' py={80} px={isMobile ? 20 : 100} gutter={isMobile ? 32 : 40} w='100%'>
           <Grid.Col span={{ base: 12, md: 4 }}>
             <TopicTitle title="Pertanyaan yang Sering Diajukan" badge="F.A.Q" align={isMobile ? 'center' : 'left'} />
           </Grid.Col>
@@ -187,9 +258,9 @@ export default function LandingPage() {
               <Accordion items={listQnA} />
             </Box>
           </Grid.Col>
-        </Grid>
+        </Grid>}
 
-        <Box id="register" py={80} px={isMobile ? 20 : 100}> 
+        {hasRegisterMenu && <Box id="register" py={80} px={isMobile ? 20 : 100}> 
           <RippleCard 
             ripple={['bottom-left', 'top-right']} 
             rippleProps={{ type: 'circle', rippleSize: isMobile ? [300, 300] : [500, 500] }}
@@ -203,7 +274,7 @@ export default function LandingPage() {
               </Button>
             </Stack>
           </RippleCard>
-        </Box>
+        </Box>}
       </Stack>
     </LandingLayout>
   );

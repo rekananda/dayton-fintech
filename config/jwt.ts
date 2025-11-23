@@ -12,6 +12,7 @@ const secretKey = JWT_SECRET ? encoder.encode(JWT_SECRET) : undefined;
 
 export type TokenPayload = {
   sub: string;
+  username: string;
   email: string;
   name?: string | null;
   role?: string;
@@ -23,6 +24,7 @@ export const signToken = async (payload: TokenPayload) => {
   }
 
   return new SignJWT({
+    username: payload.username,
     email: payload.email,
     name: payload.name,
     role: payload.role,
@@ -42,6 +44,7 @@ export const verifyToken = async (token: string): Promise<TokenPayload | null> =
     const { payload } = await jwtVerify(token, secretKey);
     return {
       sub: payload.sub ?? "",
+      username: (payload.username as string) ?? "",
       email: (payload.email as string) ?? "",
       name: (payload.name as string) ?? null,
       role: (payload.role as string) ?? undefined,

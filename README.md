@@ -45,7 +45,10 @@ Platform fintech modern yang dibangun dengan Next.js 16, Mantine UI, dan Tailwin
 - **Styling**: Tailwind CSS v4
 - **Icons**: Tabler Icons React v3.35.0
 - **TypeScript**: Full type safety
-- **State Management**: React Context API
+- **State Management**: Redux Toolkit + React Context API
+- **Database**: PostgreSQL dengan Prisma ORM
+- **Database Adapter**: PrismaPg (pg Pool)
+- **Authentication**: JWT (jose) + bcryptjs untuk password hashing
 - **Carousel**: Embla Carousel dengan Autoplay
 - **Charts**: Recharts & Mantine Charts
 - **Form Management**: Mantine Form
@@ -95,62 +98,146 @@ npm start
 npm run lint
 ```
 
+### Database Scripts
+
+```bash
+# Generate Prisma Client
+npm run prisma:generate
+
+# Run migrations (development)
+npm run prisma:migrate
+
+# Deploy migrations (production)
+npm run prisma:migrate-deploy
+
+# Reset database (development only)
+npm run prisma:migrate-reset
+
+# Push schema ke database (development)
+npm run prisma:push
+
+# Open Prisma Studio (GUI)
+npm run prisma:studio
+
+# Seed database
+npm run prisma:seed
+```
+
 ## 🗄️ Database & Prisma
 
-Siapkan database PostgreSQL (rekomendasi: Neon atau Supabase), lalu set environment variable:
+Aplikasi menggunakan PostgreSQL dengan Prisma ORM. Setup database menggunakan PrismaPg adapter dengan connection pooling.
 
-1) Tambahkan file `.env` di root project:
+### Setup Database
 
-```
-# Opsi granular (isi sesuai kredensial DB kamu)
-DB_HOST="HOST"
-DB_PORT="5432"
-DB_USER="USER"
-DB_PASSWORD="PASSWORD"
-DB_NAME="DATABASE"
+1. **Siapkan Database PostgreSQL**
+   - Rekomendasi: Neon, Supabase, atau PostgreSQL lokal
+   - Pastikan database sudah dibuat dan siap digunakan
 
-# Prisma menggunakan DATABASE_URL. Isi langsung string koneksinya:
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE?sslmode=require"
+2. **Konfigurasi Environment Variables**
+   
+   Tambahkan file `.env` di root project:
 
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="ganti-dengan-secret-yang-kuat"
+   ```env
+   # Database Connection (Prisma menggunakan DATABASE_URL)
+   DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE?sslmode=require"
+   
+   # JWT Configuration untuk Authentication
+   JWT_SECRET="ganti-dengan-secret-jwt-yang-kuat"
+   JWT_EXPIRES_IN="1d"  # Opsional: default 1d
+   
+   # NextAuth (jika digunakan)
+   NEXTAUTH_URL="http://localhost:3000"
+   NEXTAUTH_SECRET="ganti-dengan-secret-yang-kuat"
+   ```
 
-# JWT untuk sesi custom API
-JWT_SECRET="ganti-dengan-secret-jwt-yang-kuat"
-# Opsional: default 1d
-JWT_EXPIRES_IN="1d"
-```
+   **Catatan untuk Supabase:**
+   - Gunakan `sslmode=require` atau `sslmode=prefer` untuk development
+   - Untuk production, gunakan `sslmode=verify-full` dengan certificate
 
-2) Generate Prisma Client dan push schema:
+3. **Generate Prisma Client dan Setup Database**
 
-```bash
-npm run prisma:generate
-npm run prisma:push
-```
+   ```bash
+   # Generate Prisma Client
+   npm run prisma:generate
+   
+   # Push schema ke database (development)
+   npm run prisma:push
+   
+   # Atau jalankan migrations (production)
+   npm run prisma:migrate-deploy
+   ```
 
-3) (Opsional) Buka Prisma Studio:
+4. **Seed Database (Opsional)**
 
-```bash
-npm run prisma:studio
-```
+   ```bash
+   # Seed database dengan data awal
+   npm run prisma:seed
+   ```
+
+5. **Database Setup Scripts**
+
+   ```bash
+   # Setup lengkap untuk development
+   npm run db:setup-dev
+   
+   # Setup lengkap untuk staging/production
+   npm run db:setup
+   
+   # Test koneksi database
+   npm run db:test
+   ```
+
+6. **Prisma Studio (GUI untuk Database)**
+
+   ```bash
+   npm run prisma:studio
+   ```
+
+   Buka browser di `http://localhost:5555` untuk melihat dan mengelola data.
+
+### Prisma Configuration
+
+- **Schema Location**: `config/prisma/schema.prisma`
+- **Migrations**: `config/prisma/migrations/`
+- **Client**: Menggunakan PrismaPg adapter dengan connection pooling
+- **SSL**: Auto-configured berdasarkan `sslmode` parameter di DATABASE_URL
+- **IPv4**: Force IPv4 untuk menghindari ENETUNREACH errors
+
+### Database Models
+
+Aplikasi memiliki beberapa model utama:
+- **User**: Autentikasi admin dengan role-based access
+- **Menu**: Menu navigation untuk landing page
+- **Timeline**: Timeline events
+- **BusinessModel**: Business model dengan nested tables
+- **Event**: Event management
+- **Legal**: Legal documents
+- **QnA**: Question & Answer
+- **Config**: Application configuration
 
 ## 📁 Struktur Folder
 
 ```
 dayton-fintech/
 ├── app/
-│   ├── backoffice/
-│   │   ├── login/
-│   │   │   └── page.tsx          # Halaman login admin
-│   │   ├── register/
-│   │   │   └── page.tsx          # Halaman register admin
-│   │   ├── change-password/
-│   │   │   └── page.tsx          # Halaman ubah password
+│   ├── api/                       # API Routes
+│   │   ├── auth/                  # Authentication endpoints
+│   │   │   ├── login/             # POST /api/auth/login
+│   │   │   ├── register/          # POST /api/auth/register
+│   │   │   ├── change-password/   # POST /api/auth/change-password
+│   │   │   └── session/           # GET /api/auth/session
+│   │   ├── landing/               # Landing page API
+│   │   └── menus/                 # Menu management API
+│   ├── backoffice/                # Backoffice pages
+│   │   ├── login/                 # Halaman login admin
+│   │   ├── register/              # Halaman register admin
+│   │   ├── change-password/       # Halaman ubah password
+│   │   ├── menus/                 # Menu management
 │   │   ├── layout.tsx             # Layout backoffice dengan sidebar
 │   │   └── page.tsx               # Dashboard backoffice
 │   ├── layout.tsx                 # Root layout dengan providers
 │   ├── page.tsx                   # Landing page
-│   ├── providers.tsx              # App providers (Mantine, Auth, dll)
+│   ├── providers.tsx              # App providers (Redux, Mantine, Auth)
 │   ├── globals.css                # Global styles
 │   ├── landingpage.css            # Styles khusus landing page
 │   └── tailwind.css               # Tailwind CSS imports
@@ -167,21 +254,35 @@ dayton-fintech/
 │   │   ├── Cards/                 # Card components (RippleCard, TimelineCard)
 │   │   ├── Carousel/              # Carousel component
 │   │   ├── Menus/                 # Menu components
+│   │   ├── Tables/                # Table components
 │   │   └── Text/                  # Text components
 │   └── layouts/                   # Layout components
 │       ├── AppHeader.tsx          # Header component
 │       ├── AppFooter.tsx          # Footer component
 │       ├── LandingLayout.tsx      # Layout untuk landing page
 │       └── BackofficeLayout.tsx   # Layout untuk backoffice
-├── config/
-│   └── mantineTheme.ts            # Mantine theme configuration
+├── config/                        # Configuration files
+│   ├── prisma.ts                  # Prisma client instance
+│   ├── prisma/                    # Prisma schema & migrations
+│   │   ├── schema.prisma          # Database schema
+│   │   └── migrations/            # Database migrations
+│   ├── supabase/                  # Supabase client configuration
+│   │   ├── client.ts              # Supabase client (browser)
+│   │   ├── server.ts              # Supabase client (server)
+│   │   └── middleware.ts          # Supabase middleware
+│   ├── auth-context.tsx           # Auth context & provider
+│   ├── jwt.ts                     # JWT utilities (sign/verify)
+│   ├── mantineTheme.ts            # Mantine theme configuration
+│   └── types.ts                   # Shared TypeScript types
+├── store/                         # Redux store
+│   ├── store.ts                   # Redux store configuration
+│   ├── StoreProvider.tsx          # Redux Provider component
+│   ├── hooks.ts                   # Typed Redux hooks
+│   └── landingSlice.ts            # Landing page Redux slice
 ├── hooks/
 │   └── useViewport.tsx            # Custom hook untuk viewport detection
-├── lib/
-│   └── auth-context.tsx           # Auth context & provider
 ├── variables/
-│   ├── dummy.ts                   # Dummy data
-│   └── dummyTable.tsx             # Dummy table data
+│   └── dummyData.ts               # Dummy data
 ├── public/
 │   ├── logo.png                   # Logo aplikasi
 │   └── favicon.ico                # Favicon
@@ -189,45 +290,79 @@ dayton-fintech/
 ├── postcss.config.mjs             # PostCSS config (Mantine + Tailwind)
 ├── tailwind.config.ts             # Tailwind configuration
 ├── tsconfig.json                  # TypeScript configuration
+├── prisma.config.ts               # Prisma configuration
+├── proxy.ts                       # Proxy configuration
 └── package.json                   # Dependencies
 ```
 
 ## 🔐 Autentikasi
 
-### Demo Credentials
-
-Untuk login ke backoffice, gunakan kredensial berikut:
-
-- **Username**: `admin`
-- **Password**: `admin`
-
-Atau daftar akun admin baru di halaman register!
+Aplikasi menggunakan JWT-based authentication dengan password hashing menggunakan bcryptjs.
 
 ### Cara Kerja
 
-1. **Login**: User memasukkan username dan password di `/backoffice/login`
-   - Default admin: username `admin`, password `admin`
-   - Atau gunakan akun yang sudah didaftarkan
-2. **Registrasi**: Daftar akun admin baru di `/backoffice/register`
-   - Data disimpan di localStorage browser
-   - Email/username tidak boleh duplikat
-3. **Validasi**: Sistem memvalidasi credentials dari localStorage
-4. **Session**: Token disimpan di localStorage dan cookie
-5. **Redirect**: User yang tidak login akan diredirect ke login page
-6. **Ubah Password**: Admin dapat mengubah password di `/backoffice/change-password`
+1. **Login** (`/backoffice/login`)
+   - User memasukkan username dan password
+   - API endpoint: `POST /api/auth/login`
+   - Password divalidasi dengan bcryptjs
+   - JWT token dibuat menggunakan library `jose`
+   - Token disimpan di cookie (`auth_token`) dan user data di cookie (`auth_user`)
 
-### Security Notes
+2. **Registrasi** (`/backoffice/register`)
+   - Daftar akun admin baru
+   - API endpoint: `POST /api/auth/register`
+   - Email dan username harus unique
+   - Password di-hash dengan bcryptjs sebelum disimpan ke database
+   - Data disimpan di PostgreSQL melalui Prisma
 
-⚠️ **PENTING**: Implementasi autentikasi ini adalah untuk demo/development saja.
+3. **Session Management**
+   - API endpoint: `GET /api/auth/session`
+   - Memverifikasi JWT token dari cookie
+   - Mengembalikan user data jika token valid
 
-Untuk production, Anda harus:
-- Menggunakan API backend yang proper
-- Implement JWT atau session-based auth
-- Enkripsi password dengan bcrypt
-- Gunakan HTTPS
-- Implement rate limiting
-- Tambahkan CSRF protection
-- Gunakan secure cookies
+4. **Ubah Password** (`/backoffice/change-password`)
+   - API endpoint: `POST /api/auth/change-password`
+   - Memerlukan authentication token
+   - Validasi password lama sebelum mengubah
+   - Password baru di-hash dengan bcryptjs
+
+5. **Protected Routes**
+   - Middleware memverifikasi JWT token
+   - User yang tidak login akan diredirect ke `/backoffice/login`
+
+### Authentication Flow
+
+```
+Login → API (/api/auth/login) → Verify Password (bcrypt) → Generate JWT → Set Cookie
+                                                                    ↓
+Protected Route → Check Cookie → Verify JWT → Allow Access / Redirect to Login
+```
+
+### JWT Configuration
+
+- **Library**: `jose` (JWT signing & verification)
+- **Algorithm**: HS256
+- **Secret**: `JWT_SECRET` dari environment variable
+- **Expiration**: `JWT_EXPIRES_IN` (default: 1d)
+- **Token Payload**: `{ username, email, name, role, sub }`
+
+### Security Features
+
+✅ **Sudah Diimplementasikan:**
+- Password hashing dengan bcryptjs
+- JWT token-based authentication
+- Secure cookie storage
+- Token expiration
+- Password validation
+
+⚠️ **Untuk Production, Pertimbangkan:**
+- Rate limiting untuk API endpoints
+- CSRF protection
+- HTTPS only cookies
+- Refresh token mechanism
+- Account lockout setelah beberapa failed attempts
+- Password strength requirements
+- Email verification untuk registrasi
 
 ## 🗺️ Route
 
@@ -245,13 +380,37 @@ Untuk production, Anda harus:
 |-------|-----------|
 | `/backoffice` | Dashboard - Overview dan statistik |
 | `/backoffice/change-password` | Ubah password - Halaman untuk mengubah password |
+| `/backoffice/menus` | Manajemen menu untuk landing page |
 | `/backoffice/users` | Manajemen pengguna (coming soon) |
 | `/backoffice/transactions` | Manajemen transaksi (coming soon) |
 | `/backoffice/reports` | Laporan dan analytics (coming soon) |
 | `/backoffice/settings` | Pengaturan sistem (coming soon) |
 
+### API Routes
+
+| Endpoint | Method | Deskripsi | Auth Required |
+|----------|--------|-----------|---------------|
+| `/api/auth/login` | POST | Login user | ❌ |
+| `/api/auth/register` | POST | Registrasi user baru | ❌ |
+| `/api/auth/session` | GET | Get current session | ✅ |
+| `/api/auth/change-password` | POST | Ubah password | ✅ |
+| `/api/landing` | GET | Data untuk landing page | ❌ |
+| `/api/menus` | GET, POST | Get/Create menus | ✅ |
+| `/api/menus/[id]` | GET, PUT, DELETE | Get/Update/Delete menu | ✅ |
+
 
 ## 🎨 Customization
+
+### State Management
+
+Aplikasi menggunakan **Redux Toolkit** untuk state management global:
+
+- **Store Location**: `store/store.ts`
+- **Provider**: `store/StoreProvider.tsx`
+- **Typed Hooks**: `store/hooks.ts` (useAppDispatch, useAppSelector)
+- **Slices**: `store/landingSlice.ts` (contoh slice untuk landing page)
+
+Redux store di-wrap di `AppProviders` bersama dengan Mantine dan Auth providers.
 
 ### Theme Mantine
 
@@ -285,6 +444,18 @@ Aplikasi menggunakan **Atomic Design Pattern**:
 - **Layouts**: Layout components (LandingLayout, BackofficeLayout)
 
 Semua komponen custom berada di folder `components/` dengan struktur yang terorganisir.
+
+### Path Aliases
+
+TypeScript path aliases dikonfigurasi di `tsconfig.json`:
+- `@/*` → root directory
+
+Contoh penggunaan:
+```tsx
+import { prisma } from '@/config/prisma';
+import { useAuth } from '@/config/auth-context';
+import { useAppSelector } from '@/store/hooks';
+```
 
 ## 📚 Dokumentasi
 
@@ -341,16 +512,23 @@ Jika komponen custom tidak muncul atau error:
 - [x] Custom Mantine theme dengan primary color branding
 - [x] Landing page dengan layout yang responsive
 - [x] Custom hooks (useViewport)
+- [x] Redux Toolkit untuk state management
+- [x] Prisma ORM dengan PostgreSQL
+- [x] JWT-based authentication dengan bcryptjs
+- [x] API routes untuk authentication
+- [x] Menu management API dan halaman
+- [x] Database schema dan migrations
 - [ ] Implementasi halaman Users Management
 - [ ] Implementasi halaman Transactions
 - [ ] Implementasi halaman Reports dengan charts
 - [ ] Implementasi halaman Settings
-- [ ] Integrasi dengan backend API
-- [ ] Implementasi proper authentication (JWT)
 - [ ] Unit tests
 - [ ] E2E tests
 - [x] Dark mode support (sudah ada di theme)
 - [ ] Multi-language support
+- [ ] Refresh token mechanism
+- [ ] Rate limiting untuk API
+- [ ] Email verification
 
 ## 👨‍💻 Development Team
 

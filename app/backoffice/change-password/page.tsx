@@ -16,7 +16,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconLock, IconAlertCircle, IconCheck, IconKey } from '@tabler/icons-react';
-import { useAuth } from '@/lib/auth-context';
+import { useAuth } from '@/config/auth-context';
 import { notifications } from '@mantine/notifications';
 
 export default function ChangePasswordPage() {

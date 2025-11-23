@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
 import bcrypt from "bcryptjs";
 
 type RegisterPayload = {

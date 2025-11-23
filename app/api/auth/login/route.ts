@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
 import bcrypt from "bcryptjs";
-import { signToken } from "@/lib/jwt";
+import { signToken } from "@/config/jwt";
 
 type LoginRequest = {
-  email?: string;
+  username?: string;
   password?: string;
 };
 
@@ -18,37 +18,27 @@ const buildCookieOptions = () => ({
   maxAge: COOKIE_MAX_AGE,
 });
 
-const normalizeIdentifier = (identifier: string) => {
-  const trimmed = identifier.trim();
-  if (!trimmed.includes("@")) {
-    if (trimmed.toLowerCase() === "admin") {
-      return "admin@daytonfintech.com";
-    }
-  }
-  return trimmed.toLowerCase();
-};
-
 export async function POST(request: Request) {
   try {
     const body: LoginRequest = await request.json();
-    const email = body.email?.trim();
+    // Di-trim untuk menghilangkan spasi tidak sengaja di awal/akhir input username.
+    const username = body.username?.trim().toLowerCase();
     const password = body.password;
 
-    if (!email || !password) {
+    if (!username || !password) {
       return NextResponse.json(
-        { success: false, message: "Email dan password wajib diisi." },
+        { success: false, message: "Username dan password wajib diisi." },
         { status: 400 }
       );
     }
 
-    const normalizedEmail = normalizeIdentifier(email);
     const user = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
+      where: { username: username },
     });
 
     if (!user) {
       return NextResponse.json(
-        { success: false, message: "Email atau password salah." },
+        { success: false, message: `Username "${username}" tidak ditemukan.` },
         { status: 401 }
       );
     }
@@ -56,19 +46,21 @@ export async function POST(request: Request) {
     const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) {
       return NextResponse.json(
-        { success: false, message: "Email atau password salah." },
+        { success: false, message: "Password salah." },
         { status: 401 }
       );
     }
 
     const userPayload = {
       email: user.email,
-      name: user.name ?? "Admin",
+      username: user.username,
+      name: user.name,
       role: user.role,
     };
 
     const token = await signToken({
       sub: user.id,
+      username: user.username,
       email: user.email,
       name: user.name,
       role: user.role,
@@ -76,7 +68,7 @@ export async function POST(request: Request) {
 
     const response = NextResponse.json({
       success: true,
-      user: userPayload,
+      user: user,
       token,
     });
 

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
 import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
-import { verifyToken } from "@/lib/jwt";
+import { verifyToken } from "@/config/jwt";
 
 type ChangePasswordPayload = {
   oldPassword?: string;

@@ -5,6 +5,7 @@ CREATE TYPE "Role" AS ENUM ('ADMIN');
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
     "name" TEXT,
     "passwordHash" TEXT NOT NULL,
     "role" "Role" NOT NULL DEFAULT 'ADMIN',
@@ -26,6 +27,9 @@ CREATE TABLE "Menu" (
     "createdBy" TEXT,
     "updatedBy" TEXT,
     "deletedBy" TEXT,
+    "createdByUser" TEXT,
+    "updatedByUser" TEXT,
+    "deletedByUser" TEXT,
 
     CONSTRAINT "Menu_pkey" PRIMARY KEY ("id")
 );
@@ -44,6 +48,9 @@ CREATE TABLE "Timeline" (
     "createdBy" TEXT,
     "updatedBy" TEXT,
     "deletedBy" TEXT,
+    "createdByUser" TEXT,
+    "updatedByUser" TEXT,
+    "deletedByUser" TEXT,
 
     CONSTRAINT "Timeline_pkey" PRIMARY KEY ("id")
 );
@@ -134,7 +141,7 @@ CREATE TABLE "BusinessModelTableCell" (
 CREATE TABLE "Event" (
     "id" SERIAL NOT NULL,
     "imageUrl" TEXT NOT NULL,
-    "dateText" TEXT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -199,121 +206,25 @@ CREATE TABLE "Config" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "BusinessModelTableCell_rowId_columnId_key" ON "BusinessModelTableCell"("rowId", "columnId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Config_key_key" ON "Config"("key");
 
 -- AddForeignKey
-ALTER TABLE "Menu" ADD CONSTRAINT "Menu_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Menu" ADD CONSTRAINT "Menu_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Menu" ADD CONSTRAINT "Menu_deletedBy_fkey" FOREIGN KEY ("deletedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Timeline" ADD CONSTRAINT "Timeline_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Timeline" ADD CONSTRAINT "Timeline_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Timeline" ADD CONSTRAINT "Timeline_deletedBy_fkey" FOREIGN KEY ("deletedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BusinessModel" ADD CONSTRAINT "BusinessModel_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BusinessModel" ADD CONSTRAINT "BusinessModel_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BusinessModel" ADD CONSTRAINT "BusinessModel_deletedBy_fkey" FOREIGN KEY ("deletedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BusinessModelTable" ADD CONSTRAINT "BusinessModelTable_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BusinessModelTable" ADD CONSTRAINT "BusinessModelTable_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BusinessModelTable" ADD CONSTRAINT "BusinessModelTable_deletedBy_fkey" FOREIGN KEY ("deletedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "BusinessModelTable" ADD CONSTRAINT "BusinessModelTable_businessModelId_fkey" FOREIGN KEY ("businessModelId") REFERENCES "BusinessModel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BusinessModelTableColumn" ADD CONSTRAINT "BusinessModelTableColumn_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BusinessModelTableColumn" ADD CONSTRAINT "BusinessModelTableColumn_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BusinessModelTableColumn" ADD CONSTRAINT "BusinessModelTableColumn_deletedBy_fkey" FOREIGN KEY ("deletedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "BusinessModelTableColumn" ADD CONSTRAINT "BusinessModelTableColumn_tableId_fkey" FOREIGN KEY ("tableId") REFERENCES "BusinessModelTable"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BusinessModelTableRow" ADD CONSTRAINT "BusinessModelTableRow_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BusinessModelTableRow" ADD CONSTRAINT "BusinessModelTableRow_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BusinessModelTableRow" ADD CONSTRAINT "BusinessModelTableRow_deletedBy_fkey" FOREIGN KEY ("deletedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "BusinessModelTableRow" ADD CONSTRAINT "BusinessModelTableRow_tableId_fkey" FOREIGN KEY ("tableId") REFERENCES "BusinessModelTable"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BusinessModelTableCell" ADD CONSTRAINT "BusinessModelTableCell_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BusinessModelTableCell" ADD CONSTRAINT "BusinessModelTableCell_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BusinessModelTableCell" ADD CONSTRAINT "BusinessModelTableCell_deletedBy_fkey" FOREIGN KEY ("deletedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "BusinessModelTableCell" ADD CONSTRAINT "BusinessModelTableCell_rowId_fkey" FOREIGN KEY ("rowId") REFERENCES "BusinessModelTableRow"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "BusinessModelTableCell" ADD CONSTRAINT "BusinessModelTableCell_columnId_fkey" FOREIGN KEY ("columnId") REFERENCES "BusinessModelTableColumn"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Event" ADD CONSTRAINT "Event_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Event" ADD CONSTRAINT "Event_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Event" ADD CONSTRAINT "Event_deletedBy_fkey" FOREIGN KEY ("deletedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Legal" ADD CONSTRAINT "Legal_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Legal" ADD CONSTRAINT "Legal_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Legal" ADD CONSTRAINT "Legal_deletedBy_fkey" FOREIGN KEY ("deletedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "QnA" ADD CONSTRAINT "QnA_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "QnA" ADD CONSTRAINT "QnA_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "QnA" ADD CONSTRAINT "QnA_deletedBy_fkey" FOREIGN KEY ("deletedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Config" ADD CONSTRAINT "Config_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Config" ADD CONSTRAINT "Config_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Config" ADD CONSTRAINT "Config_deletedBy_fkey" FOREIGN KEY ("deletedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;

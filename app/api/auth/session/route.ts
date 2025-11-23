@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { verifyToken } from "@/lib/jwt";
-import { prisma } from "@/lib/prisma";
+import { verifyToken } from "@/config/jwt";
+import { prisma } from "@/config/prisma";
 
 const COOKIE_MAX_AGE = 60 * 60 * 24;
 

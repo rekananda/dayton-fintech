@@ -19,7 +19,7 @@ import {
   IconChartBar, 
   IconSettings
 } from '@tabler/icons-react';
-import { useAuth } from '@/lib/auth-context';
+import { useAuth } from '@/config/auth-context';
 import AppHeader from './AppHeader';
 import { BackofficeLayoutI } from './type';
 
@@ -110,7 +110,7 @@ export function BackofficeLayout({ children }: BackofficeLayoutI) {
 
   return (
     <AppShell
-      header={{ height: 60 }}
+      header={{ height: 90, offset: false }}
       navbar={{
         width: desktopCollapsed ? 60 : 250,
         breakpoint: 'sm',
@@ -120,7 +120,7 @@ export function BackofficeLayout({ children }: BackofficeLayoutI) {
     >
       <AppHeader
         variant="backoffice"
-        user={user ? { name: user.name, email: user.email } : undefined}
+        user={user || undefined}
         mobileOpened={mobileOpened}
         onMobileToggle={toggleMobile}
         desktopCollapsed={desktopCollapsed}

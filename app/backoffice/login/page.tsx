@@ -18,7 +18,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconLock, IconMail, IconAlertCircle } from '@tabler/icons-react';
-import { useAuth } from '@/lib/auth-context';
+import { useAuth } from '@/config/auth-context';
 import { notifications } from '@mantine/notifications';
 
 export default function LoginPage() {
@@ -80,51 +80,51 @@ export default function LoginPage() {
     }
   };
 
-  useEffect(() => {
-    let isMounted = true;
+  // useEffect(() => {
+  //   let isMounted = true;
 
-    const checkSession = async () => {
-      try {
-        const response = await fetch('/api/auth/session', { cache: 'no-store' });
-        if (!isMounted) return;
+  //   const checkSession = async () => {
+  //     try {
+  //       const response = await fetch('/api/auth/session', { cache: 'no-store' });
+  //       if (!isMounted) return;
 
-        if (response.ok) {
-          router.replace('/backoffice');
-          return;
-        }
+  //       if (response.ok) {
+  //         router.replace('/backoffice');
+  //         return;
+  //       }
 
-        if (response.status === 401) {
-          clearClientSession();
-        }
-      } catch (error) {
-        console.error('Session check error:', error);
-        clearClientSession();
-      } finally {
-        if (isMounted) {
-          setIsCheckingSession(false);
-        }
-      }
-    };
+  //       if (response.status === 401) {
+  //         clearClientSession();
+  //       }
+  //     } catch (error) {
+  //       console.error('Session check error:', error);
+  //       clearClientSession();
+  //     } finally {
+  //       if (isMounted) {
+  //         setIsCheckingSession(false);
+  //       }
+  //     }
+  //   };
 
-    checkSession();
+  //   checkSession();
 
-    return () => {
-      isMounted = false;
-    };
-  }, [router]);
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, [router]);
 
-  if (isCheckingSession) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
-        <Stack align="center" gap="sm">
-          <Loader color="blue" />
-          <Text c="dimmed" size="sm">
-            Memeriksa sesi...
-          </Text>
-        </Stack>
-      </div>
-    );
-  }
+  // if (isCheckingSession) {
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+  //       <Stack align="center" gap="sm">
+  //         <Loader color="blue" />
+  //         <Text c="dimmed" size="sm">
+  //           Memeriksa sesi...
+  //         </Text>
+  //       </Stack>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">

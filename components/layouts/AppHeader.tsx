@@ -25,7 +25,7 @@ const AppHeader = ({
 
   return (
     <AppShell.Header className='glassmorphism'>
-      <Container size="1440px" h="100%" px={isMobile ? 20 : 100}>
+      <Container size={variant === 'backoffice' ? "100%" : "1440px"} h="100%" px={isMobile || variant === 'backoffice' ? 20 : 100}>
         <Group h="100%" justify="space-between">
           <Group gap="sm">
             {onMobileToggle && variant === 'backoffice' && (

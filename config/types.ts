@@ -3,6 +3,22 @@ import { MantineColor } from "@mantine/core";
 import * as materialIcons from '@mui/icons-material';
 import { icons } from '@tabler/icons-react';
 
+export type UserT = {
+  email: string;
+  username: string;
+  name?: string;
+  role: string;
+}
+
+export interface AuthContextType {
+  user: UserT | null;
+  login: (username: string, password: string) => Promise<boolean>;
+  register: (email: string, password: string, name: string) => Promise<{ success: boolean; message: string }>;
+  changePassword: (oldPassword: string, newPassword: string) => Promise<{ success: boolean; message: string }>;
+  logout: () => void;
+  isLoading: boolean;
+}
+
 export type MenuDataT = {
   id: number;
   label: string;

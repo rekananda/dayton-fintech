@@ -4,6 +4,7 @@ import { AppShell, Container, Box } from '@mantine/core';
 import AppHeader from './AppHeader';
 import { LandingLayoutI } from './type';
 import AppFooter from './AppFooter';
+import './landingpage.style.css';
 
 export function LandingLayout({ children }: LandingLayoutI) {
 

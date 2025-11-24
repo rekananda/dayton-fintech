@@ -3,24 +3,15 @@ import { prisma } from "@/config/prisma";
 import bcrypt from "bcryptjs";
 
 type RegisterPayload = {
+  username?: string;
   name?: string;
   email?: string;
   password?: string;
 };
 
-const normalizeIdentifier = (identifier: string) => {
-  const trimmed = identifier.trim();
-  if (!trimmed.includes("@")) {
-    if (trimmed.toLowerCase() === "admin") {
-      return "admin@daytonfintech.com";
-    }
-  }
-  return trimmed.toLowerCase();
-};
-
 export async function POST(request: Request) {
   try {
-    const { name, email, password }: RegisterPayload = await request.json();
+    const { username, name, email, password }: RegisterPayload = await request.json();
 
     if (!name || name.trim().length < 3) {
       return NextResponse.json(
@@ -29,9 +20,16 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!username || username.trim().length < 3) {
+      return NextResponse.json(
+        { success: false, message: "Username minimal 3 karakter." },
+        { status: 400 }
+      );
+    }
+
     if (!email || email.trim().length < 3) {
       return NextResponse.json(
-        { success: false, message: "Email/Username minimal 3 karakter." },
+        { success: false, message: "Email minimal 3 karakter." },
         { status: 400 }
       );
     }
@@ -43,15 +41,24 @@ export async function POST(request: Request) {
       );
     }
 
-    const normalizedEmail = normalizeIdentifier(email);
-
-    const existing = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
+    const existingEmail = await prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
     });
 
-    if (existing) {
+    const existingUsername = await prisma.user.findUnique({
+      where: { username: username.toLowerCase() },
+    });
+
+    if (existingEmail) {
       return NextResponse.json(
         { success: false, message: "Email sudah terdaftar." },
+        { status: 409 }
+      );
+    }
+
+    if (existingUsername) {
+      return NextResponse.json(
+        { success: false, message: "Username sudah terdaftar." },
         { status: 409 }
       );
     }
@@ -60,7 +67,8 @@ export async function POST(request: Request) {
 
     await prisma.user.create({
       data: {
-        email: normalizedEmail,
+        email: email.toLowerCase(),
+        username: username.toLowerCase(),
         name: name.trim(),
         passwordHash,
       },

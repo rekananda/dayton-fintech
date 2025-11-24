@@ -52,13 +52,13 @@ const AppHeader = ({
               </Tooltip>
             )}
             <Group>
-              <MainLogo size={40} />
+              <MainLogo size={50} />
               <Stack gap={2}>
                 <MainText variant="body-bold" size='20px'>
-                  {variant === 'landing' ? 'Dayton Fintech' : 'Dayton Backoffice'}
+                  Dayton Fintech
                 </MainText>
                 <MainText variant="body" size='14px'>
-                  AAUSD Trend Strategy
+                  {variant === 'landing' ? 'AAUSD Trend Strategy' : 'Backoffice'}
                 </MainText>
               </Stack>
             </Group>
@@ -96,7 +96,7 @@ const AppHeader = ({
                 </Menu.Dropdown>
               </Menu>
             )}
-            <ColorSchemeToggle/>
+            {variant !== 'backoffice' && <ColorSchemeToggle/>}
             {variant === 'landing' && !isDesktop && (
               <MenuLandingPage />
             )}

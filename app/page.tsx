@@ -3,7 +3,6 @@
 import { Group, Stack, Badge, Box, Button, Grid, Loader, Center, Text } from '@mantine/core';
 import { LandingLayout } from '@/components/layouts/LandingLayout';
 import MainText from '@/components/Atoms/MainText';
-import './landingpage.css';
 import RippleEffect from '@/components/Atoms/Effect/RippleEffect';
 import Ornament from '@/components/Atoms/Effect/Ornament';
 import TimelineCard from '@/components/Molecules/Cards/TimelineCard';

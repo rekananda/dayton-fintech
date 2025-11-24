@@ -35,7 +35,6 @@ function transformBusinessModel(businessModel: BusinessModelWithRelations): Buss
           label: col.label,
         }));
 
-      console.log("table.rows", table.rows);
       const rows = table.rows
         .filter((row) => !row.deletedAt)
         .sort((a, b) => a.order - b.order)
@@ -51,7 +50,6 @@ function transformBusinessModel(businessModel: BusinessModelWithRelations): Buss
           
           return rowData as TableProfitSharingDataT | TableReferralDataT;
         });
-      console.log("rows", rows);
 
       return {
         columns: columns as TableT<TableProfitSharingDataT>["columns"] | TableT<TableReferralDataT>["columns"],

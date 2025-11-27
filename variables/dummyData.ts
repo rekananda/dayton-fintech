@@ -1,3 +1,4 @@
+import { NavbarButtonItemT, NavbarButtonSubItemT } from "@/components/Atoms/Button/NavbarButton/type";
 import { BussinessModelDataT, EventDataT, LegalDataT, MenuDataT, QnADataT, TimelineDataT } from "@/config/types";
 
 export const mainWhatsappNumber = '6281234567890';
@@ -171,3 +172,75 @@ export const DataQnA: QnADataT[] = [
     order: 5
   },
 ];
+
+export const backofficeMenuItems: NavbarButtonItemT[] = [
+  {
+    icon: "IconCategory",
+    label: "Menu",
+    href: "/backoffice/menus",
+  },
+  {
+    icon: "IconSettings",
+    label: "Configuration",
+    href: "/backoffice/configs",
+  },
+  {
+    icon: "IconSchema",
+    label: "Schema",
+    href: "/backoffice/schemas",
+  },
+  {
+    icon: "IconPerspective",
+    label: "Business Model",
+    href: "/backoffice/business-models",
+    subs: [
+      {
+        icon: "IconChartPie4",
+        label: "Profit Shares",
+        href: "/backoffice/profit-shares",
+      },
+      {
+        icon: "IconUsersGroup",
+        label: "Referral Shares",
+        href: "/backoffice/referral-shares",
+      },
+    ],
+  },
+  {
+    icon: "ImageAspectRatio",
+    label: "Event",
+    href: "/backoffice/events",
+  },
+  {
+    icon: "IconRosetteDiscountCheck",
+    label: "Legal",
+    href: "/backoffice/legals",
+  },
+  {
+    icon: "IconMessageCircleUser",
+    label: "FAQ",
+    href: "/backoffice/faqs",
+  },
+];
+
+const flattenMenuItems = (items: NavbarButtonItemT[], level: number = 0): NavbarButtonSubItemT[] => {
+  const result: NavbarButtonSubItemT[] = [];
+  
+  items.forEach((item) => {
+    const subItem: NavbarButtonSubItemT = {
+      icon: item.icon,
+      label: item.label,
+      href: item.href,
+      subLevel: level,
+    };
+    result.push(subItem);
+
+    if (item.subs && item.subs.length > 0) {
+      result.push(...flattenMenuItems(item.subs, level + 1));
+    }
+  });
+  
+  return result;
+};
+
+export const backofficeMenuSubItems: NavbarButtonSubItemT[] = flattenMenuItems(backofficeMenuItems);

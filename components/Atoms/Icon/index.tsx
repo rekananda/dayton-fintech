@@ -7,7 +7,7 @@ const Icon = ({ name, ...rest }: IconT) => {
   const IconWrapper = icons[name]
 
   return (
-    <IconWrapper {...rest}/>
+    <IconWrapper stroke={1.8} {...rest} />
   )
 }
 

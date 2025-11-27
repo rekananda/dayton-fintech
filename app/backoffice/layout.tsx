@@ -28,7 +28,6 @@ export default function BackofficeLayoutWrapper({
         html.setAttribute('data-mantine-color-scheme', 'light');
       };
       
-      // Set sekali saat mount
       forceLight();
       
       let isActive = true;

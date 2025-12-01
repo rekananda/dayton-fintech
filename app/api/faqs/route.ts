@@ -2,7 +2,8 @@ import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/config/prisma";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/config/jwt";
-import type { Prisma } from "@prisma/client";
+
+type QnAWhere = NonNullable<Parameters<typeof prisma.qnA.findMany>[0]>["where"];
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest) {
     const sortColumn = searchParams.get("sortColumn") || "order";
     const sortDirection = searchParams.get("sortDirection") || "asc";
 
-    const where: Prisma.QnAWhereInput = {
+    const where: QnAWhere = {
       deletedAt: null,
     };
 

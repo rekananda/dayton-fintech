@@ -2,7 +2,9 @@ import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/config/prisma";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/config/jwt";
-import type { Prisma } from "@prisma/client";
+
+type BusinessModelWhere = NonNullable<Parameters<typeof prisma.businessModel.findMany>[0]>["where"];
+type BusinessModelOrderBy = NonNullable<Parameters<typeof prisma.businessModel.findMany>[0]>["orderBy"];
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,7 +15,7 @@ export async function GET(request: NextRequest) {
     const sortColumn = searchParams.get("sortColumn") || "order";
     const sortDirection = searchParams.get("sortDirection") || "asc";
 
-    const where: Prisma.BusinessModelWhereInput = {
+    const where: BusinessModelWhere = {
       deletedAt: null,
     };
 
@@ -24,7 +26,7 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const orderBy: Prisma.BusinessModelOrderByWithRelationInput = 
+    const orderBy: BusinessModelOrderBy = 
       sortColumn === "title" 
         ? { title: sortDirection as "asc" | "desc" }
         : { order: sortDirection as "asc" | "desc" };

@@ -2,8 +2,10 @@ import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/config/prisma";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/config/jwt";
-import type { Prisma } from "@prisma/client";
 import { extractFileIdFromUrl, isGoogleDriveUrl, deleteFileFromGoogleDrive } from "../upload/gdrive/delete/route";
+
+type EventWhere = NonNullable<Parameters<typeof prisma.event.findMany>[0]>["where"];
+type EventOrderBy = NonNullable<Parameters<typeof prisma.event.findMany>[0]>["orderBy"];
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,7 +16,7 @@ export async function GET(request: NextRequest) {
     const sortColumn = searchParams.get("sortColumn") || "date";
     const sortDirection = searchParams.get("sortDirection") || "desc";
 
-    const where: Prisma.EventWhereInput = {
+    const where: EventWhere = {
       deletedAt: null,
     };
 
@@ -26,7 +28,7 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const orderBy: Prisma.EventOrderByWithRelationInput = 
+    const orderBy: EventOrderBy = 
       sortColumn === "title" 
         ? { title: sortDirection as "asc" | "desc" }
         : sortColumn === "date"

@@ -4,6 +4,7 @@ import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/config/jwt";
 import { Prisma } from "@prisma/client";
+import { extractFileIdFromUrl, isGoogleDriveUrl, deleteFileFromGoogleDrive } from "../upload/gdrive/delete/route";
 
 export async function GET(request: NextRequest) {
   try {
@@ -143,6 +144,32 @@ export async function PUT(request: Request) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 });
     }
 
+    const userId = payload.sub || payload.username;
+
+    // Get existing event to check old image URL
+    const existingEvent = await prisma.event.findUnique({
+      where: { id },
+      select: { imageUrl: true },
+    });
+
+    if (!existingEvent) {
+      return NextResponse.json({ message: "Event not found" }, { status: 404 });
+    }
+
+    if (existingEvent.imageUrl !== imageUrl && existingEvent.imageUrl) {
+      if (isGoogleDriveUrl(existingEvent.imageUrl)) {
+        const fileId = extractFileIdFromUrl(existingEvent.imageUrl);
+        if (fileId) {
+          try {
+            await deleteFileFromGoogleDrive(fileId, userId);
+            console.log(`Deleted old Google Drive image for event ${id}`);
+          } catch (error) {
+            console.error(`Failed to delete old Google Drive image for event ${id}:`, error);
+          }
+        }
+      }
+    }
+
     const now = new Date();
     const eventDate = new Date(date);
 
@@ -196,6 +223,30 @@ export async function DELETE(request: Request) {
     const payload = await verifyToken(token);
     if (!payload || !payload.username) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 });
+    }
+
+    const userId = payload.sub || payload.username;
+
+    // Get events before deleting to check for Google Drive images
+    const eventsToDelete = await prisma.event.findMany({
+      where: { id: { in: ids }, deletedAt: null },
+      select: { id: true, imageUrl: true },
+    });
+
+    // Delete images from Google Drive if they are from Drive
+    for (const event of eventsToDelete) {
+      if (event.imageUrl && isGoogleDriveUrl(event.imageUrl)) {
+        const fileId = extractFileIdFromUrl(event.imageUrl);
+        if (fileId) {
+          try {
+            await deleteFileFromGoogleDrive(fileId, userId);
+            console.log(`Deleted Google Drive image for event ${event.id}`);
+          } catch (error) {
+            console.error(`Failed to delete Google Drive image for event ${event.id}:`, error);
+            // Continue with event deletion even if image deletion fails
+          }
+        }
+      }
     }
 
     const now = new Date();

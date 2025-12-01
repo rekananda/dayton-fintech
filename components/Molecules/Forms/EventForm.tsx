@@ -2,7 +2,7 @@
 
 import { EventDataT } from "@/config/types";
 import { BaseFormPropsT } from "./type";
-import { Group, Stack, Textarea, Box, Image, Text, AspectRatio } from "@mantine/core";
+import { Group, Stack, Textarea, Box, Image, Text, AspectRatio, SegmentedControl } from "@mantine/core";
 import MainInput from "@/components/Atoms/FormInput/MainInput";
 import { useForm } from "@mantine/form";
 import { eventValidator } from "@/hooks/validator/eventValidation";
@@ -20,6 +20,8 @@ const EventForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false,
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<FileWithPath | null>(null);
+  const [imageUrlInput, setImageUrlInput] = useState<string>("");
+  const [inputMode, setInputMode] = useState<"upload" | "url">("upload");
   const openRef = useRef<() => void>(null);
   const prevDefaultValuesRef = useRef<typeof defaultValues>(undefined);
   const prevForEditRef = useRef<boolean>(false);
@@ -61,6 +63,10 @@ const EventForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false,
         
         if (defaultValues.imageUrl) {
           setPreview(defaultValues.imageUrl);
+          setImageUrlInput(defaultValues.imageUrl);
+          if (defaultValues.imageUrl.includes('drive.google.com') || defaultValues.imageUrl.startsWith('http')) {
+            setInputMode("url");
+          }
         }
         
         prevDefaultValuesRef.current = defaultValues;
@@ -70,6 +76,8 @@ const EventForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false,
       form.reset();
       setPreview(null);
       setFile(null);
+      setImageUrlInput("");
+      setInputMode("upload");
       prevDefaultValuesRef.current = undefined;
       prevForEditRef.current = false;
     }
@@ -179,6 +187,24 @@ const EventForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false,
   };
 
   const onSubmit = form.onSubmit(async (values) => {
+    if (inputMode === "url") {
+      if (imageUrlInput && imageUrlInput.trim()) {
+        const finalValues = {
+          ...values,
+          imageUrl: imageUrlInput.trim(),
+        };
+        await handleSubmit(finalValues);
+        return;
+      } else {
+        notifications.show({
+          color: "red",
+          title: "URL gambar diperlukan",
+          message: "Silakan masukkan URL gambar yang valid",
+        });
+        return;
+      }
+    }
+
     if (forEdit && !file && values.imageUrl && values.imageUrl !== 'pending-upload') {
       handleSubmit(values);
       return;
@@ -188,7 +214,7 @@ const EventForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false,
       notifications.show({
         color: "red",
         title: "Gambar diperlukan",
-        message: "Silakan pilih gambar terlebih dahulu",
+        message: "Silakan pilih gambar terlebih dahulu atau gunakan mode URL",
       });
       return;
     }
@@ -222,60 +248,137 @@ const EventForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false,
       <form onSubmit={onSubmit}>
         <Stack>
           <Box>
-            <Text size="sm" fw={500} mb={5}>
-              Image <span style={{ color: 'red' }}>*</span>
-            </Text>
-            {preview ? (
-              <Box pos="relative">
-                <AspectRatio ratio={16 / 9} mb="md">
-                  <Image
-                    src={preview}
-                    alt="Preview"
-                    fit="cover"
-                    radius="md"
-                  />
-                </AspectRatio>
-                <MainButton
-                  type="button"
-                  variant="outline"
-                  color="red"
-                  size="xs"
-                  onClick={handleRemove}
-                  leftSection={<IconX size={16} />}
-                >
-                  Hapus Gambar
-                </MainButton>
-              </Box>
+            <Group justify="space-between" mb={10}>
+              <Text size="sm" fw={500}>
+                Image <span style={{ color: 'red' }}>*</span>
+              </Text>
+              <SegmentedControl
+                value={inputMode}
+                onChange={(value) => {
+                  setInputMode(value as "upload" | "url");
+                  if (value === "url") {
+                    setFile(null);
+                    setPreview(null);
+                  } else {
+                    setImageUrlInput("");
+                    form.setFieldValue('imageUrl', '');
+                  }
+                }}
+                data={[
+                  { label: "Upload File", value: "upload" },
+                  { label: "Input URL", value: "url" },
+                ]}
+                size="xs"
+              />
+            </Group>
+            
+            {inputMode === "url" ? (
+              <Stack gap={10}>
+                <MainInput
+                  placeholder="Masukkan URL gambar (contoh: https://example.com/image.jpg)"
+                  value={imageUrlInput}
+                  onChange={(e) => {
+                    const url = e.target.value;
+                    setImageUrlInput(url);
+                    form.setFieldValue('imageUrl', url);
+                    if (url.trim()) {
+                      setPreview(url);
+                    } else {
+                      setPreview(null);
+                    }
+                  }}
+                  radius="xl"
+                />
+                {preview && (
+                  <Box pos="relative">
+                    <AspectRatio ratio={16 / 9} mb="md">
+                      <Image
+                        src={preview}
+                        alt="Preview"
+                        fit="cover"
+                        radius="md"
+                        onError={() => {
+                          setPreview(null);
+                          notifications.show({
+                            color: "red",
+                            title: "Gagal memuat gambar",
+                            message: "URL gambar tidak valid atau tidak dapat diakses",
+                          });
+                        }}
+                      />
+                    </AspectRatio>
+                    <MainButton
+                      type="button"
+                      variant="outline"
+                      color="red"
+                      size="xs"
+                      onClick={() => {
+                        setImageUrlInput("");
+                        setPreview(null);
+                        form.setFieldValue('imageUrl', '');
+                      }}
+                      leftSection={<IconX size={16} />}
+                    >
+                      Hapus Gambar
+                    </MainButton>
+                  </Box>
+                )}
+              </Stack>
             ) : (
-              <Dropzone
-                openRef={openRef}
-                onDrop={handleDrop}
-                onReject={handleReject}
-                maxSize={MAX_FILE_SIZE}
-                accept={IMAGE_MIME_TYPE}
-                disabled={uploading || isLoading}
-              >
-                <Group justify="center" gap="xl" mih={220} style={{ pointerEvents: 'none' }}>
-                  <Dropzone.Accept>
-                    <IconUpload size={52} stroke={1.5} />
-                  </Dropzone.Accept>
-                  <Dropzone.Reject>
-                    <IconX size={52} stroke={1.5} />
-                  </Dropzone.Reject>
-                  <Dropzone.Idle>
-                    <IconPhoto size={52} stroke={1.5} />
-                  </Dropzone.Idle>
+              <>
+                {preview ? (
+                  <Box pos="relative">
+                    <AspectRatio ratio={16 / 9} mb="md">
+                      <Image
+                        src={preview}
+                        alt="Preview"
+                        fit="cover"
+                        radius="md"
+                      />
+                    </AspectRatio>
+                    <MainButton
+                      type="button"
+                      variant="outline"
+                      color="red"
+                      size="xs"
+                      onClick={handleRemove}
+                      leftSection={<IconX size={16} />}
+                    >
+                      Hapus Gambar
+                    </MainButton>
+                  </Box>
+                ) : (
+                  <Dropzone
+                    openRef={openRef}
+                    onDrop={handleDrop}
+                    onReject={handleReject}
+                    maxSize={MAX_FILE_SIZE}
+                    accept={IMAGE_MIME_TYPE}
+                    disabled={uploading || isLoading}
+                  >
+                    <Group justify="center" gap="xl" mih={220} style={{ pointerEvents: 'none' }}>
+                      <Dropzone.Accept>
+                        <IconUpload size={52} stroke={1.5} />
+                      </Dropzone.Accept>
+                      <Dropzone.Reject>
+                        <IconX size={52} stroke={1.5} />
+                      </Dropzone.Reject>
+                      <Dropzone.Idle>
+                        <IconPhoto size={52} stroke={1.5} />
+                      </Dropzone.Idle>
 
-                  <div>
-                    <Text size="xl" inline>
-                      Drag images here or click to select files
-                    </Text>
-                    <Text size="sm" c="dimmed" inline mt={7}>
-                      Attach image file, maksimal 10MB
-                    </Text>
-                  </div>
-                </Group>
-              </Dropzone>
+                      <div>
+                        <Text size="xl" inline>
+                          Drag images here or click to select files
+                        </Text>
+                        <Text size="sm" c="dimmed" inline mt={7}>
+                          Attach image file, maksimal 10MB
+                        </Text>
+                      </div>
+                    </Group>
+                  </Dropzone>
+                )}
+              </>
             )}
             {form.errors.imageUrl && (
               <Text size="xs" c="red" mt={5}>

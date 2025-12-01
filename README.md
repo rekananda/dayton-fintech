@@ -36,6 +36,19 @@ Platform fintech modern yang dibangun dengan Next.js 16, Mantine UI, dan Tailwin
 - **Sidebar Navigation**: Navigasi yang mudah dengan menu sidebar
 - **Protected Routes**: Middleware untuk melindungi halaman admin
 - **Responsive Layout**: Tampilan optimal di desktop dan mobile
+- **Event Management**: CRUD lengkap untuk event dengan Google Drive image upload
+- **Menu Management**: Manajemen menu untuk landing page
+- **FAQ Management**: Manajemen pertanyaan dan jawaban
+- **Legal Management**: Manajemen dokumen legal
+- **Config Management**: Pengaturan konfigurasi aplikasi
+- **Schema Management**: Manajemen schema/form builder
+- **Business Models**: Manajemen business model dengan nested tables
+- **Profit Shares & Referral Shares**: Manajemen profit sharing dan referral
+- **Google Drive Integration**: Upload dan manajemen file gambar ke Google Drive
+  - Upload file ke Google Drive dengan OAuth 2.0
+  - Auto-delete file dari Drive saat event dihapus
+  - Support input URL eksternal (tidak harus upload)
+  - Auto-refresh token mechanism
 
 ## 🛠️ Tech Stack
 
@@ -58,6 +71,8 @@ Platform fintech modern yang dibangun dengan Next.js 16, Mantine UI, dan Tailwin
 - **File Upload**: Mantine Dropzone
 - **Notifications**: Mantine Notifications
 - **Progress**: Mantine NProgress
+- **Google APIs**: Google Drive API dengan OAuth 2.0 untuk file upload
+- **Date/Time**: Mantine Dates (DateTimePicker)
 
 ## 📦 Instalasi
 
@@ -145,16 +160,63 @@ Aplikasi menggunakan PostgreSQL dengan Prisma ORM. Setup database menggunakan Pr
    JWT_SECRET="ganti-dengan-secret-jwt-yang-kuat"
    JWT_EXPIRES_IN="1d"  # Opsional: default 1d
    
-   # NextAuth (jika digunakan)
-   NEXTAUTH_URL="http://localhost:3000"
-   NEXTAUTH_SECRET="ganti-dengan-secret-yang-kuat"
+   # Google Drive OAuth Configuration (untuk upload images)
+   GOOGLE_OAUTH_CLIENT_ID="your-google-oauth-client-id"
+   GOOGLE_OAUTH_CLIENT_SECRET="your-google-oauth-client-secret"
+   GOOGLE_OAUTH_REDIRECT_URI="http://localhost:3000/api/upload/gdrive/callback"
+   GOOGLE_DRIVE_FOLDER_ID="your-google-drive-folder-id"
+   
+   # Next.js Public URL
+   NEXT_PUBLIC_APP_URL="http://localhost:3000"
    ```
 
    **Catatan untuk Supabase:**
    - Gunakan `sslmode=require` atau `sslmode=prefer` untuk development
    - Untuk production, gunakan `sslmode=verify-full` dengan certificate
 
-3. **Generate Prisma Client dan Setup Database**
+3. **Setup Google Drive OAuth (Opsional - untuk upload images)**
+
+   Untuk menggunakan fitur upload gambar ke Google Drive:
+   
+   a. Buat Google Cloud Project di [Google Cloud Console](https://console.cloud.google.com/)
+   
+   b. Aktifkan Google Drive API
+   
+   c. Buat OAuth 2.0 Credentials:
+      - Type: Web application
+      - Authorized redirect URI: `http://localhost:3000/api/upload/gdrive/callback`
+   
+   d. Buat folder di Google Drive untuk menyimpan upload images
+   
+   e. Copy Client ID dan Client Secret ke environment variables
+   
+   f. Copy Folder ID dari URL Google Drive folder
+   
+   Lihat dokumentasi lengkap di `docs/GOOGLE_DRIVE_OAUTH_SETUP.md`
+
+4. **Setup Google Drive OAuth (Opsional - untuk upload images)**
+
+   Untuk menggunakan fitur upload gambar ke Google Drive, pastikan sudah menambahkan environment variables yang diperlukan (lihat step 2).
+   
+   Setup OAuth:
+   
+   a. Buat Google Cloud Project di [Google Cloud Console](https://console.cloud.google.com/)
+   
+   b. Aktifkan Google Drive API
+   
+   c. Buat OAuth 2.0 Credentials:
+      - Type: Web application
+      - Authorized redirect URI: `http://localhost:3000/api/upload/gdrive/callback`
+   
+   d. Buat folder di Google Drive untuk menyimpan upload images
+   
+   e. Copy Client ID dan Client Secret ke environment variables
+   
+   f. Copy Folder ID dari URL Google Drive folder
+   
+   Lihat dokumentasi lengkap di `docs/GOOGLE_DRIVE_OAUTH_SETUP.md`
+
+5. **Generate Prisma Client dan Setup Database**
 
    ```bash
    # Generate Prisma Client
@@ -167,14 +229,43 @@ Aplikasi menggunakan PostgreSQL dengan Prisma ORM. Setup database menggunakan Pr
    npm run prisma:migrate-deploy
    ```
 
-4. **Seed Database (Opsional)**
+6. **Seed Database (Opsional)**
+
+   Untuk menggunakan fitur upload gambar ke Google Drive:
+   
+   a. Buat Google Cloud Project di [Google Cloud Console](https://console.cloud.google.com/)
+   
+   b. Aktifkan Google Drive API
+   
+   c. Buat OAuth 2.0 Credentials:
+      - Type: Web application
+      - Authorized redirect URI: `http://localhost:3000/api/upload/gdrive/callback`
+   
+   d. Buat folder di Google Drive untuk menyimpan upload images
+   
+   e. Copy Client ID dan Client Secret ke environment variables
+   
+   f. Copy Folder ID dari URL Google Drive folder
+   
+   Lihat dokumentasi lengkap di `docs/GOOGLE_DRIVE_OAUTH_SETUP.md`
+
+5. **Seed Database (Opsional)**
 
    ```bash
    # Seed database dengan data awal
    npm run prisma:seed
    ```
 
-5. **Database Setup Scripts**
+6. **Connect Google Drive (Jika menggunakan upload images)**
+
+   Setelah setup OAuth credentials:
+   - Login ke backoffice
+   - Masuk ke halaman Events (`/backoffice/events`)
+   - Klik tombol "Hubungkan Google Drive"
+   - Authorize aplikasi untuk akses Google Drive
+   - Token akan disimpan di database dan auto-refresh saat expired
+
+7. **Database Setup Scripts**
 
    ```bash
    # Setup lengkap untuk development
@@ -210,10 +301,15 @@ Aplikasi memiliki beberapa model utama:
 - **Menu**: Menu navigation untuk landing page
 - **Timeline**: Timeline events
 - **BusinessModel**: Business model dengan nested tables
-- **Event**: Event management
+  - **BusinessModelTable**: Table dalam business model
+  - **BusinessModelTableRow**: Baris dalam table
+  - **BusinessModelTableColumn**: Kolom dalam table
+  - **BusinessModelTableCell**: Cell dalam table
+- **Event**: Event management dengan image upload
 - **Legal**: Legal documents
 - **QnA**: Question & Answer
 - **Config**: Application configuration
+- **GoogleDriveToken**: Token OAuth untuk akses Google Drive (per user)
 
 ## 📁 Struktur Folder
 
@@ -226,13 +322,34 @@ dayton-fintech/
 │   │   │   ├── register/          # POST /api/auth/register
 │   │   │   ├── change-password/   # POST /api/auth/change-password
 │   │   │   └── session/           # GET /api/auth/session
-│   │   ├── landing/               # Landing page API
-│   │   └── menus/                 # Menu management API
-│   ├── backoffice/                # Backoffice pages
+│   │   ├── landing/               # GET /api/landing (data untuk landing page)
+│   │   ├── menus/                 # GET, POST /api/menus (Menu management)
+│   │   ├── events/                # GET, POST, PUT, DELETE /api/events
+│   │   ├── faqs/                  # GET, POST, PUT, DELETE /api/faqs
+│   │   ├── legals/                # GET, POST, PUT, DELETE /api/legals
+│   │   ├── configs/               # GET, POST, PUT, DELETE /api/configs
+│   │   ├── schemas/               # GET, POST, PUT, DELETE /api/schemas
+│   │   └── upload/                # File upload endpoints
+│   │       └── gdrive/            # Google Drive upload
+│   │           ├── auth/          # GET /api/upload/gdrive/auth (OAuth URL)
+│   │           ├── callback/      # GET /api/upload/gdrive/callback (OAuth callback)
+│   │           ├── delete/        # POST /api/upload/gdrive/delete
+│   │           ├── status/        # GET /api/upload/gdrive/status
+│   │           ├── test/          # GET /api/upload/gdrive/test
+│   │           └── route.ts       # POST /api/upload/gdrive (upload file)
+│   ├── backoffice/                # Backoffice pages (Protected)
 │   │   ├── login/                 # Halaman login admin
 │   │   ├── register/              # Halaman register admin
 │   │   ├── change-password/       # Halaman ubah password
 │   │   ├── menus/                 # Menu management
+│   │   ├── events/                # Event management
+│   │   ├── faqs/                  # FAQ management
+│   │   ├── legals/                # Legal documents management
+│   │   ├── configs/               # Configuration management
+│   │   ├── schemas/               # Schema/form builder management
+│   │   ├── business-models/       # Business model management
+│   │   ├── profit-shares/         # Profit sharing management
+│   │   ├── referral-shares/       # Referral sharing management
 │   │   ├── layout.tsx             # Layout backoffice dengan sidebar
 │   │   └── page.tsx               # Dashboard backoffice
 │   ├── layout.tsx                 # Root layout dengan providers
@@ -251,9 +368,24 @@ dayton-fintech/
 │   │   ├── Accordion/             # Accordion component
 │   │   └── Effect/                # Effect components (Ripple, Ornament)
 │   ├── Molecules/                 # Komponen molekul
-│   │   ├── Cards/                 # Card components (RippleCard, TimelineCard)
-│   │   ├── Carousel/              # Carousel component
+│   │   ├── Cards/                 # Card components
+│   │   │   ├── RippleCard/        # Ripple effect card
+│   │   │   ├── TimelineCard/      # Timeline card component
+│   │   │   └── TableCard/         # Table card dengan CRUD operations
+│   │   ├── Carousel/              # Carousel component dengan Google Calendar integration
+│   │   ├── Forms/                 # Form components untuk CRUD
+│   │   │   ├── EventForm/         # Form untuk event (upload/URL image)
+│   │   │   ├── MenuForm/          # Form untuk menu
+│   │   │   ├── LegalForm/         # Form untuk legal
+│   │   │   ├── QnAForm/           # Form untuk FAQ
+│   │   │   ├── ConfigForm/        # Form untuk config
+│   │   │   ├── TimelineForm/      # Form untuk timeline
+│   │   │   └── type.ts            # Shared form types
 │   │   ├── Menus/                 # Menu components
+│   │   │   ├── NavbarBackoffice/  # Navbar untuk backoffice
+│   │   │   ├── NavbarLandingPage/ # Navbar untuk landing page
+│   │   │   ├── MenuLandingPage/   # Menu component untuk landing
+│   │   │   └── UserDropdown/      # User dropdown menu
 │   │   ├── Tables/                # Table components
 │   │   └── Text/                  # Text components
 │   └── layouts/                   # Layout components
@@ -278,9 +410,19 @@ dayton-fintech/
 │   ├── store.ts                   # Redux store configuration
 │   ├── StoreProvider.tsx          # Redux Provider component
 │   ├── hooks.ts                   # Typed Redux hooks
-│   └── landingSlice.ts            # Landing page Redux slice
+│   ├── landingSlice.ts            # Landing page Redux slice
+│   ├── backofficeSlice.ts         # Backoffice state slice
+│   ├── dataEventSlice.ts          # Event data slice
+│   ├── dataMenuSlice.ts           # Menu data slice
+│   ├── dataQnASlice.ts            # FAQ data slice
+│   ├── dataLegalSlice.ts          # Legal data slice
+│   ├── dataConfigSlice.ts         # Config data slice
+│   ├── dataTimelineSlice.ts       # Timeline data slice
 ├── hooks/
-│   └── useViewport.tsx            # Custom hook untuk viewport detection
+│   ├── useViewport.tsx            # Custom hook untuk viewport detection
+│   └── validator/                 # Form validation hooks
+│       ├── eventValidation.ts     # Event form validation
+│       └── index.ts               # Validation schemas (zod)
 ├── variables/
 │   └── dummyData.ts               # Dummy data
 ├── public/
@@ -381,10 +523,14 @@ Protected Route → Check Cookie → Verify JWT → Allow Access / Redirect to L
 | `/backoffice` | Dashboard - Overview dan statistik |
 | `/backoffice/change-password` | Ubah password - Halaman untuk mengubah password |
 | `/backoffice/menus` | Manajemen menu untuk landing page |
-| `/backoffice/users` | Manajemen pengguna (coming soon) |
-| `/backoffice/transactions` | Manajemen transaksi (coming soon) |
-| `/backoffice/reports` | Laporan dan analytics (coming soon) |
-| `/backoffice/settings` | Pengaturan sistem (coming soon) |
+| `/backoffice/events` | Manajemen event dengan Google Drive image upload |
+| `/backoffice/faqs` | Manajemen FAQ (Pertanyaan & Jawaban) |
+| `/backoffice/legals` | Manajemen dokumen legal |
+| `/backoffice/configs` | Pengaturan konfigurasi aplikasi |
+| `/backoffice/schemas` | Manajemen schema/form builder |
+| `/backoffice/business-models` | Manajemen business model dengan nested tables |
+| `/backoffice/profit-shares` | Manajemen profit sharing |
+| `/backoffice/referral-shares` | Manajemen referral sharing |
 
 ### API Routes
 
@@ -395,8 +541,17 @@ Protected Route → Check Cookie → Verify JWT → Allow Access / Redirect to L
 | `/api/auth/session` | GET | Get current session | ✅ |
 | `/api/auth/change-password` | POST | Ubah password | ✅ |
 | `/api/landing` | GET | Data untuk landing page | ❌ |
-| `/api/menus` | GET, POST | Get/Create menus | ✅ |
-| `/api/menus/[id]` | GET, PUT, DELETE | Get/Update/Delete menu | ✅ |
+| `/api/menus` | GET, POST, PUT, DELETE | CRUD menus | ✅ |
+| `/api/events` | GET, POST, PUT, DELETE | CRUD events dengan image upload | ✅ |
+| `/api/faqs` | GET, POST, PUT, DELETE | CRUD FAQ | ✅ |
+| `/api/legals` | GET, POST, PUT, DELETE | CRUD legal documents | ✅ |
+| `/api/configs` | GET, POST, PUT, DELETE | CRUD configs | ✅ |
+| `/api/schemas` | GET, POST, PUT, DELETE | CRUD schemas | ✅ |
+| `/api/upload/gdrive` | POST | Upload file ke Google Drive | ✅ |
+| `/api/upload/gdrive/auth` | GET | Get Google OAuth URL | ✅ |
+| `/api/upload/gdrive/callback` | GET | OAuth callback handler | ❌ |
+| `/api/upload/gdrive/status` | GET | Check Google Drive connection status | ✅ |
+| `/api/upload/gdrive/delete` | POST | Delete file dari Google Drive | ✅ |
 
 
 ## 🎨 Customization
@@ -517,18 +672,26 @@ Jika komponen custom tidak muncul atau error:
 - [x] JWT-based authentication dengan bcryptjs
 - [x] API routes untuk authentication
 - [x] Menu management API dan halaman
+- [x] Event management dengan CRUD lengkap
+- [x] FAQ, Legal, Config, Schema management
+- [x] Google Drive integration untuk upload images
+- [x] Google Calendar integration di Carousel
+- [x] Auto-delete Google Drive files saat event dihapus
+- [x] Support input URL eksternal untuk images
+- [x] Auto-refresh Google Drive OAuth token
+- [x] Business Model management dengan nested tables
+- [x] Profit Shares & Referral Shares management
 - [x] Database schema dan migrations
+- [x] Dark mode support (sudah ada di theme)
 - [ ] Implementasi halaman Users Management
 - [ ] Implementasi halaman Transactions
 - [ ] Implementasi halaman Reports dengan charts
-- [ ] Implementasi halaman Settings
 - [ ] Unit tests
 - [ ] E2E tests
-- [x] Dark mode support (sudah ada di theme)
 - [ ] Multi-language support
-- [ ] Refresh token mechanism
 - [ ] Rate limiting untuk API
 - [ ] Email verification
+- [ ] Image optimization dan caching
 
 ## 👨‍💻 Development Team
 

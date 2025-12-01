@@ -154,8 +154,10 @@ const TimelineForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=fal
             label="Description"
             placeholder="Enter description"
             withAsterisk
-            minRows={3}
-            radius="md"
+            autosize
+            minRows={4}
+            maxRows={6}
+            radius={16}
             {...form.getInputProps("description")}
           />
           <Select

@@ -7,6 +7,7 @@ import legalReducer from './dataLegalSlice';
 import qnaReducer from './dataQnASlice';
 import configReducer from './dataConfigSlice';
 import eventReducer from './dataEventSlice';
+import businessModelReducer from './dataBusinessModelSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -19,6 +20,7 @@ export const makeStore = () => {
       qna: qnaReducer,
       config: configReducer,
       event: eventReducer,
+      businessModel: businessModelReducer,
     },
   });
 };

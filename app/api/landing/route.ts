@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/config/prisma";
-import { BussinessModelDataT, EventDataT, LegalDataT, MenuDataT, QnADataT, TimelineDataT, TableProfitSharingDataT, TableReferralDataT } from "@/config/types";
+import { BussinessModelDataT, EventDataT, LegalDataT, MenuDataT, QnADataT, TimelineDataT, DynamicTableDataT } from "@/config/types";
 import { TableT } from "@/components/Atoms/Table/type";
 import { Prisma } from "@prisma/client";
 
@@ -48,13 +48,16 @@ function transformBusinessModel(businessModel: BusinessModelWithRelations): Buss
             }
           });
           
-          return rowData as TableProfitSharingDataT | TableReferralDataT;
+          return rowData;
         });
 
       return {
-        columns: columns as TableT<TableProfitSharingDataT>["columns"] | TableT<TableReferralDataT>["columns"],
-        datas: rows as unknown as TableProfitSharingDataT[] | TableReferralDataT[],
-      } as TableT<TableProfitSharingDataT> | TableT<TableReferralDataT>;
+        columns: columns.map((col) => ({
+          key: col.key as keyof DynamicTableDataT,
+          label: col.label,
+        })),
+        datas: rows as DynamicTableDataT[],
+      };
     });
 
   return {

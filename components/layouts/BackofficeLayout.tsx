@@ -3,8 +3,7 @@
 import { useDisclosure, useDocumentTitle, useLocalStorage } from '@mantine/hooks';
 import { BackofficeLayoutI } from './type';
 import { AppShell, Burger, Group } from '@mantine/core';
-import UserDropdown from '../Molecules/Menus/UserDropdown';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useAuth } from '@/config/auth-context';
 import { usePathname } from 'next/navigation';
 import NavbarBackoffice from '../Molecules/Menus/NavbarBackoffice';

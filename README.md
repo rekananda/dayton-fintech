@@ -43,7 +43,11 @@ Platform fintech modern yang dibangun dengan Next.js 16, Mantine UI, dan Tailwin
 - **Config Management**: Pengaturan konfigurasi aplikasi
 - **Schema Management**: Manajemen schema/form builder
 - **Business Models**: Manajemen business model dengan nested tables
-- **Profit Shares & Referral Shares**: Manajemen profit sharing dan referral
+  - Create, edit, dan delete business models dengan title, description, tags, dan TNC
+  - Manage tables untuk setiap business model dengan dynamic columns dan rows
+  - Table editor dengan inline cell editing
+  - Dynamic column definition dengan key (machine-readable) dan label (human-readable)
+  - Support untuk multiple tables per business model
 - **Google Drive Integration**: Upload dan manajemen file gambar ke Google Drive
   - Upload file ke Google Drive dengan OAuth 2.0
   - Auto-delete file dari Drive saat event dihapus
@@ -174,27 +178,27 @@ Aplikasi menggunakan PostgreSQL dengan Prisma ORM. Setup database menggunakan Pr
    - Gunakan `sslmode=require` atau `sslmode=prefer` untuk development
    - Untuk production, gunakan `sslmode=verify-full` dengan certificate
 
-3. **Setup Google Drive OAuth (Opsional - untuk upload images)**
+3. **Generate Prisma Client dan Setup Database**
 
-   Untuk menggunakan fitur upload gambar ke Google Drive:
+   ```bash
+   # Generate Prisma Client
+   npm run prisma:generate
    
-   a. Buat Google Cloud Project di [Google Cloud Console](https://console.cloud.google.com/)
+   # Push schema ke database (development)
+   npm run prisma:push
    
-   b. Aktifkan Google Drive API
-   
-   c. Buat OAuth 2.0 Credentials:
-      - Type: Web application
-      - Authorized redirect URI: `http://localhost:3000/api/upload/gdrive/callback`
-   
-   d. Buat folder di Google Drive untuk menyimpan upload images
-   
-   e. Copy Client ID dan Client Secret ke environment variables
-   
-   f. Copy Folder ID dari URL Google Drive folder
-   
-   Lihat dokumentasi lengkap di `docs/GOOGLE_DRIVE_OAUTH_SETUP.md`
+   # Atau jalankan migrations (production)
+   npm run prisma:migrate-deploy
+   ```
 
-4. **Setup Google Drive OAuth (Opsional - untuk upload images)**
+4. **Seed Database (Opsional)**
+
+   ```bash
+   # Seed database dengan data awal
+   npm run prisma:seed
+   ```
+
+5. **Setup Google Drive OAuth (Opsional - untuk upload images)**
 
    Untuk menggunakan fitur upload gambar ke Google Drive, pastikan sudah menambahkan environment variables yang diperlukan (lihat step 2).
    
@@ -215,46 +219,6 @@ Aplikasi menggunakan PostgreSQL dengan Prisma ORM. Setup database menggunakan Pr
    f. Copy Folder ID dari URL Google Drive folder
    
    Lihat dokumentasi lengkap di `docs/GOOGLE_DRIVE_OAUTH_SETUP.md`
-
-5. **Generate Prisma Client dan Setup Database**
-
-   ```bash
-   # Generate Prisma Client
-   npm run prisma:generate
-   
-   # Push schema ke database (development)
-   npm run prisma:push
-   
-   # Atau jalankan migrations (production)
-   npm run prisma:migrate-deploy
-   ```
-
-6. **Seed Database (Opsional)**
-
-   Untuk menggunakan fitur upload gambar ke Google Drive:
-   
-   a. Buat Google Cloud Project di [Google Cloud Console](https://console.cloud.google.com/)
-   
-   b. Aktifkan Google Drive API
-   
-   c. Buat OAuth 2.0 Credentials:
-      - Type: Web application
-      - Authorized redirect URI: `http://localhost:3000/api/upload/gdrive/callback`
-   
-   d. Buat folder di Google Drive untuk menyimpan upload images
-   
-   e. Copy Client ID dan Client Secret ke environment variables
-   
-   f. Copy Folder ID dari URL Google Drive folder
-   
-   Lihat dokumentasi lengkap di `docs/GOOGLE_DRIVE_OAUTH_SETUP.md`
-
-5. **Seed Database (Opsional)**
-
-   ```bash
-   # Seed database dengan data awal
-   npm run prisma:seed
-   ```
 
 6. **Connect Google Drive (Jika menggunakan upload images)**
 
@@ -278,7 +242,7 @@ Aplikasi menggunakan PostgreSQL dengan Prisma ORM. Setup database menggunakan Pr
    npm run db:test
    ```
 
-6. **Prisma Studio (GUI untuk Database)**
+8. **Prisma Studio (GUI untuk Database)**
 
    ```bash
    npm run prisma:studio
@@ -329,6 +293,8 @@ dayton-fintech/
 │   │   ├── legals/                # GET, POST, PUT, DELETE /api/legals
 │   │   ├── configs/               # GET, POST, PUT, DELETE /api/configs
 │   │   ├── schemas/               # GET, POST, PUT, DELETE /api/schemas
+│   │   ├── business-models/       # GET, POST, PUT, DELETE /api/business-models
+│   │   │   └── tables/            # GET, POST, PUT, DELETE /api/business-models/tables
 │   │   └── upload/                # File upload endpoints
 │   │       └── gdrive/            # Google Drive upload
 │   │           ├── auth/          # GET /api/upload/gdrive/auth (OAuth URL)
@@ -348,8 +314,7 @@ dayton-fintech/
 │   │   ├── configs/               # Configuration management
 │   │   ├── schemas/               # Schema/form builder management
 │   │   ├── business-models/       # Business model management
-│   │   ├── profit-shares/         # Profit sharing management
-│   │   ├── referral-shares/       # Referral sharing management
+│   │   │   └── tables/            # Table editor untuk business model
 │   │   ├── layout.tsx             # Layout backoffice dengan sidebar
 │   │   └── page.tsx               # Dashboard backoffice
 │   ├── layout.tsx                 # Root layout dengan providers
@@ -380,6 +345,7 @@ dayton-fintech/
 │   │   │   ├── QnAForm/           # Form untuk FAQ
 │   │   │   ├── ConfigForm/        # Form untuk config
 │   │   │   ├── TimelineForm/      # Form untuk timeline
+│   │   │   ├── BusinessModelForm/ # Form untuk business model
 │   │   │   └── type.ts            # Shared form types
 │   │   ├── Menus/                 # Menu components
 │   │   │   ├── NavbarBackoffice/  # Navbar untuk backoffice
@@ -418,6 +384,7 @@ dayton-fintech/
 │   ├── dataLegalSlice.ts          # Legal data slice
 │   ├── dataConfigSlice.ts         # Config data slice
 │   ├── dataTimelineSlice.ts       # Timeline data slice
+│   ├── dataBusinessModelSlice.ts  # Business model data slice
 ├── hooks/
 │   ├── useViewport.tsx            # Custom hook untuk viewport detection
 │   └── validator/                 # Form validation hooks
@@ -547,9 +514,11 @@ Protected Route → Check Cookie → Verify JWT → Allow Access / Redirect to L
 | `/api/legals` | GET, POST, PUT, DELETE | CRUD legal documents | ✅ |
 | `/api/configs` | GET, POST, PUT, DELETE | CRUD configs | ✅ |
 | `/api/schemas` | GET, POST, PUT, DELETE | CRUD schemas | ✅ |
+| `/api/business-models` | GET, POST, PUT, DELETE | CRUD business models | ✅ |
+| `/api/business-models/tables` | GET, POST, PUT, DELETE | CRUD tables untuk business model | ✅ |
 | `/api/upload/gdrive` | POST | Upload file ke Google Drive | ✅ |
 | `/api/upload/gdrive/auth` | GET | Get Google OAuth URL | ✅ |
-| `/api/upload/gdrive/callback` | GET | OAuth callback handler | ❌ |
+| `/api/upload/gdrive/callback` | GET | OAuth callback handler | ✅ |
 | `/api/upload/gdrive/status` | GET | Check Google Drive connection status | ✅ |
 | `/api/upload/gdrive/delete` | POST | Delete file dari Google Drive | ✅ |
 

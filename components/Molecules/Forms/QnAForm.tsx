@@ -67,7 +67,10 @@ const QnAForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false, d
             label="Answer"
             placeholder="Enter answer"
             withAsterisk
-            minRows={3}
+            autosize
+            minRows={4}
+            maxRows={6}
+            radius={16}
             {...form.getInputProps("answer")}
           />
           <NumberInput

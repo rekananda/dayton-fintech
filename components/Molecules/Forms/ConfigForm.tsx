@@ -232,8 +232,10 @@ const ConfigForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false
             ) : (
               <Textarea
                 placeholder="Enter config value"
-                minRows={2}
-                radius="md"
+                autosize
+                minRows={4}
+                maxRows={6}
+                radius={16}
                 {...form.getInputProps("value")}
                 onKeyDown={(e) => {
                   if (e.key === '"') {
@@ -253,8 +255,10 @@ const ConfigForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false
             label="Description"
             placeholder="Enter description"
             withAsterisk
-            minRows={2}
-            radius="md"
+            autosize
+            minRows={4}
+            maxRows={6}
+            radius={16}
             disabled={forEdit}
             readOnly={forEdit}
             {...form.getInputProps("description")}

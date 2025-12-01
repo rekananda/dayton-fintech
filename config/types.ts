@@ -41,13 +41,19 @@ export type TimelineDataT = {
   order: number;
 };
 
+export type DynamicTableDataT = Record<string, string | number> & {
+  id: number;
+  order: number;
+  [key: string]: string | number;
+};
+
 export type BussinessModelDataT = {
   id: number;
   title: string;
   description: string;
   tags: string[];
   order: number;
-  tables?: TableT<TableProfitSharingDataT>[] | TableT<TableReferralDataT>[];
+  tables?: TableT<DynamicTableDataT>[];
   tnc?: string;
 };
 

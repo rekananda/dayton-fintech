@@ -399,8 +399,10 @@ const EventForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false,
             label="Description"
             placeholder="Masukkan description event"
             withAsterisk
-            radius="md"
+            autosize
             minRows={4}
+            maxRows={6}
+            radius={16}
             {...form.getInputProps("description")}
           />
 

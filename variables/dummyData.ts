@@ -201,18 +201,6 @@ export const backofficeMenuItems: NavbarButtonItemT[] = [
     icon: "IconPerspective",
     label: "Business Model",
     href: "/backoffice/business-models",
-    subs: [
-      {
-        icon: "IconChartPie4",
-        label: "Profit Shares",
-        href: "/backoffice/profit-shares",
-      },
-      {
-        icon: "IconUsersGroup",
-        label: "Referral Shares",
-        href: "/backoffice/referral-shares",
-      },
-    ],
   },
   {
     icon: "ImageAspectRatio",

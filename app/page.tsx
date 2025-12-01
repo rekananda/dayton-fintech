@@ -15,8 +15,6 @@ import { CarouselCardT, CarouselItemT } from '@/components/Molecules/Carousel/ty
 import Table from '@/components/Atoms/Table';
 import { useEffect } from 'react';
 import { TimelineCardT } from '@/components/Molecules/Cards/TimelineCard/type';
-import { TableColumnT } from '@/components/Atoms/Table/type';
-import { TableProfitSharingDataT, TableReferralDataT } from '@/config/types';
 import { AccordionItemT } from '@/components/Atoms/Accordion/type';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setLoading, setLandingData, resetToDummy } from '@/store/landingSlice';
@@ -198,32 +196,20 @@ export default function LandingPage() {
                     <RippleCard {...rest} ripple={index%2==0 ? ['bottom-left'] : ['top-right']}>
                       <Stack>
                         {tables?.map((tableprops, tableIndex) => {
-                          if (
-                            Array.isArray(tableprops.datas) &&
-                            tableprops.datas.length > 0 &&
-                            typeof (tableprops.datas[0] as unknown as TableProfitSharingDataT).profit !== 'undefined'
-                          ) {
-                            return (
-                              <Table<TableProfitSharingDataT>
-                                key={`table-profit-${item.id}-${tableIndex}`}
-                                columns={tableprops.columns as TableColumnT<TableProfitSharingDataT>[]}
-                                datas={tableprops.datas as TableProfitSharingDataT[]}
-                              />
-                            );
-                          } else {
-                            return (
-                              <Table<TableReferralDataT>
-                                key={`table-referral-${item.id}-${tableIndex}`}
-                                columns={tableprops.columns as TableColumnT<TableReferralDataT>[]}
-                                datas={(tableprops.datas as TableReferralDataT[]).map((item) => ({
-                                  id: item.id,
-                                  level: `Level ${item.level}`,
-                                  commission: item.commission,
-                                  order: item.order,
-                                }))}
-                              />
-                            );
+                          const columns = tableprops.columns || [];
+                          const datas = tableprops.datas || [];
+                          
+                          if (columns.length === 0 || datas.length === 0) {
+                            return null;
                           }
+
+                          return (
+                            <Table
+                              key={`table-${item.id}-${tableIndex}`}
+                              columns={columns}
+                              datas={datas}
+                            />
+                          );
                         })}
                         {tnc && <MainText variant='body' fz={14}>{tnc}</MainText>}
 

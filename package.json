@@ -13,8 +13,7 @@
     "prisma:migrate-deploy": "prisma migrate deploy",
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "tsx config/prisma/seed.ts",
-    "postinstall": "prisma generate"
+    "prisma:seed": "tsx config/prisma/seed.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

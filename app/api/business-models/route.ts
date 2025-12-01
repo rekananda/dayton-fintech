@@ -1,9 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/config/prisma";
-import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/config/jwt";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,31 +24,32 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const orderBy = 
+    const orderBy: Prisma.BusinessModelOrderByWithRelationInput = 
       sortColumn === "title" 
         ? { title: sortDirection as "asc" | "desc" }
         : { order: sortDirection as "asc" | "desc" };
 
-    const total = await prisma.businessModel.count({ where });
-
-    const skip = (page - 1) * limit;
-    const businessModels = await prisma.businessModel.findMany({
-      where,
-      orderBy,
-      skip,
-      take: limit,
-      include: {
-        tables: {
-          where: { deletedAt: null },
-          orderBy: { order: "asc" },
-          select: {
-            id: true,
-            name: true,
-            order: true,
+    // Parallel execution untuk optimasi performa
+    const [total, businessModels] = await Promise.all([
+      prisma.businessModel.count({ where }),
+      prisma.businessModel.findMany({
+        where,
+        orderBy,
+        skip: (page - 1) * limit,
+        take: limit,
+        include: {
+          tables: {
+            where: { deletedAt: null },
+            orderBy: { order: "asc" },
+            select: {
+              id: true,
+              name: true,
+              order: true,
+            },
           },
         },
-      },
-    });
+      }),
+    ]);
 
     return NextResponse.json({
       data: businessModels,
@@ -156,13 +156,16 @@ export async function PUT(request: Request) {
 
     return NextResponse.json(updated);
   } catch (error) {
-    if ((error as Error).message.includes("Record to update not found")) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    // Check for Prisma "Record not found" error (P2025)
+    if (errorMessage.includes("Record to update not found") || errorMessage.includes("P2025")) {
       return NextResponse.json({ message: "Business model not found" }, { status: 404 });
     }
 
     console.error("[API] Update business model error:", error);
     return NextResponse.json(
-      { message: "Failed to update business model" },
+      { message: "Failed to update business model", error: errorMessage },
       { status: 500 }
     );
   }
@@ -191,19 +194,37 @@ export async function DELETE(request: Request) {
 
     const now = new Date();
 
-    const result = await prisma.businessModel.updateMany({
-      where: { id: { in: ids } },
-      data: {
-        deletedAt: now,
-        deletedBy: payload.username,
-      },
+    // Use transaction to soft delete business models and their related tables
+    const result = await prisma.$transaction(async (tx) => {
+      // Soft delete business models
+      const deletedModels = await tx.businessModel.updateMany({
+        where: { id: { in: ids }, deletedAt: null },
+        data: {
+          deletedAt: now,
+          deletedBy: payload.username,
+        },
+      });
+
+      // Soft delete related tables (cascade soft delete)
+      await tx.businessModelTable.updateMany({
+        where: {
+          businessModelId: { in: ids },
+          deletedAt: null,
+        },
+        data: {
+          deletedAt: now,
+          deletedBy: payload.username,
+        },
+      });
+
+      return deletedModels;
     });
 
     return NextResponse.json({ updatedCount: result.count });
   } catch (error) {
     console.error("[API] Delete business models error:", error);
     return NextResponse.json(
-      { message: "Failed to delete business models" },
+      { message: "Failed to delete business models", error: (error as Error).message },
       { status: 500 }
     );
   }

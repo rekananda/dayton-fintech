@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/config/prisma";
-import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/config/jwt";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 export async function GET(request: NextRequest) {
   try {

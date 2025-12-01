@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { prisma } from "@/config/prisma";
 import { BussinessModelDataT, EventDataT, LegalDataT, MenuDataT, QnADataT, TimelineDataT, DynamicTableDataT } from "@/config/types";
-import { TableT } from "@/components/Atoms/Table/type";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 type BusinessModelWithRelations = Prisma.BusinessModelGetPayload<{
   include: {

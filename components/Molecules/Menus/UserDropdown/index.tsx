@@ -1,7 +1,9 @@
+'use client';
+
 import Icon from "@/components/Atoms/Icon";
 import MainText from "@/components/Atoms/MainText";
 import { useAuth } from "@/config/auth-context";
-import { Avatar, Box, Group, Menu, Skeleton } from "@mantine/core";
+import { Avatar, Group, Menu, Skeleton } from "@mantine/core";
 import { useState } from "react";
 
 const UserDropdown = () => {

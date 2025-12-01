@@ -17,3 +17,9 @@ export interface AppHeaderI {
   onDesktopToggle?: () => void;
   onLogout?: () => void;
 }
+
+export type ControlLayoutT = {
+  title: string;
+  modalLabel?: string;
+  openModal?: () => void;
+}

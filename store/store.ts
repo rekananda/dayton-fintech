@@ -1,10 +1,24 @@
 import { configureStore } from '@reduxjs/toolkit';
 import landingReducer from './landingSlice';
+import backofficeReducer from './backofficeSlice';
+import menuReducer from './dataMenuSlice';
+import timelineReducer from './dataTimelineSlice';
+import legalReducer from './dataLegalSlice';
+import qnaReducer from './dataQnASlice';
+import configReducer from './dataConfigSlice';
+import eventReducer from './dataEventSlice';
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       landing: landingReducer,
+      backoffice: backofficeReducer,
+      menu: menuReducer,
+      timeline: timelineReducer,
+      legal: legalReducer,
+      qna: qnaReducer,
+      config: configReducer,
+      event: eventReducer,
     },
   });
 };

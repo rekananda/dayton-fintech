@@ -21,7 +21,6 @@ const buildCookieOptions = () => ({
 export async function POST(request: Request) {
   try {
     const body: LoginRequest = await request.json();
-    // Di-trim untuk menghilangkan spasi tidak sengaja di awal/akhir input username.
     const username = body.username?.trim().toLowerCase();
     const password = body.password;
 

@@ -56,7 +56,6 @@ export default function ChangePasswordPage() {
         
         form.reset();
         
-        // Redirect to dashboard after 1.5 seconds
         setTimeout(() => {
           router.push('/backoffice');
         }, 1500);

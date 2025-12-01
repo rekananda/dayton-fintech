@@ -1,7 +1,6 @@
+import { IconNameT } from "@/components/Atoms/Icon/type";
 import { TableT } from "@/components/Atoms/Table/type";
 import { MantineColor } from "@mantine/core";
-import * as materialIcons from '@mui/icons-material';
-import { icons } from '@tabler/icons-react';
 
 export type UserT = {
   email: string;
@@ -19,6 +18,13 @@ export interface AuthContextType {
   isLoading: boolean;
 }
 
+export type ConfigDataT = {
+  id: number;
+  key: string;
+  value: string;
+  description: string;
+}
+
 export type MenuDataT = {
   id: number;
   label: string;
@@ -28,7 +34,7 @@ export type MenuDataT = {
 
 export type TimelineDataT = {
   id: number;
-  icon: keyof typeof materialIcons | keyof typeof icons;
+  icon: IconNameT;
   title: string;
   description: string;
   color?: MantineColor;
@@ -47,7 +53,9 @@ export type BussinessModelDataT = {
 
 export type EventDataT = {
   id: number;
-  image: string;
+  imageUrl: string;
+  meetingLink?: string;
+  location?: string;
   date: string;
   title: string;
   description: string;

@@ -14,6 +14,7 @@ type AppProvidersProps = {
 };
 
 export function AppProviders({ children }: AppProvidersProps) {
+
   return (
     <StoreProvider>
       <MantineProvider

@@ -4,7 +4,7 @@ import NavbarButton from "@/components/Atoms/Button/NavbarButton"
 import { usePathname } from "next/navigation";
 import { backofficeMenuSubItems } from "@/variables/dummyData";
 
-const NavbarBackoffice = ({children, opened, toggle, ...rest}: NavbarBackofficeT) => {
+const  NavbarBackoffice = ({children, opened, toggle, ...rest}: NavbarBackofficeT) => {
   const pathname = usePathname();
   return (
     <AppShell.Navbar {...rest}>
@@ -17,9 +17,9 @@ const NavbarBackoffice = ({children, opened, toggle, ...rest}: NavbarBackofficeT
               icon={item.icon} 
               label={item.label} 
               href={item.href} 
-              hideLabel={opened}
-              className={item.href === pathname ? "active" : ""}
-              ml={opened? 0 : item.subLevel * 24}
+              hideLabel={!opened}
+              className={item.href === pathname || (index===0 && pathname === "/backoffice") ? "active" : ""}
+              ml={!opened? 0 : item.subLevel * 24}
             />
           ))}
         </Stack>
@@ -27,9 +27,9 @@ const NavbarBackoffice = ({children, opened, toggle, ...rest}: NavbarBackofficeT
       <AppShell.Section pb="md">
         <NavbarButton 
           visibleFrom="sm"
-          icon={!opened ? "IconLayoutSidebarLeftCollapse" : "IconLayoutSidebarRightCollapse"} 
+          icon={opened ? "IconLayoutSidebarLeftCollapse" : "IconLayoutSidebarRightCollapse"} 
           label="Collapse Sidebar" 
-          hideLabel={opened} 
+          hideLabel={!opened} 
           onClick={toggle} 
         />
       </AppShell.Section>

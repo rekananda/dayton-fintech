@@ -2,9 +2,9 @@ import { TextInput, TextInputProps } from "@mantine/core";
 import { InputHTMLAttributes } from "react";
 import classes from "./style.module.css";
 
-type MainInputProps = TextInputProps & InputHTMLAttributes<HTMLInputElement>;
+type MainInputT = TextInputProps & InputHTMLAttributes<HTMLInputElement>;
 
-const MainInput = ({ ...props }: MainInputProps) => {
+const MainInput = ({ ...props }: MainInputT) => {
   return (
     <TextInput 
       classNames={{ 

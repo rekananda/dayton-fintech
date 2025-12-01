@@ -2,9 +2,9 @@ import { PasswordInput as MantinePasswordInput, PasswordInputProps } from "@mant
 import { InputHTMLAttributes } from "react";
 import classes from "./style.module.css";
 
-type InputPasswordProps = PasswordInputProps & InputHTMLAttributes<HTMLInputElement>;
+type InputPasswordT = PasswordInputProps & InputHTMLAttributes<HTMLInputElement>;
 
-const PasswordInput = ({ ...props }: InputPasswordProps) => {
+const PasswordInput = ({ ...props }: InputPasswordT) => {
   return (
     <MantinePasswordInput 
       classNames={{ 

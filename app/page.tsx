@@ -58,14 +58,21 @@ export default function LandingPage() {
 
   const listBussinessModel = businessModels;
 
-  const listEvents: CarouselItemT<CarouselCardT>[] = events.map((item) => ({
-    image: item.image,
-    detail: {
-      date: item.date,
-      title: item.title,
-      description: item.description,
-    },
-  }));
+  const listEvents: CarouselItemT<CarouselCardT>[] = events.map((item) => {
+    const extraDetail: { [key: string]: string } = {};
+    if (item.meetingLink) extraDetail.meetingLink = item.meetingLink;
+    if (item.location) extraDetail.location = item.location;
+    
+    return {
+      image: item.imageUrl,
+      detail: {
+        date: item.date,
+        title: item.title,
+        description: item.description,
+        ...(Object.keys(extraDetail).length > 0 && { extraDetail }),
+      },
+    };
+  });
 
   const listLegal: TimelineCardT[] = legals.map((item) => ({
     title: item.title,

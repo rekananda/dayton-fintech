@@ -206,6 +206,8 @@ async function seedEvents() {
           "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=600&fit=crop",
         date: futureDate1,
         title: "Workshop Trading Emas untuk Pemula",
+        meetingLink: "https://meet.google.com/abc123",
+        location: "Jakarta",
         description:
           "Pelajari dasar-dasar trading emas dengan pendekatan yang disiplin dan terukur. Workshop ini akan membahas strategi trend-following, manajemen risiko, dan cara membaca chart dengan benar.",
         createdBy: "admin",
@@ -215,6 +217,8 @@ async function seedEvents() {
         imageUrl:
           "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=600&fit=crop",
         date: futureDate2,
+        meetingLink: "https://meet.google.com/abc123",
+        location: "Jakarta",
         title: "Seminar Advanced Trading Strategies",
         description:
           "Tingkatkan skill trading Anda dengan strategi lanjutan. Seminar ini cocok untuk trader yang sudah memiliki pengalaman dan ingin mengoptimalkan performa trading mereka.",
@@ -225,6 +229,7 @@ async function seedEvents() {
         imageUrl:
           "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=1200&h=600&fit=crop",
         date: futureDate3,
+        location: "Jakarta",
         title: "Webinar Risk Management & Psychology",
         description:
           "Pahami pentingnya manajemen risiko dan psikologi trading. Webinar ini akan membantu Anda mengendalikan emosi dan membuat keputusan trading yang lebih baik.",
@@ -236,6 +241,7 @@ async function seedEvents() {
           "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=1200&h=600&fit=crop",
         date: futureDate4,
         title: "Live Trading Session dengan Expert",
+        location: "Jakarta",
         description:
           "Ikuti sesi live trading langsung dengan expert trader kami. Pelajari bagaimana cara menganalisis pasar real-time dan mengambil keputusan trading yang tepat.",
         createdBy: "admin",
@@ -280,18 +286,24 @@ async function seedQnA() {
         answer:
           "Setiap akhir pekan, total profit bersih akun dihitung. Anda membayar 25% dari profit kepada Dayton Fintech. Jika tidak profit, tidak ada tagihan.",
         order: 1,
+        createdBy: "admin",
+        updatedBy: "admin",
       },
       {
         question: "Apakah punya batas maksimum account?",
         answer:
           "Tidak ada batas maksimum account. Anda dapat membuat account sebanyak yang Anda inginkan.",
         order: 2,
+        createdBy: "admin",
+        updatedBy: "admin",
       },
       {
         question: "Apakah ada rekomendasi minimum balance?",
         answer:
           "Tidak ada rekomendasi minimum balance. Anda dapat memulai trading dengan modal yang Anda inginkan.",
         order: 3,
+        createdBy: "admin",
+        updatedBy: "admin",
       },
       {
         question: "Apakah ada perbedaan jenis account?",
@@ -303,6 +315,8 @@ async function seedQnA() {
         answer:
           "Broker ditentukan oleh Dayton Fintech. Anda dapat memilih broker yang Anda inginkan.",
         order: 5,
+        createdBy: "admin",
+        updatedBy: "admin",
       },
     ],
   });

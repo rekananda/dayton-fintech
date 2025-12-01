@@ -27,9 +27,6 @@ CREATE TABLE "Menu" (
     "createdBy" TEXT,
     "updatedBy" TEXT,
     "deletedBy" TEXT,
-    "createdByUser" TEXT,
-    "updatedByUser" TEXT,
-    "deletedByUser" TEXT,
 
     CONSTRAINT "Menu_pkey" PRIMARY KEY ("id")
 );
@@ -48,9 +45,6 @@ CREATE TABLE "Timeline" (
     "createdBy" TEXT,
     "updatedBy" TEXT,
     "deletedBy" TEXT,
-    "createdByUser" TEXT,
-    "updatedByUser" TEXT,
-    "deletedByUser" TEXT,
 
     CONSTRAINT "Timeline_pkey" PRIMARY KEY ("id")
 );
@@ -141,6 +135,8 @@ CREATE TABLE "BusinessModelTableCell" (
 CREATE TABLE "Event" (
     "id" SERIAL NOT NULL,
     "imageUrl" TEXT NOT NULL,
+    "meetingLink" TEXT,
+    "location" TEXT,
     "date" TIMESTAMP(3) NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,

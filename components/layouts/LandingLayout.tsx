@@ -1,6 +1,6 @@
 'use client';
 
-import { AppShell, Container, Box, Group, Stack } from '@mantine/core';
+import { AppShell, Container, Box, Group, Stack, useMantineColorScheme } from '@mantine/core';
 import { LandingLayoutI } from './type';
 import AppFooter from './AppFooter';
 import './landingpage.style.css';
@@ -10,9 +10,45 @@ import ColorSchemeToggle from '../Atoms/Button/ColorSchemeToggle';
 import MenuLandingPage from '../Molecules/Menus/MenuLandingPage';
 import MainLogo from '../Atoms/Logo';
 import MainText from '../Atoms/MainText';
+import { useLocalStorage } from '@mantine/hooks';
+import { useEffect } from 'react';
+import { MantineColorScheme } from '@mantine/core';
 
 export function LandingLayout({ children }: LandingLayoutI) {
   const { isDesktop } = useViewport();
+  const { colorScheme, setColorScheme } = useMantineColorScheme();
+  const [isLandingPageOpened, setIsLandingPageOpened] = useLocalStorage<boolean>({
+    key: 'landing-page-opened',
+    defaultValue: true,
+  });
+  const [latestColorScheme] = useLocalStorage<MantineColorScheme>({
+    key: 'latest-color-scheme-landing-page',
+    defaultValue: 'dark',
+  });
+  
+  useEffect(() => {
+    setIsLandingPageOpened(true);
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setIsLandingPageOpened(false);
+      } else {
+        setIsLandingPageOpened(true);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [setIsLandingPageOpened]);
+
+  useEffect(() => {
+    if (latestColorScheme !== colorScheme && isLandingPageOpened) {
+      setColorScheme(latestColorScheme);
+    }
+  }, [latestColorScheme, isLandingPageOpened,colorScheme, setColorScheme]);
 
   return (
     <AppShell

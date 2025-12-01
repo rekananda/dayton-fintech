@@ -143,10 +143,12 @@ export async function GET() {
 
     const eventsFormatted: EventDataT[] = events.map((event) => ({
       id: event.id,
-      image: event.imageUrl,
+      imageUrl: event.imageUrl,
       date: event.date instanceof Date ? event.date.toISOString() : new Date(event.date).toISOString(),
       title: event.title,
       description: event.description,
+      meetingLink: event.meetingLink,
+      location: event.location,
     }));
 
     const legalsFormatted: LegalDataT[] = legals.map((legal) => ({
@@ -163,14 +165,11 @@ export async function GET() {
       order: qna.order,
     }));
 
-    // Helper function to safely parse JSON values
     const parseConfigValue = (value: string | undefined, defaultValue: any = null): any => {
       if (!value) return defaultValue;
       try {
-        // Try to parse as JSON first (for array strings)
         return JSON.parse(value);
       } catch {
-        // If not valid JSON, return as string
         return value;
       }
     };
@@ -210,7 +209,7 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error loading landing data:", error);
-    // Log detailed error for debugging
+    
     if (error instanceof Error) {
       console.error("Error message:", error.message);
       console.error("Error stack:", error.stack);

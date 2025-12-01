@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { Stack, Group, Button, TextInput, ActionIcon, Badge, Paper, Text, Modal, NumberInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -44,7 +44,7 @@ type BusinessModelInfo = {
   title: string;
 };
 
-const BusinessModelTablesPage = () => {
+const BusinessModelTablesPageContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const businessModelId = searchParams.get('businessModelId');
@@ -855,6 +855,18 @@ const BusinessModelTablesPage = () => {
 
       <LoadingOverlay visible={loading} zIndex={1000} />
     </Stack>
+  );
+};
+
+const BusinessModelTablesPage = () => {
+  return (
+    <Suspense fallback={
+      <Stack gap="md" p="md">
+        <LoadingOverlay visible={true} zIndex={1000} />
+      </Stack>
+    }>
+      <BusinessModelTablesPageContent />
+    </Suspense>
   );
 };
 

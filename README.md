@@ -45,9 +45,11 @@ Platform fintech modern yang dibangun dengan Next.js 16, Mantine UI, dan Tailwin
 - **Business Models**: Manajemen business model dengan nested tables
   - Create, edit, dan delete business models dengan title, description, tags, dan TNC
   - Manage tables untuk setiap business model dengan dynamic columns dan rows
-  - Table editor dengan inline cell editing
+  - Table editor dengan inline cell editing dan validasi key kolom
   - Dynamic column definition dengan key (machine-readable) dan label (human-readable)
+  - Validasi duplicate key columns dengan error display di field input
   - Support untuk multiple tables per business model
+  - Flexible table data structure untuk berbagai tipe data
 - **Google Drive Integration**: Upload dan manajemen file gambar ke Google Drive
   - Upload file ke Google Drive dengan OAuth 2.0
   - Auto-delete file dari Drive saat event dihapus
@@ -57,7 +59,7 @@ Platform fintech modern yang dibangun dengan Next.js 16, Mantine UI, dan Tailwin
 ## 🛠️ Tech Stack
 
 - **Framework**: Next.js 16 (App Router)
-- **UI Library**: Mantine UI v8.3.7
+- **UI Library**: Mantine UI v8.3.9
 - **Material UI**: MUI v7.3.5 (untuk komponen tambahan)
 - **Styling**: Tailwind CSS v4
 - **Icons**: Tabler Icons React v3.35.0
@@ -67,16 +69,16 @@ Platform fintech modern yang dibangun dengan Next.js 16, Mantine UI, dan Tailwin
 - **Database Adapter**: PrismaPg (pg Pool)
 - **Authentication**: JWT (jose) + bcryptjs untuk password hashing
 - **Carousel**: Embla Carousel dengan Autoplay
-- **Charts**: Recharts & Mantine Charts
-- **Form Management**: Mantine Form
+- **Charts**: Recharts & Mantine Charts v8.3.9
+- **Form Management**: Mantine Form v8.3.9
 - **Date Management**: Day.js
-- **Data Table**: Mantine DataTable
-- **Date Picker**: Mantine Dates
-- **File Upload**: Mantine Dropzone
-- **Notifications**: Mantine Notifications
-- **Progress**: Mantine NProgress
+- **Data Table**: Mantine DataTable v8.3.8
+- **Date Picker**: Mantine Dates v8.3.9
+- **File Upload**: Mantine Dropzone v8.3.9
+- **Notifications**: Mantine Notifications v8.3.9
+- **Progress**: Mantine NProgress v8.3.9
 - **Google APIs**: Google Drive API dengan OAuth 2.0 untuk file upload
-- **Date/Time**: Mantine Dates (DateTimePicker)
+- **Date/Time**: Mantine Dates (DateTimePicker) v8.3.9
 
 ## 📦 Instalasi
 
@@ -648,7 +650,10 @@ Jika komponen custom tidak muncul atau error:
 - [x] Auto-delete Google Drive files saat event dihapus
 - [x] Support input URL eksternal untuk images
 - [x] Auto-refresh Google Drive OAuth token
-- [x] Business Model management dengan nested tables
+- [x] Business Model management dengan nested tables dan dynamic table editor
+- [x] Table editor dengan validasi duplicate key columns
+- [x] Flexible table data structure dengan DynamicTableDataT
+- [x] Update semua @mantine packages ke versi 8.3.9
 - [x] Profit Shares & Referral Shares management
 - [x] Database schema dan migrations
 - [x] Dark mode support (sudah ada di theme)

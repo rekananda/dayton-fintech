@@ -1,8 +1,8 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, Suspense } from "react";
 import ControlLayout from "@/components/layouts/ControlLayoutClient";
-import { Stack, Image, AspectRatio, Anchor, Button, Group } from "@mantine/core";
+import { Stack, Image, AspectRatio, Anchor, Button, Group, LoadingOverlay } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import TableCard from "@/components/Molecules/Cards/TableCard";
 import { EventDataT } from "@/config/types";
@@ -12,7 +12,7 @@ import { setModalCRUD, setData, setLimit, setLoading, setPage, setSearch, setSor
 import { useSearchParams } from "next/navigation";
 import Icon from "@/components/Atoms/Icon";
 
-const BackofficeEventsPage = () => {
+const BackofficeEventsPageContent = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [googleDriveConnected, setGoogleDriveConnected] = useState(false);
   const prevSearchRef = useRef<string>("");
@@ -394,6 +394,18 @@ const BackofficeEventsPage = () => {
         setIsModal={(value) => dispatch(setModalCRUD(value))}
       />
     </Stack>
+  );
+};
+
+const BackofficeEventsPage = () => {
+  return (
+    <Suspense fallback={
+      <Stack gap="md" p="md">
+        <LoadingOverlay visible={true} zIndex={1000} />
+      </Stack>
+    }>
+      <BackofficeEventsPageContent />
+    </Suspense>
   );
 };
 

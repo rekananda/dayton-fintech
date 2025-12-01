@@ -150,8 +150,8 @@ export async function GET() {
       date: event.date instanceof Date ? event.date.toISOString() : new Date(event.date).toISOString(),
       title: event.title,
       description: event.description,
-      meetingLink: event.meetingLink,
-      location: event.location,
+      meetingLink: event.meetingLink || undefined,
+      location: event.location || undefined,
     }));
 
     const legalsFormatted: LegalDataT[] = legals.map((legal) => ({

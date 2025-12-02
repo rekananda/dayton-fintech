@@ -23,11 +23,11 @@ type BusinessModelWithRelations = NonNullable<Awaited<ReturnType<typeof prisma.b
 
 function transformBusinessModel(businessModel: BusinessModelWithRelations): BussinessModelDataT {
   const tables = businessModel.tables
-    .sort((a, b) => a.order - b.order)
+    .sort((a: { order: number }, b: { order: number }) => a.order - b.order)
     .map((table) => {
       const columns = table.columns
         .filter((col) => !col.deletedAt)
-        .sort((a, b) => a.order - b.order)
+        .sort((a: { order: number }, b: { order: number }) => a.order - b.order)
         .map((col) => ({
           key: col.key as string,
           label: col.label,
@@ -35,7 +35,7 @@ function transformBusinessModel(businessModel: BusinessModelWithRelations): Buss
 
       const rows = table.rows
         .filter((row) => !row.deletedAt)
-        .sort((a, b) => a.order - b.order)
+        .sort((a: { order: number }, b: { order: number }) => a.order - b.order)
         .map((row) => {
           const rowData: Record<string, string | number> = { id: row.id, order: row.order };
           

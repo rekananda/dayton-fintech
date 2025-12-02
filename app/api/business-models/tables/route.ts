@@ -123,7 +123,7 @@ export async function POST(request: Request) {
           // Create cells for this row
           if (row.cells && Array.isArray(row.cells)) {
             const cellsData = row.cells.map((cell: { columnKey: string; value: string }) => {
-              const column = createdColumns.find((col) => col.key === cell.columnKey);
+              const column = createdColumns.find((col: { id: number; key: string }) => col.key === cell.columnKey);
               if (!column) return null;
               
               return {
@@ -316,7 +316,7 @@ export async function PUT(request: Request) {
           // Create/update cells
           if (row.cells && Array.isArray(row.cells)) {
             const cellsData = row.cells.map((cell: { columnKey: string; value: string }) => {
-              const column = allColumns.find((col) => col.key === cell.columnKey);
+              const column = allColumns.find((col: { id: number; key: string }) => col.key === cell.columnKey);
               if (!column) return null;
               
               return {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { prisma } from "@/config/prisma";
 import { BussinessModelDataT, EventDataT, LegalDataT, MenuDataT, QnADataT, TimelineDataT, DynamicTableDataT } from "@/config/types";
@@ -41,7 +40,7 @@ function transformBusinessModel(businessModel: BusinessModelWithRelations): Buss
           const rowData: Record<string, string | number> = { id: row.id, order: row.order };
           
           row.cells.forEach((cell) => {
-            const column = table.columns.find((col) => col.id === cell.columnId);
+            const column = table.columns.find((col: { id: number; key: string; deletedAt: Date | null }) => col.id === cell.columnId);
             if (column && !column.deletedAt) {
               rowData[column.key] = cell.value;
             }
@@ -167,18 +166,18 @@ export async function GET() {
       order: qna.order,
     }));
 
-    const parseConfigValue = (value: string | undefined, defaultValue: any = null): any => {
+    const parseConfigValue = <T = unknown>(value: string | undefined, defaultValue: T): T => {
       if (!value) return defaultValue;
       try {
-        return JSON.parse(value);
+        return JSON.parse(value) as T;
       } catch {
-        return value;
+        return value as T;
       }
     };
 
-    const getConfigValue = (key: string, defaultValue: any = null): any => {
-      const config = configs.find((c) => c.key === key);
-      return config ? parseConfigValue(config.value, defaultValue) : defaultValue;
+    const getConfigValue = <T = unknown>(key: string, defaultValue: T): T => {
+      const config = configs.find((c: { key: string; value: string }) => c.key === key);
+      return config ? parseConfigValue<T>(config.value, defaultValue) : defaultValue;
     };
 
     const whatsappNumber = getConfigValue("whatsapp_number", "6281234567890");

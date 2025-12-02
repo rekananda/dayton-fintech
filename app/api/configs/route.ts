@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/config/prisma";
 import { cookies } from "next/headers";
@@ -109,7 +108,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(created, { status: 201 });
   } catch (error) {
-    if ((error as any).code === 'P2002') {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
       return NextResponse.json(
         { message: "Config dengan key ini sudah ada" },
         { status: 409 }

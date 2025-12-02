@@ -26,6 +26,13 @@ type ColumnType = TableWithRelations['columns'][number];
 type RowType = TableWithRelations['rows'][number];
 type CellType = RowType['cells'][number];
 
+// Type helpers for other entities
+type MenuFromDB = Awaited<ReturnType<typeof prisma.menu.findMany>>[number];
+type TimelineFromDB = Awaited<ReturnType<typeof prisma.timeline.findMany>>[number];
+type EventFromDB = Awaited<ReturnType<typeof prisma.event.findMany>>[number];
+type LegalFromDB = Awaited<ReturnType<typeof prisma.legal.findMany>>[number];
+type QnAFromDB = Awaited<ReturnType<typeof prisma.qnA.findMany>>[number];
+
 function transformBusinessModel(businessModel: BusinessModelWithRelations): BussinessModelDataT {
   const tables = businessModel.tables
     .sort((a: { order: number }, b: { order: number }) => a.order - b.order)
@@ -129,14 +136,14 @@ export async function GET() {
       }),
     ]);
 
-    const menusFormatted: MenuDataT[] = menus.map((menu) => ({
+    const menusFormatted: MenuDataT[] = menus.map((menu: MenuFromDB) => ({
       id: menu.id,
       label: menu.label,
       href: menu.href,
       order: menu.order,
     }));
 
-    const timelinesFormatted: TimelineDataT[] = timelines.map((timeline) => ({
+    const timelinesFormatted: TimelineDataT[] = timelines.map((timeline: TimelineFromDB) => ({
       id: timeline.id,
       icon: timeline.icon as TimelineDataT["icon"],
       title: timeline.title,
@@ -147,7 +154,7 @@ export async function GET() {
 
     const businessModelsFormatted: BussinessModelDataT[] = businessModelsRaw.map(transformBusinessModel);
 
-    const eventsFormatted: EventDataT[] = events.map((event) => ({
+    const eventsFormatted: EventDataT[] = events.map((event: EventFromDB) => ({
       id: event.id,
       imageUrl: event.imageUrl,
       date: event.date instanceof Date ? event.date.toISOString() : new Date(event.date).toISOString(),
@@ -157,14 +164,14 @@ export async function GET() {
       location: event.location || undefined,
     }));
 
-    const legalsFormatted: LegalDataT[] = legals.map((legal) => ({
+    const legalsFormatted: LegalDataT[] = legals.map((legal: LegalFromDB) => ({
       id: legal.id,
       title: legal.title,
       description: legal.description,
       order: legal.order,
     }));
 
-    const qnasFormatted: QnADataT[] = qnas.map((qna) => ({
+    const qnasFormatted: QnADataT[] = qnas.map((qna: QnAFromDB) => ({
       id: qna.id,
       question: qna.question,
       answer: qna.answer,

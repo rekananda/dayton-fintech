@@ -6,6 +6,7 @@ import { extractFileIdFromUrl, isGoogleDriveUrl, deleteFileFromGoogleDrive } fro
 
 type EventWhere = NonNullable<Parameters<typeof prisma.event.findMany>[0]>["where"];
 type EventOrderBy = NonNullable<Parameters<typeof prisma.event.findMany>[0]>["orderBy"];
+type EventFromDB = Awaited<ReturnType<typeof prisma.event.findMany>>[number];
 
 export async function GET(request: NextRequest) {
   try {
@@ -46,7 +47,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Convert date to ISO string for frontend
-    const formattedEvents = events.map((event: { id: number; title: string; description: string; imageUrl: string; date: Date; meetingLink: string | null; location: string | null; createdAt: Date; updatedAt: Date; deletedAt: Date | null; createdBy: string; updatedBy: string; deletedBy: string | null }) => ({
+    const formattedEvents = events.map((event: EventFromDB) => ({
       ...event,
       date: event.date.toISOString(),
     }));

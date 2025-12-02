@@ -21,26 +21,31 @@ type BusinessModelWithRelations = NonNullable<Awaited<ReturnType<typeof prisma.b
   };
 }>>>>;
 
+type TableWithRelations = BusinessModelWithRelations['tables'][number];
+type ColumnType = TableWithRelations['columns'][number];
+type RowType = TableWithRelations['rows'][number];
+type CellType = RowType['cells'][number];
+
 function transformBusinessModel(businessModel: BusinessModelWithRelations): BussinessModelDataT {
   const tables = businessModel.tables
     .sort((a: { order: number }, b: { order: number }) => a.order - b.order)
-    .map((table) => {
+    .map((table: TableWithRelations) => {
       const columns = table.columns
-        .filter((col) => !col.deletedAt)
+        .filter((col: ColumnType) => !col.deletedAt)
         .sort((a: { order: number }, b: { order: number }) => a.order - b.order)
-        .map((col) => ({
+        .map((col: ColumnType) => ({
           key: col.key as string,
           label: col.label,
         }));
 
       const rows = table.rows
-        .filter((row) => !row.deletedAt)
+        .filter((row: RowType) => !row.deletedAt)
         .sort((a: { order: number }, b: { order: number }) => a.order - b.order)
-        .map((row) => {
+        .map((row: RowType) => {
           const rowData: Record<string, string | number> = { id: row.id, order: row.order };
           
-          row.cells.forEach((cell) => {
-            const column = table.columns.find((col: { id: number; key: string; deletedAt: Date | null }) => col.id === cell.columnId);
+          row.cells.forEach((cell: CellType) => {
+            const column = table.columns.find((col: ColumnType) => col.id === cell.columnId);
             if (column && !column.deletedAt) {
               rowData[column.key] = cell.value;
             }
@@ -50,7 +55,7 @@ function transformBusinessModel(businessModel: BusinessModelWithRelations): Buss
         });
 
       return {
-        columns: columns.map((col) => ({
+        columns: columns.map((col: { key: string; label: string }) => ({
           key: col.key as keyof DynamicTableDataT,
           label: col.label,
         })),

@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { verifyToken } from "@/config/jwt";
 
 type LegalWhere = NonNullable<Parameters<typeof prisma.legal.findMany>[0]>["where"];
+type LegalOrderBy = NonNullable<Parameters<typeof prisma.legal.findMany>[0]>["orderBy"];
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const orderBy = 
+    const orderBy: LegalOrderBy = 
       sortColumn === "title" 
         ? { title: sortDirection as "asc" | "desc" }
         : { order: sortDirection as "asc" | "desc" };
@@ -176,12 +177,18 @@ export async function DELETE(request: Request) {
 
     const now = new Date();
 
+    type LegalUpdateManyWhere = NonNullable<Parameters<typeof prisma.legal.updateMany>[0]>["where"];
+    type LegalUpdateManyData = NonNullable<Parameters<typeof prisma.legal.updateMany>[0]>["data"];
+
+    const updateManyWhere: LegalUpdateManyWhere = { id: { in: ids } };
+    const updateManyData: LegalUpdateManyData = {
+      deletedAt: now,
+      deletedBy: payload.username,
+    };
+
     const result = await prisma.legal.updateMany({
-      where: { id: { in: ids } },
-      data: {
-        deletedAt: now,
-        deletedBy: payload.username,
-      },
+      where: updateManyWhere,
+      data: updateManyData,
     });
 
     return NextResponse.json({ updatedCount: result.count });

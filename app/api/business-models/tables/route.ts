@@ -1,8 +1,9 @@
 import { NextResponse, NextRequest } from "next/server";
-import { prisma } from "@/config/prisma";
+import { prisma, TxClient } from "@/config/prisma";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/config/jwt";
-import type { Prisma } from "@prisma/client";
+
+type BusinessModelTableCellCreateManyInput = NonNullable<Parameters<typeof prisma.businessModelTableCell.createMany>[0]>["data"];
 
 export async function GET(request: NextRequest) {
   try {
@@ -71,7 +72,7 @@ export async function POST(request: Request) {
     const now = new Date();
 
     // Create table with columns, rows, and cells in a transaction
-    const table = await prisma.$transaction(async (tx) => {
+    const table = await prisma.$transaction(async (tx: TxClient) => {
       const createdTable = await tx.businessModelTable.create({
         data: {
           businessModelId,
@@ -138,7 +139,7 @@ export async function POST(request: Request) {
 
             if (cellsData.length > 0) {
               await tx.businessModelTableCell.createMany({
-                data: cellsData as Prisma.BusinessModelTableCellCreateManyInput[],
+                data: cellsData as BusinessModelTableCellCreateManyInput,
               });
             }
           }
@@ -202,7 +203,7 @@ export async function PUT(request: Request) {
     const now = new Date();
 
     // Update table with columns, rows, and cells in a transaction
-    const updatedTable = await prisma.$transaction(async (tx) => {
+    const updatedTable = await prisma.$transaction(async (tx: TxClient) => {
       // Update table basic info
       await tx.businessModelTable.update({
         where: { id },
@@ -331,7 +332,7 @@ export async function PUT(request: Request) {
 
             if (cellsData.length > 0) {
               await tx.businessModelTableCell.createMany({
-                data: cellsData as Prisma.BusinessModelTableCellCreateManyInput[],
+                data: cellsData as BusinessModelTableCellCreateManyInput,
                 skipDuplicates: true,
               });
             }

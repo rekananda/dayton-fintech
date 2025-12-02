@@ -252,12 +252,18 @@ export async function DELETE(request: Request) {
 
     const now = new Date();
 
+    type EventUpdateManyWhere = NonNullable<Parameters<typeof prisma.event.updateMany>[0]>["where"];
+    type EventUpdateManyData = NonNullable<Parameters<typeof prisma.event.updateMany>[0]>["data"];
+
+    const updateManyWhere: EventUpdateManyWhere = { id: { in: ids } };
+    const updateManyData: EventUpdateManyData = {
+      deletedAt: now,
+      deletedBy: payload.username,
+    };
+
     const result = await prisma.event.updateMany({
-      where: { id: { in: ids } },
-      data: {
-        deletedAt: now,
-        deletedBy: payload.username,
-      },
+      where: updateManyWhere,
+      data: updateManyData,
     });
 
     return NextResponse.json({ updatedCount: result.count });

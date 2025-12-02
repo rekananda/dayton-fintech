@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { verifyToken } from "@/config/jwt";
 
 type ConfigWhere = NonNullable<Parameters<typeof prisma.config.findMany>[0]>["where"];
+type ConfigOrderBy = NonNullable<Parameters<typeof prisma.config.findMany>[0]>["orderBy"];
 
 export async function GET(request: NextRequest) {
   try {
@@ -27,7 +28,7 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const orderBy = 
+    const orderBy: ConfigOrderBy = 
       sortColumn === "key" 
         ? { key: sortDirection as "asc" | "desc" }
         : { key: sortDirection as "asc" | "desc" };
@@ -196,12 +197,18 @@ export async function DELETE(request: Request) {
 
     const now = new Date();
 
+    type ConfigUpdateManyWhere = NonNullable<Parameters<typeof prisma.config.updateMany>[0]>["where"];
+    type ConfigUpdateManyData = NonNullable<Parameters<typeof prisma.config.updateMany>[0]>["data"];
+
+    const updateManyWhere: ConfigUpdateManyWhere = { id: { in: ids } };
+    const updateManyData: ConfigUpdateManyData = {
+      deletedAt: now,
+      deletedBy: payload.username,
+    };
+
     const result = await prisma.config.updateMany({
-      where: { id: { in: ids } },
-      data: {
-        deletedAt: now,
-        deletedBy: payload.username,
-      },
+      where: updateManyWhere,
+      data: updateManyData,
     });
 
     return NextResponse.json({ updatedCount: result.count });

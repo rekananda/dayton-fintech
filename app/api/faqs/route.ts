@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { verifyToken } from "@/config/jwt";
 
 type QnAWhere = NonNullable<Parameters<typeof prisma.qnA.findMany>[0]>["where"];
+type QnAOrderBy = NonNullable<Parameters<typeof prisma.qnA.findMany>[0]>["orderBy"];
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const orderBy = 
+    const orderBy: QnAOrderBy = 
       sortColumn === "question" 
         ? { question: sortDirection as "asc" | "desc" }
         : { order: sortDirection as "asc" | "desc" };
@@ -176,12 +177,18 @@ export async function DELETE(request: Request) {
 
     const now = new Date();
 
+    type QnAUpdateManyWhere = NonNullable<Parameters<typeof prisma.qnA.updateMany>[0]>["where"];
+    type QnAUpdateManyData = NonNullable<Parameters<typeof prisma.qnA.updateMany>[0]>["data"];
+
+    const updateManyWhere: QnAUpdateManyWhere = { id: { in: ids } };
+    const updateManyData: QnAUpdateManyData = {
+      deletedAt: now,
+      deletedBy: payload.username,
+    };
+
     const result = await prisma.qnA.updateMany({
-      where: { id: { in: ids } },
-      data: {
-        deletedAt: now,
-        deletedBy: payload.username,
-      },
+      where: updateManyWhere,
+      data: updateManyData,
     });
 
     return NextResponse.json({ updatedCount: result.count });

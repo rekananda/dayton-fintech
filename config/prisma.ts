@@ -6,6 +6,9 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
+// Transaction client type - excludes methods not available in transaction context
+export type TxClient = Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$use' | '$transaction' | '$extends'>;
+
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {

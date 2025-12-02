@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { verifyToken } from "@/config/jwt";
 
 type MenuWhere = NonNullable<Parameters<typeof prisma.menu.findMany>[0]>["where"];
+type MenuOrderBy = NonNullable<Parameters<typeof prisma.menu.findMany>[0]>["orderBy"];
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const orderBy = 
+    const orderBy: MenuOrderBy = 
       sortColumn === "label" 
         ? { label: sortDirection as "asc" | "desc" }
         : { order: sortDirection as "asc" | "desc" };
@@ -174,12 +175,18 @@ export async function DELETE(request: Request) {
 
     const now = new Date();
 
+    type MenuUpdateManyWhere = NonNullable<Parameters<typeof prisma.menu.updateMany>[0]>["where"];
+    type MenuUpdateManyData = NonNullable<Parameters<typeof prisma.menu.updateMany>[0]>["data"];
+
+    const updateManyWhere: MenuUpdateManyWhere = { id: { in: ids } };
+    const updateManyData: MenuUpdateManyData = {
+      deletedAt: now,
+      deletedBy: payload.username,
+    };
+
     const result = await prisma.menu.updateMany({
-      where: { id: { in: ids } },
-      data: {
-        deletedAt: now,
-        deletedBy: payload.username,
-      },
+      where: updateManyWhere,
+      data: updateManyData,
     });
 
     return NextResponse.json({ updatedCount: result.count });

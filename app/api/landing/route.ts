@@ -2,9 +2,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/config/prisma";
 import { BussinessModelDataT, EventDataT, LegalDataT, MenuDataT, QnADataT, TimelineDataT, DynamicTableDataT } from "@/config/types";
-import type { Prisma } from "@prisma/client";
 
-type BusinessModelWithRelations = Prisma.BusinessModelGetPayload<{
+type BusinessModelWithRelations = NonNullable<Awaited<ReturnType<typeof prisma.businessModel.findFirst<{
   include: {
     tables: {
       include: {
@@ -21,7 +20,7 @@ type BusinessModelWithRelations = Prisma.BusinessModelGetPayload<{
       };
     };
   };
-}>;
+}>>>>;
 
 function transformBusinessModel(businessModel: BusinessModelWithRelations): BussinessModelDataT {
   const tables = businessModel.tables

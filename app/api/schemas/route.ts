@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { verifyToken } from "@/config/jwt";
 
 type TimelineWhere = NonNullable<Parameters<typeof prisma.timeline.findMany>[0]>["where"];
+type TimelineOrderBy = NonNullable<Parameters<typeof prisma.timeline.findMany>[0]>["orderBy"];
 
 export async function GET(request: NextRequest) {
   try {
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const orderBy = 
+    const orderBy: TimelineOrderBy = 
       sortColumn === "title" 
         ? { title: sortDirection as "asc" | "desc" }
         : { order: sortDirection as "asc" | "desc" };
@@ -182,12 +183,18 @@ export async function DELETE(request: Request) {
 
     const now = new Date();
 
+    type TimelineUpdateManyWhere = NonNullable<Parameters<typeof prisma.timeline.updateMany>[0]>["where"];
+    type TimelineUpdateManyData = NonNullable<Parameters<typeof prisma.timeline.updateMany>[0]>["data"];
+
+    const updateManyWhere: TimelineUpdateManyWhere = { id: { in: ids } };
+    const updateManyData: TimelineUpdateManyData = {
+      deletedAt: now,
+      deletedBy: payload.username,
+    };
+
     const result = await prisma.timeline.updateMany({
-      where: { id: { in: ids } },
-      data: {
-        deletedAt: now,
-        deletedBy: payload.username,
-      },
+      where: updateManyWhere,
+      data: updateManyData,
     });
 
     return NextResponse.json({ updatedCount: result.count });

@@ -1,9 +1,10 @@
+import { useAppSelector } from "@/store/hooks";
 import { Burger, Menu } from "@mantine/core";
-import { listMenus } from "@/variables/dummy";
 import { useState } from "react";
 
 const MenuLandingPage = () => {
   const [opened, setOpened] = useState(false);
+  const menus = useAppSelector((state) => state.landing.menus);
 
   return (
     <Menu shadow="md" width={200} position="bottom-end" opened={opened} onChange={setOpened}>
@@ -12,7 +13,7 @@ const MenuLandingPage = () => {
       </Menu.Target>
 
       <Menu.Dropdown>
-        {listMenus.map((item, key) => (
+        {menus.map((item, key) => (
           <div key={key}>
             <Menu.Item key={key} onClick={() => {
               const target = document.getElementById(item.href);

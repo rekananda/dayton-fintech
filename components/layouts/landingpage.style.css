@@ -1,0 +1,136 @@
+.home-section {
+  position: relative;
+}
+
+.home-section-content > * {
+  z-index: 2;
+}
+
+.home-section > .home-ripple {
+  position: absolute;
+  z-index: 1;
+}
+
+.home-ripple.ripple-l {
+  top: 355px;
+  left: 0;
+}
+
+.home-ripple.ripple-r {
+  top: -478px;
+  right: -300px;
+}
+
+.home-section-content {
+  position: relative;
+  z-index: 2;
+}
+
+.home-ornament {
+  position: absolute;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+}
+
+.ornament-1 {
+  top: 152px;
+  left: 100px;
+}
+
+.ornament-2 {
+  top: 308px;
+  right: 72px;
+}
+
+.ornament-3 {
+  top: 467px;
+  left: 185px;
+}
+
+.ornament-4 {
+  top: 521px;
+  right: 140px;
+}
+
+.home-section-mobile {
+  .ripple-l {
+    top: 597px;
+    left: 0;
+  }
+
+  .ripple-r {
+    top: -310px;
+    right: -245px;
+  }
+
+  .ornament-1 {
+    top: 62px;
+    left: 52px;
+  }
+  
+  .ornament-3 {
+    top: 112px;
+    right: 20px;
+    left: unset;
+  }
+  
+  .ornament-2 {
+    top: 750px;
+    left: 91px;
+    right: unset;
+  }
+  
+  .ornament-4 {
+    top: 785px;
+    right: 46px;
+  }
+}
+
+.home-main-text {
+  display: inline-block;
+  background-image: linear-gradient(
+    180deg,
+    var(--text-color) 0%,
+    rgba(153, 153, 153, 0.6)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.timeline-container {
+  position: relative;
+  width: 100%;
+}
+
+.timeline-line {
+  height: 100%;
+  width: 2px;
+  position: absolute;
+  background: linear-gradient(
+    180deg, 
+    color-mix(in srgb, var(--text-color) 20%, transparent) -5%,
+    color-mix(in srgb, var(--text-color) 50%, transparent) 50%, 
+    color-mix(in srgb, var(--text-color) 20%, transparent) 105%
+  );
+  top: 0;
+  left: 15px;
+  transform: translateX(-50%);
+}
+
+.timeline-ornament {
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translate(-50%, -50%);
+  background: color-mix(in srgb, var(--mantine-color-primary-6) 20%, transparent);
+  box-shadow: 0px 0px 18px 15px color-mix(in srgb, var(--mantine-color-primary-6) 20%, transparent);
+}
+
+.timeline-container.center .timeline-line,
+.timeline-container.center .timeline-ornament {
+  left: 50%;
+}

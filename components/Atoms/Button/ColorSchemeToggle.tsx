@@ -4,18 +4,31 @@ import { useEffect, useState } from "react";
 import { Tooltip, useMantineColorScheme, useComputedColorScheme, Button, Group, Text } from "@mantine/core";
 import Icon from "../Icon";
 import useViewport from "@/hooks/useViewport";
+import { useLocalStorage } from "@mantine/hooks";
+import { MantineColorScheme } from "@mantine/core";
 
 const ColorSchemeToggle = () => {
-  const { toggleColorScheme } = useMantineColorScheme();
+  const { colorScheme, setColorScheme} = useMantineColorScheme();
   const { isMobile } = useViewport();
   const computedColorScheme = useComputedColorScheme('dark', { getInitialValueInEffect: true });
   const [mounted, setMounted] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, setLatestColorScheme] = useLocalStorage<MantineColorScheme>({
+    key: 'latest-color-scheme-landing-page',
+    defaultValue: colorScheme,
+  });
+
   useEffect(() => {
     setTimeout(() => {
       setMounted(true);
-    }, 100);
+    }, 100);  
   }, []);
+
+  const toggleColorScheme = () => {
+    setColorScheme(colorScheme === 'dark' ? 'light' : 'dark');
+    setLatestColorScheme(colorScheme === 'dark' ? 'light' : 'dark');
+  };
 
   const isDark = mounted ? computedColorScheme === 'dark' : true;
 

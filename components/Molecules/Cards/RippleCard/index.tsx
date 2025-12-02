@@ -16,7 +16,7 @@ const RippleCard = ({
 
   return (
     <Box className={`ripple-card-container`}>
-      <Stack className="ripple-card-content" p={isMobile ? 20 : 40}>
+      <Stack className="ripple-card-content" p={isMobile ? 20 : 40} h='100%'>
         {tags.length > 0 && <Group>
           {tags.map((tag) => (
             <Badge key={tag} className='light-badge' color='primary.7'>{tag}</Badge>
@@ -24,9 +24,7 @@ const RippleCard = ({
         </Group>}
         {title && <MainText variant="heading5" fw="600" fz={isMobile ? 24 : 28}>{title}</MainText>}
         {description && <MainText variant="body" fz={isMobile ? 14 : 16}>{description}</MainText>}
-        {children && <Box p={16}>
-          {children}
-        </Box>}
+        {children}
       </Stack>
       <RippleBackground position={ripple} bluredline={isMobile ? 12 : 20} {...rippleProps} />
     </Box>

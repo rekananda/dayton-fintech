@@ -1,0 +1,16 @@
+.mantine-datatable-table {
+  --table-min-height: 250px;
+}
+
+.mantine-datatable-empty-row {
+  height: var(--table-min-height);
+}
+
+.mantine-Table-thead {
+  background-color: var(--mantine-color-gray-2) !important;
+  border-bottom: 2px solid color-mix(in srgb, black 20%, transparent) !important;
+}
+
+.mantine-Table-th {
+  padding-block: 12px !important;
+}

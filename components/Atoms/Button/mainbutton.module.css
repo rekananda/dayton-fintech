@@ -1,0 +1,10 @@
+.button {
+  --button-radius: 2rem;
+  padding: 12px 16px;
+  height: 100%;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 14px;
+}

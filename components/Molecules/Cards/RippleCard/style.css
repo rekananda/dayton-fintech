@@ -46,31 +46,51 @@
   top: 0;
   left: 0;
   transform: translate(-50%, -50%);
+  transition: left 0.4s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.ripple-card-container:hover .ripple-inner.inner-top-left {
+  left: 100%;
 }
 
 .ripple-inner.inner-top-right {
   top: 0;
   right: 0;
   transform: translate(50%, -50%);
+  transition: right 0.4s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.ripple-card-container:hover .ripple-inner.inner-top-right {
+  right: 100%;
 }
 
 .ripple-inner.inner-bottom-left {
   bottom: 0;
   left: 0;
   transform: translate(-50%, 50%);
+  transition: left 0.4s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.ripple-card-container:hover .ripple-inner.inner-bottom-left {
+  left: 100%;
 }
 
 .ripple-inner.inner-bottom-right {
   bottom: 0;
   right: 0;
   transform: translate(50%, 50%);
+  transition: right 0.4s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.ripple-card-container:hover .ripple-inner.inner-bottom-right {
+  right: 100%;
 }
 
 .blur-line {
-  background-color: color-mix(in srgb, var(--text-color) 20%, transparent);
+  background-color: color-mix(in srgb, var(--mantine-color-gray-6) 10%, transparent);
   box-shadow: 
     2px 0px 20px 0px color-mix(in srgb, var(--mantine-color-body) 20%, transparent),
-    12px 0px 20px 12px color-mix(in srgb, var(--mantine-color-body) 20%, transparent) inset !important;
+    12px 0px 20px 12px color-mix(in srgb, var(--mantine-color-body) 30%, transparent) inset !important;
   backdrop-filter: blur(25px);
   --webkit-backdrop-filter: blur(25px);
   height: 100%;

@@ -1,0 +1,26 @@
+
+.mantine-Carousel-container {
+  position: relative;
+}
+
+.carousel-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 2/1;
+  width: calc(100% - 200px);
+}
+.carousel-slide > img {
+  overflow: hidden;
+  max-height: 80%;
+}
+
+.carousel-slide.slide-active {
+  margin: 0;
+  z-index: 1;
+}
+
+.carousel-slide.slide-active > img {
+  max-height: 100%;
+  border-radius: 16px;
+}

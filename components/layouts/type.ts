@@ -1,3 +1,5 @@
+import { UserT } from "@/config/types";
+
 export interface BackofficeLayoutI {
   children: React.ReactNode;
 }
@@ -8,13 +10,16 @@ export interface LandingLayoutI {
 
 export interface AppHeaderI {
   variant?: 'landing' | 'backoffice';
-  user?: {
-    name: string;
-    email: string;
-  };
+  user?: UserT;
   mobileOpened?: boolean;
   onMobileToggle?: () => void;
   desktopCollapsed?: boolean;
   onDesktopToggle?: () => void;
   onLogout?: () => void;
+}
+
+export type ControlLayoutT = {
+  title: string;
+  modalLabel?: string;
+  openModal?: () => void;
 }

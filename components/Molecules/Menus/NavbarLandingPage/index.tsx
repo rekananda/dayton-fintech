@@ -1,12 +1,14 @@
 import { Group } from "@mantine/core";
-import { DataMenus } from "@/variables/dummyData";
+import { useAppSelector } from "@/store/hooks";
 
 const NavbarLandingPage = () => {
+  const menus = useAppSelector((state) => state.landing.menus);
+
   return (
     <Group gap={41}>
-      {DataMenus.map((item, key) => (
+      {menus.map((item) => (
         <span
-          key={key}
+          key={item.id}
           className="cursor-pointer text-body text-[14px] hover:text-primary-6"
           onClick={() => {
             const target = document.getElementById(item.href);

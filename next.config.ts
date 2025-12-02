@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['@mantine/core', '@mantine/hooks'],
   },
+  // Turbopack configuration (empty config to use Turbopack explicitly)
+  turbopack: {},
 };
 
 export default nextConfig;

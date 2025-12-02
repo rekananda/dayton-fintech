@@ -1,12 +1,13 @@
 import useViewport from '@/hooks/useViewport';
 import { Carousel as MantineCarousel } from '@mantine/carousel';
-import { Box, Image, Stack } from "@mantine/core";
+import { Box, Image, Stack, Anchor, Group } from "@mantine/core";
 import { CarouselCardT, CarouselT } from './type';
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import { IconChevronLeft, IconChevronRight, IconMapPin, IconCalendar, IconVideo } from '@tabler/icons-react';
 import { useRef, useState } from 'react';
 import MainText from '@/components/Atoms/MainText';
 import Autoplay from 'embla-carousel-autoplay';
 import dayjs from 'dayjs';
+import MainButton from '@/components/Atoms/Button/MainButton';
 import './style.css';
 
 const Carousel = ({ renderDetail, items, carouselProps, ...rest }: CarouselT) => {
@@ -44,8 +45,35 @@ const Carousel = ({ renderDetail, items, carouselProps, ...rest }: CarouselT) =>
   );
 };
 
-export const CarouselCard = ({ date, title, description }: CarouselCardT) => {
+export const CarouselCard = ({ date, title, description, extraDetail }: CarouselCardT) => {
   const { isMobile } = useViewport();
+
+  const isToday = date ? dayjs(date).isSame(dayjs(), 'day') : false;
+  const meetingLink = extraDetail?.meetingLink;
+  const location = extraDetail?.location;
+
+  const generateCalendarUrl = () => {
+    if (!date || !title) return '';
+    
+    const eventDate = dayjs(date);
+    const startDate = eventDate.format('YYYYMMDDTHHmmss[Z]');
+    const endDate = eventDate.add(1, 'hour').format('YYYYMMDDTHHmmss[Z]');
+    
+    let details = description || '';
+    if (meetingLink) {
+      details += `\n\nMeeting Link: ${meetingLink}`;
+    }
+    
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: title,
+      dates: `${startDate}/${endDate}`,
+      details: details,
+      location: location || '',
+    });
+
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  };
 
   return (
     <Box className='flex justify-center' px={isMobile ? 20 : 100}>
@@ -59,6 +87,68 @@ export const CarouselCard = ({ date, title, description }: CarouselCardT) => {
         <MainText variant="body" c="gray" fz={isMobile ? 16 : 20}>
           {description}
         </MainText>
+        {extraDetail && (
+          <Stack gap={12}>
+            {Object.entries(extraDetail).map(([key, value]) => {
+              if (key === 'meetingLink' && value) {
+                if (isToday) {
+                  return (
+                    <Anchor
+                      key={key}
+                      href={value}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      w="100%"
+                    >
+                      <MainButton
+                        leftSection={<IconVideo size={18} />}
+                        fullWidth
+                      >
+                        Buka Meeting
+                      </MainButton>
+                    </Anchor>
+                  );
+                } else {
+                  return (
+                    <Anchor
+                      key={key}
+                      href={generateCalendarUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      w="100%"
+                    >
+                      <MainButton
+                        leftSection={<IconCalendar size={18} />}
+                        fullWidth
+                        variant="outline"
+                      >
+                        Tambah ke Kalender
+                      </MainButton>
+                    </Anchor>
+                  );
+                }
+              }
+              
+              if (key === 'location') {
+                return null;
+              }
+              
+              return (
+                <MainText key={key} variant="body" fw="400" fz={20}>
+                  {key}: {value}
+                </MainText>
+              );
+            })}
+            {!meetingLink && location && (
+              <Group gap={8} align="center">
+                <IconMapPin size={20} stroke={1.5} />
+                <MainText variant="body" fw="400" fz={20}>
+                  {location}
+                </MainText>
+              </Group>
+            )}
+          </Stack>
+        )}
       </Stack>
     </Box>
   );

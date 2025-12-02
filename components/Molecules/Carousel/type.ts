@@ -5,6 +5,9 @@ export type CarouselCardT= {
   date: string;
   title: string;
   description: string;
+  extraDetail?: {
+    [key: string]: string;
+  }
 }
 
 export type CarouselItemT<T> = {

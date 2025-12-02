@@ -1,7 +1,29 @@
+import { IconNameT } from "@/components/Atoms/Icon/type";
 import { TableT } from "@/components/Atoms/Table/type";
 import { MantineColor } from "@mantine/core";
-import * as materialIcons from '@mui/icons-material';
-import { icons } from '@tabler/icons-react';
+
+export type UserT = {
+  email: string;
+  username: string;
+  name?: string;
+  role: string;
+}
+
+export interface AuthContextType {
+  user: UserT | null;
+  login: (username: string, password: string) => Promise<boolean>;
+  register: (username: string, name: string, email: string, password: string) => Promise<{ success: boolean; message: string }>;
+  changePassword: (oldPassword: string, newPassword: string) => Promise<{ success: boolean; message: string }>;
+  logout: () => void;
+  isLoading: boolean;
+}
+
+export type ConfigDataT = {
+  id: number;
+  key: string;
+  value: string;
+  description: string;
+}
 
 export type MenuDataT = {
   id: number;
@@ -12,11 +34,17 @@ export type MenuDataT = {
 
 export type TimelineDataT = {
   id: number;
-  icon: keyof typeof materialIcons | keyof typeof icons;
+  icon: IconNameT;
   title: string;
   description: string;
   color?: MantineColor;
   order: number;
+};
+
+export type DynamicTableDataT = Record<string, string | number> & {
+  id: number;
+  order: number;
+  [key: string]: string | number;
 };
 
 export type BussinessModelDataT = {
@@ -25,13 +53,15 @@ export type BussinessModelDataT = {
   description: string;
   tags: string[];
   order: number;
-  tables?: TableT<TableProfitSharingDataT>[] | TableT<TableReferralDataT>[];
+  tables?: TableT<DynamicTableDataT>[];
   tnc?: string;
 };
 
 export type EventDataT = {
   id: number;
-  image: string;
+  imageUrl: string;
+  meetingLink?: string;
+  location?: string;
   date: string;
   title: string;
   description: string;

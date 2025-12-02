@@ -1,0 +1,13 @@
+.navbar-button {
+  border-radius: var(--mantine-radius-xl);
+  padding-inline: var(--mantine-spacing-md);
+  width: unset;
+
+  &.active {
+    background-color: var(--mantine-color-gray-2);
+  }
+  &:hover {
+    background-color: var(--mantine-color-primary-0);
+    color: var(--mantine-color-primary-6);
+  }
+}

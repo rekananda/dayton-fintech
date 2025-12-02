@@ -16,7 +16,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconLock, IconAlertCircle, IconCheck, IconKey } from '@tabler/icons-react';
-import { useAuth } from '@/lib/auth-context';
+import { useAuth } from '@/config/auth-context';
 import { notifications } from '@mantine/notifications';
 
 export default function ChangePasswordPage() {
@@ -56,7 +56,6 @@ export default function ChangePasswordPage() {
         
         form.reset();
         
-        // Redirect to dashboard after 1.5 seconds
         setTimeout(() => {
           router.push('/backoffice');
         }, 1500);
@@ -172,11 +171,6 @@ export default function ChangePasswordPage() {
               <Text size="xs" className="text-blue-700 dark:text-blue-400">
                 • Pastikan Anda mengingat password baru
               </Text>
-              {user?.email === 'admin@dayton.com' && (
-                <Text size="xs" className="text-orange-600 dark:text-orange-400 font-semibold">
-                  ⚠️ Password admin default tidak dapat diubah
-                </Text>
-              )}
             </Stack>
           </Paper>
 

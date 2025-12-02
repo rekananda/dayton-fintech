@@ -1,9 +1,14 @@
+import { NavbarButtonItemT, NavbarButtonSubItemT } from "@/components/Atoms/Button/NavbarButton/type";
 import { BussinessModelDataT, EventDataT, LegalDataT, MenuDataT, QnADataT, TimelineDataT } from "@/config/types";
 
 export const mainWhatsappNumber = '6281234567890';
 export const mainWhatsappMessage = encodeURIComponent('Halo, saya ingin bertanya tentang layanan Dayton Fintech.');
 export const mainWhatsappLink = `https://api.whatsapp.com/send?phone=${mainWhatsappNumber}&text=${mainWhatsappMessage}`;
 export const mainEmail = 'hello@daytonfintech.com';
+export const mainTitle = 'Trading Emas Otomatis, Aman dan Terukur';
+export const mainDescription = 'Pendekatan trend-following yang disiplin dengan target adaptif mengikuti volatilitas, pengendalian eksposur, serta jeda otomatis saat rilis data berdampak tinggi.';
+export const mainBadges = ['Gold • XAUUSD • H1 • Tren'];
+export const secondaryBadges = ['Profit Sharing <b>25%</b>', 'Referral hingga <b>10%</b>', '<b>Broker MT4 • H1</b>'];
 
 export const DataMenus: MenuDataT[] = [
   { id: 1, label: 'Home', href: 'home', order: 1 },
@@ -92,29 +97,37 @@ export const DataBussinessModel: BussinessModelDataT[] = [
 export const DataEvents: EventDataT[] = [
   {
     id: 1,
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=600&fit=crop',
-    date: '15 Maret 2024',
+    imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=600&fit=crop',
+    meetingLink: 'https://meet.google.com/abc123',
+    location: 'Jakarta',
+    date: new Date('2024-03-15').toISOString(),
     title: 'Workshop Trading Emas untuk Pemula',
     description: 'Pelajari dasar-dasar trading emas dengan pendekatan yang disiplin dan terukur. Workshop ini akan membahas strategi trend-following, manajemen risiko, dan cara membaca chart dengan benar.',  
   },
   {
     id: 2,
-    image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=600&fit=crop',
-    date: '22 Maret 2024',
+    imageUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=600&fit=crop',
+    date: new Date('2024-03-22').toISOString(),
+    meetingLink: 'https://meet.google.com/abc123',
+    location: 'Jakarta',
     title: 'Seminar Advanced Trading Strategies',
     description: 'Tingkatkan skill trading Anda dengan strategi lanjutan. Seminar ini cocok untuk trader yang sudah memiliki pengalaman dan ingin mengoptimalkan performa trading mereka.',
   },
   {
     id: 3,
-    image: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=1200&h=600&fit=crop',
-    date: '5 April 2024',
+    imageUrl: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=1200&h=600&fit=crop',
+    date: new Date('2024-04-05').toISOString(),
+    meetingLink: 'https://meet.google.com/abc123',
+    location: 'Jakarta',
     title: 'Webinar Risk Management & Psychology',
     description: 'Pahami pentingnya manajemen risiko dan psikologi trading. Webinar ini akan membantu Anda mengendalikan emosi dan membuat keputusan trading yang lebih baik.',
   },
   {
     id: 4,
-    image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=1200&h=600&fit=crop',
-    date: '12 April 2024',
+    imageUrl: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=1200&h=600&fit=crop',
+    meetingLink: 'https://meet.google.com/abc123',
+    location: 'Jakarta',
+    date: new Date('2024-04-12').toISOString(),
     title: 'Live Trading Session dengan Expert',
     description: 'Ikuti sesi live trading langsung dengan expert trader kami. Pelajari bagaimana cara menganalisis pasar real-time dan mengambil keputusan trading yang tepat.',
   }
@@ -167,3 +180,63 @@ export const DataQnA: QnADataT[] = [
     order: 5
   },
 ];
+
+export const backofficeMenuItems: NavbarButtonItemT[] = [
+  {
+    icon: "IconCategory",
+    label: "Menu",
+    href: "/backoffice/menus",
+  },
+  {
+    icon: "IconSettings",
+    label: "Configuration",
+    href: "/backoffice/configs",
+  },
+  {
+    icon: "IconSchema",
+    label: "Schema",
+    href: "/backoffice/schemas",
+  },
+  {
+    icon: "IconPerspective",
+    label: "Business Model",
+    href: "/backoffice/business-models",
+  },
+  {
+    icon: "ImageAspectRatio",
+    label: "Event",
+    href: "/backoffice/events",
+  },
+  {
+    icon: "IconRosetteDiscountCheck",
+    label: "Legal",
+    href: "/backoffice/legals",
+  },
+  {
+    icon: "IconMessageCircleUser",
+    label: "FAQ",
+    href: "/backoffice/faqs",
+  },
+];
+
+const flattenMenuItems = (items: NavbarButtonItemT[], level: number = 0): NavbarButtonSubItemT[] => {
+  const result: NavbarButtonSubItemT[] = [];
+  
+  items.forEach((item) => {
+    const subItem: NavbarButtonSubItemT = {
+      icon: item.icon,
+      label: item.label,
+      href: item.href,
+      subLevel: level,
+    };
+    result.push(subItem);
+
+    if (item.subs && item.subs.length > 0) {
+      result.push(...flattenMenuItems(item.subs, level + 1));
+    }
+  });
+  
+  return result;
+};
+
+export const backofficeMenuSubItems: NavbarButtonSubItemT[] = flattenMenuItems(backofficeMenuItems);

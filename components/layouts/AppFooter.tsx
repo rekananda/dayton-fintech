@@ -2,10 +2,11 @@ import useViewport from "@/hooks/useViewport";
 import { Container, Group, Stack } from "@mantine/core";
 import MainText from "../Atoms/MainText";
 import NavbarLandingPage from "../Molecules/Menus/NavbarLandingPage";
-import { mainEmail } from "@/variables/dummyData";
+import { useAppSelector } from "@/store/hooks";
 
 const AppFooter = () => {
   const { isMobile } = useViewport();
+  const { config } = useAppSelector((state) => state.landing);
 
   return (
     <footer>
@@ -16,12 +17,12 @@ const AppFooter = () => {
             © 2025 Dayton Fintech. Seluruh hak cipta dilindungi.<br />
             Kontak:{" "}
             <a
-              href={`mailto:${mainEmail}`}
+              href={`mailto:${config.email}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: "inherit", textDecoration: "underline" }}
             >
-              {mainEmail}
+              {config.email}
             </a>
           </MainText>
         </Stack>

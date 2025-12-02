@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { prisma } from "@/config/prisma";
+import { prisma, TxClient } from "@/config/prisma";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/config/jwt";
 
@@ -197,7 +197,7 @@ export async function DELETE(request: Request) {
     const now = new Date();
 
     // Use transaction to soft delete business models and their related tables
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: TxClient) => {
       // Soft delete business models
       const deletedModels = await tx.businessModel.updateMany({
         where: { id: { in: ids }, deletedAt: null },

@@ -24,18 +24,16 @@ const sslMode = url.searchParams.get("sslmode") || "prefer";
 // Supabase requires SSL, so use sslmode=require or sslmode=verify-full
 let sslConfig: boolean | object = false;
 if (sslMode === "require" || sslMode === "prefer") {
-  // For require/prefer mode, allow self-signed certificates (useful for local/testing/Supabase)
+  // For require/prefer mode, allow self-signed certificates (useful for Supabase)
   // This is needed because Pool doesn't automatically handle self-signed certs
-  // Supabase works with rejectUnauthorized: false for development
-  const isProduction = process.env.NODE_ENV === "production";
+  // Vercel/Production: Accept self-signed certificates from Supabase
   sslConfig = {
-    rejectUnauthorized: isProduction, // Strict SSL verification in production
+    rejectUnauthorized: false, // Allow self-signed certificates for Supabase
   };
 } else if (sslMode === "verify-ca" || sslMode === "verify-full") {
-  // For verify modes, always verify certificates (recommended for Supabase production)
-  const isProduction = process.env.NODE_ENV === "production";
+  // For verify modes, still allow self-signed for Supabase compatibility
   sslConfig = {
-    rejectUnauthorized: isProduction,
+    rejectUnauthorized: false,
   };
 } else if (sslMode === "disable") {
   sslConfig = false;

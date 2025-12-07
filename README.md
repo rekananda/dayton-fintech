@@ -30,8 +30,9 @@ Platform fintech modern yang dibangun dengan Next.js 16, Mantine UI, dan Tailwin
 
 ### Backoffice (Admin Panel)
 - **Sistem Autentikasi**: Login untuk admin dengan proteksi route
-- **Registrasi Admin**: Fitur pendaftaran admin baru dengan validasi
-- **Ubah Password**: Fitur untuk mengubah password akun
+- **Registrasi Admin**: Fitur pendaftaran admin baru dengan validasi Zod
+- **Profile Management**: Fitur untuk mengubah data profile (email, username, name)
+- **Ubah Password**: Fitur untuk mengubah password akun dengan validasi Zod
 - **Dashboard**: Statistik real-time, grafik transaksi, dan pertumbuhan pengguna
 - **Sidebar Navigation**: Navigasi yang mudah dengan menu sidebar
 - **Protected Routes**: Middleware untuk melindungi halaman admin
@@ -70,7 +71,7 @@ Platform fintech modern yang dibangun dengan Next.js 16, Mantine UI, dan Tailwin
 - **Authentication**: JWT (jose) + bcryptjs untuk password hashing
 - **Carousel**: Embla Carousel dengan Autoplay
 - **Charts**: Recharts & Mantine Charts v8.3.9
-- **Form Management**: Mantine Form v8.3.9
+- **Form Management**: Mantine Form v8.3.9 dengan Zod validation
 - **Date Management**: Day.js
 - **Data Table**: Mantine DataTable v8.3.8
 - **Date Picker**: Mantine Dates v8.3.9
@@ -179,6 +180,20 @@ Aplikasi menggunakan PostgreSQL dengan Prisma ORM. Setup database menggunakan Pr
    **Catatan untuk Supabase:**
    - Gunakan `sslmode=require` atau `sslmode=prefer` untuk development
    - Untuk production, gunakan `sslmode=verify-full` dengan certificate
+   - Jika menggunakan Supabase, tambahkan juga key berikut:
+   
+   ```env
+   # Supabase Configuration (jika menggunakan Supabase)
+   NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
+   NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
+   ```
+   
+   Untuk mendapatkan key Supabase:
+   1. Login ke [Supabase Dashboard](https://app.supabase.com/)
+   2. Pilih project Anda
+   3. Masuk ke Settings → API
+   4. Copy **Project URL** ke `NEXT_PUBLIC_SUPABASE_URL`
+   5. Copy **anon/public** key ke `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 3. **Generate Prisma Client dan Setup Database**
 
@@ -219,8 +234,6 @@ Aplikasi menggunakan PostgreSQL dengan Prisma ORM. Setup database menggunakan Pr
    e. Copy Client ID dan Client Secret ke environment variables
    
    f. Copy Folder ID dari URL Google Drive folder
-   
-   Lihat dokumentasi lengkap di `docs/GOOGLE_DRIVE_OAUTH_SETUP.md`
 
 6. **Connect Google Drive (Jika menggunakan upload images)**
 
@@ -286,6 +299,7 @@ dayton-fintech/
 │   │   ├── auth/                  # Authentication endpoints
 │   │   │   ├── login/             # POST /api/auth/login
 │   │   │   ├── register/          # POST /api/auth/register
+│   │   │   ├── profile/           # PUT /api/auth/profile
 │   │   │   ├── change-password/   # POST /api/auth/change-password
 │   │   │   └── session/           # GET /api/auth/session
 │   │   ├── landing/               # GET /api/landing (data untuk landing page)
@@ -308,6 +322,7 @@ dayton-fintech/
 │   ├── backoffice/                # Backoffice pages (Protected)
 │   │   ├── login/                 # Halaman login admin
 │   │   ├── register/              # Halaman register admin
+│   │   ├── profile/               # Halaman profile management
 │   │   ├── change-password/       # Halaman ubah password
 │   │   ├── menus/                 # Menu management
 │   │   ├── events/                # Event management
@@ -348,6 +363,8 @@ dayton-fintech/
 │   │   │   ├── ConfigForm/        # Form untuk config
 │   │   │   ├── TimelineForm/      # Form untuk timeline
 │   │   │   ├── BusinessModelForm/ # Form untuk business model
+│   │   │   ├── ProfileForm/       # Form untuk profile management
+│   │   │   ├── ChangePasswordForm/ # Form untuk change password
 │   │   │   └── type.ts            # Shared form types
 │   │   ├── Menus/                 # Menu components
 │   │   │   ├── NavbarBackoffice/  # Navbar untuk backoffice
@@ -390,8 +407,16 @@ dayton-fintech/
 ├── hooks/
 │   ├── useViewport.tsx            # Custom hook untuk viewport detection
 │   └── validator/                 # Form validation hooks
+│       ├── index.ts               # Validation schemas (zod)
 │       ├── eventValidation.ts     # Event form validation
-│       └── index.ts               # Validation schemas (zod)
+│       ├── profileValidation.ts  # Profile form validation
+│       ├── changePasswordValidation.ts # Change password validation
+│       ├── registerValidation.ts  # Register form validation
+│       ├── loginValidation.ts     # Login form validation
+│       ├── legalValidation.ts     # Legal form validation
+│       ├── qnaValidation.ts       # QnA form validation
+│       ├── menuValidation.ts      # Menu form validation
+│       └── configValidation.ts    # Config form validation
 ├── variables/
 │   └── dummyData.ts               # Dummy data
 ├── public/
@@ -436,8 +461,18 @@ Aplikasi menggunakan JWT-based authentication dengan password hashing menggunaka
    - Memerlukan authentication token
    - Validasi password lama sebelum mengubah
    - Password baru di-hash dengan bcryptjs
+   - Validasi menggunakan Zod schema
 
-5. **Protected Routes**
+5. **Profile Management** (`/backoffice/profile`)
+   - API endpoint: `PUT /api/auth/profile`
+   - Memerlukan authentication token
+   - Mengubah email, username, dan name
+   - Validasi email format dan uniqueness
+   - Validasi username uniqueness
+   - Validasi menggunakan Zod schema
+   - Username otomatis diubah menjadi lowercase
+
+6. **Protected Routes**
    - Middleware memverifikasi JWT token
    - User yang tidak login akan diredirect ke `/backoffice/login`
 
@@ -464,7 +499,10 @@ Protected Route → Check Cookie → Verify JWT → Allow Access / Redirect to L
 - JWT token-based authentication
 - Secure cookie storage
 - Token expiration
-- Password validation
+- Password validation dengan Zod
+- Profile management dengan validasi Zod
+- Form validation menggunakan Zod schema untuk semua form
+- Username auto-lowercase pada profile form
 
 ⚠️ **Untuk Production, Pertimbangkan:**
 - Rate limiting untuk API endpoints
@@ -490,6 +528,7 @@ Protected Route → Check Cookie → Verify JWT → Allow Access / Redirect to L
 | Route | Deskripsi |
 |-------|-----------|
 | `/backoffice` | Dashboard - Overview dan statistik |
+| `/backoffice/profile` | Profile management - Halaman untuk mengubah data profile |
 | `/backoffice/change-password` | Ubah password - Halaman untuk mengubah password |
 | `/backoffice/menus` | Manajemen menu untuk landing page |
 | `/backoffice/events` | Manajemen event dengan Google Drive image upload |
@@ -508,6 +547,7 @@ Protected Route → Check Cookie → Verify JWT → Allow Access / Redirect to L
 | `/api/auth/login` | POST | Login user | ❌ |
 | `/api/auth/register` | POST | Registrasi user baru | ❌ |
 | `/api/auth/session` | GET | Get current session | ✅ |
+| `/api/auth/profile` | PUT | Update profile (email, username, name) | ✅ |
 | `/api/auth/change-password` | POST | Ubah password | ✅ |
 | `/api/landing` | GET | Data untuk landing page | ❌ |
 | `/api/menus` | GET, POST, PUT, DELETE | CRUD menus | ✅ |

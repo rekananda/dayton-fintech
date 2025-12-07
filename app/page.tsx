@@ -135,10 +135,10 @@ export default function LandingPage() {
               ta='center'
               fw={isMobile ? '600' : '700'}
             >
-              Trading Emas Otomatis, Aman dan Terukur
+              {config.mainTitle}
             </MainText>
             <MainText variant='body' maw={isMobile ? 320 : 650} ta='center' fz={20}>
-              Pendekatan trend-following yang disiplin dengan target adaptif mengikuti volatilitas, pengendalian eksposur, serta jeda otomatis saat rilis data berdampak tinggi.
+              {config.mainDescription}
             </MainText>
             <Group maw={isMobile ? 400 : 650} justify='center'>
               {config.secondaryBadges?.map((badge, index) => (

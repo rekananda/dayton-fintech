@@ -4,10 +4,12 @@ import Icon from "@/components/Atoms/Icon";
 import MainText from "@/components/Atoms/MainText";
 import { useAuth } from "@/config/auth-context";
 import { Avatar, Group, Menu, Skeleton } from "@mantine/core";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const UserDropdown = () => {
   const { user, logout } = useAuth();
+  const router = useRouter();
   const [size] = useState({
     avatar: 32,
     textAvatar: 14,
@@ -42,10 +44,18 @@ const UserDropdown = () => {
         </Group>
       </Menu.Target>
       <Menu.Dropdown>
-        <Menu.Item fz={size.textMenu} leftSection={<Icon name="IconUser" size={size.textMenuIcon} />}>
+        <Menu.Item 
+          fz={size.textMenu} 
+          leftSection={<Icon name="IconUser" size={size.textMenuIcon} />}
+          onClick={() => router.push('/backoffice/profile')}
+        >
           Profile
         </Menu.Item>
-        <Menu.Item fz={size.textMenu} leftSection={<Icon name="IconLock" size={size.textMenuIcon} />}>
+        <Menu.Item
+          fz={size.textMenu}
+          leftSection={<Icon name="IconLock" size={size.textMenuIcon} />}
+          onClick={() => router.push('/backoffice/change-password')}
+        >
           Change Password
         </Menu.Item>
         <Menu.Divider />

@@ -51,3 +51,42 @@ export const eventSchema = z.object({
 });
 
 export type EventFormValues = z.infer<typeof eventSchema>;
+
+export const changePasswordSchema = z.object({
+  oldPassword: z.string().min(1, "Password lama harus diisi"),
+  newPassword: z.string().min(8, "Password baru minimal 8 karakter"),
+  confirmPassword: z.string().min(1, "Konfirmasi password harus diisi"),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Password tidak sama",
+  path: ["confirmPassword"]
+});
+
+export type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;
+
+export const registerSchema = z.object({
+  username: z.string().min(3, "Username minimal 3 karakter"),
+  name: z.string().min(3, "Nama minimal 3 karakter"),
+  email: z.string().email("Email tidak valid"),
+  password: z.string().min(8, "Password minimal 8 karakter"),
+  confirmPassword: z.string().min(1, "Konfirmasi password harus diisi"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Password tidak sama",
+  path: ["confirmPassword"]
+});
+
+export type RegisterFormValues = z.infer<typeof registerSchema>;
+
+export const loginSchema = z.object({
+  username: z.string().min(3, "Username minimal 3 karakter"),
+  password: z.string().min(3, "Password minimal 3 karakter"),
+});
+
+export type LoginFormValues = z.infer<typeof loginSchema>;
+
+export const profileSchema = z.object({
+  email: z.string().email("Email tidak valid"),
+  username: z.string().min(3, "Username minimal 3 karakter"),
+  name: z.string().min(3, "Nama minimal 3 karakter"),
+});
+
+export type ProfileFormValues = z.infer<typeof profileSchema>;

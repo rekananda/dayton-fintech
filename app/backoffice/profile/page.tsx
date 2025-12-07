@@ -1,34 +1,34 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import ControlLayout from "@/components/layouts/ControlLayout";
-import { Stack, Paper, Text } from "@mantine/core";
+import { Stack, Paper } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconCheck } from "@tabler/icons-react";
 import { useAuth } from "@/config/auth-context";
-import ChangePasswordForm, { ChangePasswordDataT } from "@/components/Molecules/Forms/ChangePasswordForm";
+import ProfileForm, { ProfileDataT } from "@/components/Molecules/Forms/ProfileForm";
 
-const ChangePasswordPage = () => {
+const ProfilePage = () => {
   const router = useRouter();
-  const { changePassword } = useAuth();
+  const { updateProfile, user, isLoading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (values: Partial<ChangePasswordDataT>) => {
+  const handleSubmit = async (values: Partial<ProfileDataT>) => {
     setIsLoading(true);
 
     try {
-      if (!values.oldPassword || !values.newPassword) {
+      if (!values.email || !values.username || !values.name) {
         notifications.show({
           title: 'Gagal',
-          message: 'Password lama dan password baru wajib diisi',
+          message: 'Email, username, dan nama wajib diisi',
           color: 'red',
         });
         setIsLoading(false);
         return;
       }
 
-      const result = await changePassword(values.oldPassword, values.newPassword);
+      const result = await updateProfile(values.email, values.username, values.name);
       
       if (result.success) {
         notifications.show({
@@ -37,10 +37,6 @@ const ChangePasswordPage = () => {
           color: 'teal',
           icon: <IconCheck size={18} />,
         });
-        
-        setTimeout(() => {
-          router.push('/backoffice');
-        }, 1500);
       } else {
         notifications.show({
           title: 'Gagal',
@@ -49,7 +45,7 @@ const ChangePasswordPage = () => {
         });
       }
     } catch (error) {
-      console.error('Change password error:', error);
+      console.error('Update profile error:', error);
       notifications.show({
         title: 'Gagal',
         message: 'Terjadi kesalahan. Silakan coba lagi.',
@@ -64,17 +60,38 @@ const ChangePasswordPage = () => {
     router.push('/backoffice');
   };
 
+  if (authLoading || !user) {
+    return (
+      <Stack>
+        <ControlLayout title="Profile" />
+        <Paper p="md" radius="md" withBorder maw={500}>
+          <Stack gap="md">
+            <div>Loading...</div>
+          </Stack>
+        </Paper>
+      </Stack>
+    );
+  }
+
+  const defaultValues: Partial<ProfileDataT> = {
+    email: user.email,
+    username: user.username,
+    name: user.name || '',
+  };
+
   return (
     <Stack>
       <ControlLayout
-        title="Change Password"
+        title="Profile"
       />
       <Paper p="md" radius="md" withBorder maw={500}>
         <Stack gap="md">
-          <ChangePasswordForm
+          <ProfileForm
             handleSubmit={handleSubmit}
             handleCancel={handleCancel}
             isLoading={isLoading}
+            forEdit={true}
+            defaultValues={defaultValues}
           />
         </Stack>
       </Paper>
@@ -82,4 +99,5 @@ const ChangePasswordPage = () => {
   );
 };
 
-export default ChangePasswordPage;
+export default ProfilePage;
+

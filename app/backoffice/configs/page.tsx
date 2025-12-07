@@ -9,11 +9,13 @@ import { ConfigDataT } from "@/config/types";
 import ConfigForm from "@/components/Molecules/Forms/ConfigForm";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setModalCRUD, setData, setLimit, setLoading, setPage, setSearch, setSortStatus, setTotalRecords } from "@/store/dataConfigSlice";
+import mainConfig from "@/config";
 
 const BackofficeConfigsPage = () => {
   const [isMounted, setIsMounted] = useState(false);
   const prevSearchRef = useRef<string>("");
   const skipLoadRef = useRef<boolean>(false);
+  const { canAddNewConfig } = mainConfig;
   
   const { 
     modalCRUD,
@@ -66,34 +68,34 @@ const BackofficeConfigsPage = () => {
     }
   }, [dispatch, page, limit, search, sortStatus]);
 
-  // const handleCreate = useCallback(async (values: Partial<ConfigDataT>) => {
-  //   try {
-  //     const response = await fetch("/api/configs", {
-  //       method: "POST",
-  //       body: JSON.stringify({
-  //         key: values.key,
-  //         value: values.value,
-  //         description: values.description
-  //       }),
-  //     });
-  //     if (!response.ok) {
-  //       const errorData = await response.json();
-  //       throw new Error(errorData.message || "Gagal membuat config");
-  //     }
-  //     loadDatas();
-  //     notifications.show({
-  //       color: "green",
-  //       title: "Berhasil membuat config",
-  //       message: "Config berhasil dibuat",
-  //     });
-  //   } catch (error) {
-  //     notifications.show({
-  //       color: "red",
-  //       title: "Gagal membuat config",
-  //       message: (error as Error).message,
-  //     });
-  //   }
-  // }, [loadDatas]);
+  const handleCreate = useCallback(async (values: Partial<ConfigDataT>) => {
+    try {
+      const response = await fetch("/api/configs", {
+        method: "POST",
+        body: JSON.stringify({
+          key: values.key,
+          value: values.value,
+          description: values.description
+        }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Gagal membuat config");
+      }
+      loadDatas();
+      notifications.show({
+        color: "green",
+        title: "Berhasil membuat config",
+        message: "Config berhasil dibuat",
+      });
+    } catch (error) {
+      notifications.show({
+        color: "red",
+        title: "Gagal membuat config",
+        message: (error as Error).message,
+      });
+    }
+  }, [loadDatas]);
 
   const handleEdit = useCallback(async (values: Partial<ConfigDataT>) => {
     try {
@@ -120,33 +122,33 @@ const BackofficeConfigsPage = () => {
     }
   }, [loadDatas]);
 
-  // const handleDelete = useCallback(async (values: Partial<ConfigDataT>[]) => {
-  //   try {
-  //     const response = await fetch("/api/configs", {
-  //       method: "DELETE",
-  //       body: JSON.stringify({ids: values.map((value) => value.id)}),
-  //     });
-  //     if (!response.ok) {
-  //       throw new Error("Gagal menghapus data config");
-  //     }
-  //     loadDatas();
-  //     notifications.show({
-  //       color: "green",
-  //       title: "Berhasil menghapus data config",
-  //       message: "Data config berhasil dihapus",
-  //     });
-  //   } catch (error) {
-  //     notifications.show({
-  //       color: "red",
-  //       title: "Gagal menghapus data config",
-  //       message: (error as Error).message,
-  //     });
-  //   }
-  // }, [loadDatas]);
+  const handleDelete = useCallback(async (values: Partial<ConfigDataT>[]) => {
+    try {
+      const response = await fetch("/api/configs", {
+        method: "DELETE",
+        body: JSON.stringify({ids: values.map((value) => value.id)}),
+      });
+      if (!response.ok) {
+        throw new Error("Gagal menghapus data config");
+      }
+      loadDatas();
+      notifications.show({
+        color: "green",
+        title: "Berhasil menghapus data config",
+        message: "Data config berhasil dihapus",
+      });
+    } catch (error) {
+      notifications.show({
+        color: "red",
+        title: "Gagal menghapus data config",
+        message: (error as Error).message,
+      });
+    }
+  }, [loadDatas]);
 
-  // const preCondDelete = useCallback(async (value: Partial<ConfigDataT>) => {
-  //   handleDelete([value]);
-  // }, [handleDelete]);
+  const preCondDelete = useCallback(async (value: Partial<ConfigDataT>) => {
+    handleDelete([value]);
+  }, [handleDelete]);
 
   useEffect(() => {
     if (isMounted && search !== prevSearchRef.current) {
@@ -168,8 +170,8 @@ const BackofficeConfigsPage = () => {
       <Stack>
         <ControlLayout
           title="Config Management"
-          // modalLabel="Tambah Config"
-          // openModal={() => dispatch(setModalCRUD(true))}
+          modalLabel={canAddNewConfig ? "Tambah Config" : undefined}
+          openModal={canAddNewConfig ? () => dispatch(setModalCRUD(true)) : () => {}}
         />
       </Stack>
     );
@@ -179,8 +181,8 @@ const BackofficeConfigsPage = () => {
     <Stack>
       <ControlLayout
         title="Config Management"
-        // modalLabel="Tambah Config"
-        // openModal={() => dispatch(setModalCRUD(true))}
+        modalLabel={canAddNewConfig ? "Tambah Config" : undefined}
+        openModal={canAddNewConfig ? () => dispatch(setModalCRUD(true)) : () => {}}
       />
       <TableCard<ConfigDataT>
         records={data}
@@ -239,11 +241,11 @@ const BackofficeConfigsPage = () => {
           onSearchChange: (value) => dispatch(setSearch(value)),
         }}
         FormData={ConfigForm}
-        // onCreate={handleCreate}
+        onCreate={canAddNewConfig ? handleCreate : undefined}
         onEdit={handleEdit}
-        // onDelete={preCondDelete}
-        // onDeleteAll={handleDelete}
-        // canBulkAction={true}
+        onDelete={canAddNewConfig ? preCondDelete : undefined}
+        // onDeleteAll={canAddNewConfig ? handleDelete : undefined}
+        // canBulkAction={canAddNewConfig ? true : false}
         sortStatus={sortStatus}
         onSortStatusChange={(value) => dispatch(setSortStatus(value))}
         isModalOpen={modalCRUD}

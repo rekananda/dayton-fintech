@@ -1,3 +1,5 @@
+'use client';
+
 import { TimelineDataT } from "@/config/types";
 import { BaseFormPropsT } from "./type";
 import { Group, Stack, Select, Textarea, Box, Anchor, Text } from "@mantine/core";

@@ -1,3 +1,5 @@
+'use client';
+
 import { Accordion as MantineAccordion } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { AccordionT } from "./type";

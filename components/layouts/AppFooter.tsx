@@ -1,3 +1,5 @@
+'use client';
+
 import useViewport from "@/hooks/useViewport";
 import { Container, Group, Stack } from "@mantine/core";
 import MainText from "../Atoms/MainText";

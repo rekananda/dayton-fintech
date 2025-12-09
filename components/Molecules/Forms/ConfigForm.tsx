@@ -1,3 +1,5 @@
+'use client';
+
 import { ConfigDataT } from "@/config/types";
 import { BaseFormPropsT } from "./type";
 import { Group, Stack, Textarea, ActionIcon, Box, Text } from "@mantine/core";

@@ -1,3 +1,5 @@
+'use client';
+
 import { LegalDataT } from "@/config/types";
 import { BaseFormPropsT } from "./type";
 import { Group, Stack, Textarea } from "@mantine/core";

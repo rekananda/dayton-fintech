@@ -1,3 +1,5 @@
+'use client';
+
 import { useAppSelector } from "@/store/hooks";
 import { Burger, Menu } from "@mantine/core";
 import { useState } from "react";

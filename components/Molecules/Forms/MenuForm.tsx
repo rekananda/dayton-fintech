@@ -1,3 +1,5 @@
+'use client';
+
 import { MenuDataT } from "@/config/types";
 import { BaseFormPropsT } from "./type";
 import { Group, LoadingOverlay, Stack } from "@mantine/core";

@@ -1,3 +1,5 @@
+'use client';
+
 import { Button, ButtonProps } from "@mantine/core";
 import { ButtonHTMLAttributes } from "react";
 import classes from "./mainbutton.module.css";

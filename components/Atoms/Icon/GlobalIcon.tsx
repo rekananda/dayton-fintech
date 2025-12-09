@@ -1,3 +1,5 @@
+'use client';
+
 import { icons } from "@tabler/icons-react";
 import * as materialIcons from '@mui/icons-material';
 import Icon from ".";

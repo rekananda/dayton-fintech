@@ -21,6 +21,8 @@ export function AppProviders({ children }: AppProvidersProps) {
         theme={mainTheme}
         defaultColorScheme="dark"
         cssVariablesResolver={cssVariablesResolver}
+        cssVariablesSelector=":root"
+        withGlobalClasses
       >
         <ModalsProvider>
           <AuthProvider>

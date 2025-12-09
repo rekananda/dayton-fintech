@@ -1,3 +1,5 @@
+'use client';
+
 import { DataTable, DataTableColumn } from 'mantine-datatable';
 import { TableT } from './type';
 

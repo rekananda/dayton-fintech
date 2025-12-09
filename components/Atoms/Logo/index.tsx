@@ -1,3 +1,5 @@
+'use client';
+
 import { Box, Image } from "@mantine/core";
 
 const MainLogo = ({ size = '100%' }: { size?: string | number }) => {

@@ -1,3 +1,5 @@
+'use client';
+
 import { Text, TextProps } from "@mantine/core"
 import { MainTextT } from "./type";
 

@@ -1,3 +1,5 @@
+'use client';
+
 import { QnADataT } from "@/config/types";
 import { BaseFormPropsT } from "./type";
 import { Box, Group, Stack, Textarea } from "@mantine/core";

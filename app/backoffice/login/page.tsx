@@ -18,6 +18,7 @@ import PasswordInput from '@/components/Atoms/FormInput/PasswordInput';
 import MainText from '@/components/Atoms/MainText';
 import { loginValidator } from '@/hooks/validator/loginValidation';
 import mainConfig from '@/config';
+import ClientOnly from '@/components/layouts/ClientOnly';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -66,49 +67,52 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthLayout>
-      <form onSubmit={form.onSubmit(handleSubmit)}>
-        <Stack>
-          <MainText mb={32} variant="heading3" ta="center">Sign in</MainText>
-          <MainInput
-            label="Username"
-            placeholder="Enter username"
-            required
-            {...form.getInputProps('username')}
-          />
-          <PasswordInput
-            label="Password"
-            placeholder="Enter password"
-            required
-            {...form.getInputProps('password')}
-          />
+    <ClientOnly>
+      <AuthLayout>
+        <form onSubmit={form.onSubmit(handleSubmit)} suppressHydrationWarning>
+          <Stack suppressHydrationWarning>
+            <MainText mb={32} variant="heading3" ta="center">Sign in</MainText>
+            <MainInput
+              label="Username"
+              placeholder="Enter username"
+              required
+              {...form.getInputProps('username')}
+            />
+            <PasswordInput
+              label="Password"
+              placeholder="Enter password"
+              required
+              {...form.getInputProps('password')}
+            />
 
-          {error && (
-            <Alert 
-              icon={<IconAlertCircle size={18} />} 
-              title="Login Gagal" 
-              color="red"
-              variant="light"
-            >
-              {error}
-            </Alert>
-          )}
+            {error && (
+              <Alert 
+                icon={<IconAlertCircle size={18} />} 
+                title="Login Gagal" 
+                color="red"
+                variant="light"
+                suppressHydrationWarning
+              >
+                {error}
+              </Alert>
+            )}
 
-          <MainButton type="submit" fullWidth loading={isLoading} mt={32}>
-            Login
-          </MainButton>
+            <MainButton type="submit" fullWidth loading={isLoading} mt={32}>
+              Login
+            </MainButton>
 
-          {canRegisterUser && <Group justify="center" gap={4}>
-            <MainText variant="body" ta="center">
-              Belum punya akun?
-            </MainText>
-            <MainText className="cursor-pointer" variant='body-bold' color="primary" onClick={() => router.push('/backoffice/register')}>
-              Daftar disini
-            </MainText>
-          </Group>}
-        </Stack>
-      </form>
-    </AuthLayout>
+            {canRegisterUser && <Group justify="center" gap={4} suppressHydrationWarning>
+              <MainText variant="body" ta="center">
+                Belum punya akun?
+              </MainText>
+              <MainText className="cursor-pointer" variant='body-bold' color="primary" onClick={() => router.push('/backoffice/register')}>
+                Daftar disini
+              </MainText>
+            </Group>}
+          </Stack>
+        </form>
+      </AuthLayout>
+    </ClientOnly>
   );
 }
 

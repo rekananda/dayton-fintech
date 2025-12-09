@@ -1,3 +1,5 @@
+'use client';
+
 import { BaseFormPropsT } from "./type";
 import { Group, Stack, Box } from "@mantine/core";
 import { useForm } from "@mantine/form";

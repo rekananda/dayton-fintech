@@ -1,3 +1,5 @@
+'use client';
+
 import { Box, Grid, Stack } from "@mantine/core";
 import useViewport from "@/hooks/useViewport";
 import MainLogo from "../Atoms/Logo";
@@ -12,10 +14,10 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   return (
-    <Grid className={`auth-layout-container ${isMobile ? "layout-mobile" : ""}`} gutter={0}>
-      <Grid.Col span={{ base: 12, md: "content" }} mih={isMobile ? "fit-content" : "100dvh"}>
-        <Box className="auth-layout-accent-container">
-          <Stack className="auth-layout-accent-content" gap={isMobile ? 16 : 24} p={isMobile ? 32 : 48}>
+    <Grid className={`auth-layout-container ${isMobile ? "layout-mobile" : ""}`} gutter={0} suppressHydrationWarning>
+      <Grid.Col span={{ base: 12, md: "content" }} mih={isMobile ? "fit-content" : "100dvh"} suppressHydrationWarning>
+        <Box className="auth-layout-accent-container" suppressHydrationWarning>
+          <Stack className="auth-layout-accent-content" gap={isMobile ? 16 : 24} p={isMobile ? 32 : 48} suppressHydrationWarning>
             <MainLogo size={isMobile ? 50 : 60} />
             <MainText variant="heading4" fz={32} ta="center" pt={isMobile ? 16 : 40}>
               Dayton Backoffice
@@ -28,9 +30,9 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
           <RippleEffect className="auth-layout-ripple ripple-r" position='right' color='primary.8' size={500}/>
         </Box>
       </Grid.Col>
-      <Grid.Col className="auth-layout-content-container" span={{ base: 12, md: "auto" }} >
-        <Stack w="100%" align="center">
-          <Box className="auth-layout-content" bg="white">
+      <Grid.Col className="auth-layout-content-container" span={{ base: 12, md: "auto" }} suppressHydrationWarning>
+        <Stack w="100%" align="center" suppressHydrationWarning>
+          <Box className="auth-layout-content" bg="white" suppressHydrationWarning>
             {children}
           </Box>
           <MainButton variant="transparent" onClick={() => router.push('/')} c="dimmed">

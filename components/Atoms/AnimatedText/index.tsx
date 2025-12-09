@@ -37,7 +37,7 @@ const AnimatedText = forwardRef<HTMLDivElement, AnimatedTextProps>(
           ...style,
           '--animation-delay': `${delay}s`,
           '--animation-duration': `${duration}s`,
-        } as React.CSSProperties}
+        } as React.CSSProperties & Record<string, string>}
         {...props}
       >
         {children}

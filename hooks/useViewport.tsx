@@ -4,9 +4,11 @@ import { useEffect, useState } from 'react';
 
 const useViewport = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(true);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
+    setIsHydrated(true);
     const checkViewport = () => {
       if (typeof window !== 'undefined') {
         const width = window.innerWidth;
@@ -21,7 +23,7 @@ const useViewport = () => {
     return () => window.removeEventListener('resize', checkViewport);
   }, []);
 
-  return { isMobile, isDesktop };
+  return { isMobile: isHydrated ? isMobile : false, isDesktop: isHydrated ? isDesktop : false };
 }
 
 export default useViewport;

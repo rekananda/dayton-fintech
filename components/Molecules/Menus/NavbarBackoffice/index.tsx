@@ -1,3 +1,5 @@
+'use client';
+
 import { AppShell, ScrollArea, Stack } from "@mantine/core";
 import { NavbarBackofficeT } from "./type";
 import NavbarButton from "@/components/Atoms/Button/NavbarButton"

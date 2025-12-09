@@ -1,3 +1,5 @@
+'use client';
+
 import MainText from "@/components/Atoms/MainText";
 import useViewport from "@/hooks/useViewport";
 import { Badge, Box, Group, Stack } from "@mantine/core";

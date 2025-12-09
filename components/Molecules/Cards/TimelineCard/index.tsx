@@ -1,3 +1,5 @@
+'use client';
+
 import { Box, Stack } from '@mantine/core';
 import MainText from '@/components/Atoms/MainText';
 import useViewport from '@/hooks/useViewport';

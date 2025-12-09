@@ -1,3 +1,5 @@
+'use client';
+
 import useViewport from '@/hooks/useViewport';
 import { Carousel as MantineCarousel } from '@mantine/carousel';
 import { Box, Image, Stack, Anchor, Group } from "@mantine/core";

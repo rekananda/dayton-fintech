@@ -18,6 +18,7 @@ import { TimelineCardT } from '@/components/Molecules/Cards/TimelineCard/type';
 import { AccordionItemT } from '@/components/Atoms/Accordion/type';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setLoading, setLandingData, resetToDummy } from '@/store/landingSlice';
+import AnimatedText from '@/components/Atoms/AnimatedText';
 
 export default function LandingPage() {
   const { isMobile } = useViewport();
@@ -124,32 +125,42 @@ export default function LandingPage() {
             pb={isMobile ? 134 : 100}
           >
             {config.mainBadges?.map((badge, index) => (
-              <Badge variant="outline" className='main-badge' key={`main-badge-${index}`}>
-                  <span dangerouslySetInnerHTML={{ __html: badge }} />
-              </Badge>
-            ))}
-            <MainText 
-              className='home-main-text' 
-              variant={isMobile ? 'heading3' : 'heading1'} 
-              maw={isMobile ? 320 : 990} 
-              ta='center'
-              fw={isMobile ? '600' : '700'}
-            >
-              Trading Emas Otomatis, Aman dan Terukur
-            </MainText>
-            <MainText variant='body' maw={isMobile ? 320 : 650} ta='center' fz={20}>
-              Pendekatan trend-following yang disiplin dengan target adaptif mengikuti volatilitas, pengendalian eksposur, serta jeda otomatis saat rilis data berdampak tinggi.
-            </MainText>
-            <Group maw={isMobile ? 400 : 650} justify='center'>
-              {config.secondaryBadges?.map((badge, index) => (
-                <Badge variant="outline" className='main-badge2' key={`secondary-badge-${index}`}>
+              <AnimatedText key={`main-badge-${index}`} delay={index * 0.1} animationType="fadeUp">
+                <Badge variant="outline" className='main-badge'>
                   <span dangerouslySetInnerHTML={{ __html: badge }} />
                 </Badge>
+              </AnimatedText>
+            ))}
+            <AnimatedText delay={0.2} animationType="fadeUp">
+              <MainText 
+                className='home-main-text' 
+                variant={isMobile ? 'heading3' : 'heading1'} 
+                maw={isMobile ? 320 : 990} 
+                ta='center'
+                fw={isMobile ? '600' : '700'}
+              >
+                Trading Emas Otomatis, Aman dan Terukur
+              </MainText>
+            </AnimatedText>
+            <AnimatedText delay={0.3} animationType="fadeUp">
+              <MainText variant='body' maw={isMobile ? 320 : 650} ta='center' fz={20}>
+                Pendekatan trend-following yang disiplin dengan target adaptif mengikuti volatilitas, pengendalian eksposur, serta jeda otomatis saat rilis data berdampak tinggi.
+              </MainText>
+            </AnimatedText>
+            <Group maw={isMobile ? 400 : 650} justify='center'>
+              {config.secondaryBadges?.map((badge, index) => (
+                <AnimatedText key={`secondary-badge-${index}`} delay={0.4 + index * 0.1} animationType="fadeUp">
+                  <Badge variant="outline" className='main-badge2'>
+                    <span dangerouslySetInnerHTML={{ __html: badge }} />
+                  </Badge>
+                </AnimatedText>
               ))}
             </Group>
-            <Button className='main-button' size="xl" color='primary' radius='xl' mt={isMobile ? 4 : 40} onClick={() => window.open(mainWhatsappLink, '_blank')}>
-              Daftar via WhatsApp
-            </Button>
+            <AnimatedText delay={0.5} animationType="fadeUp">
+              <Button className='main-button' size="xl" color='primary' radius='xl' mt={isMobile ? 4 : 40} onClick={() => window.open(mainWhatsappLink, '_blank')}>
+                Daftar via WhatsApp
+              </Button>
+            </AnimatedText>
           </Stack>
 
           <RippleEffect className="home-ripple ripple-l" position='left' color='primary.8' size={isMobile ? 250 : 450}/>
@@ -163,19 +174,22 @@ export default function LandingPage() {
 
         {shouldShowExplanation && (
           <Stack id="explanation" align='center' py={80} px={isMobile ? 20 : 100}>
-            <TopicTitle title="Rahasia di Balik Performa Stabil Kami" badge="Strategi Kami" />
+            <AnimatedText delay={0.1} animationType="fadeUp">
+              <TopicTitle title="Rahasia di Balik Performa Stabil Kami" badge="Strategi Kami" />
+            </AnimatedText>
 
             <Box className={`timeline-container ${isMobile ? 'left' : 'center'}`} mt={isMobile ? 16 : 60}>
               <Box className='timeline-ornament' w={isMobile ? '60dvw' : '30dvw'} />
               <Box className='timeline-line' w={2}/>
               {listTimeline.map((item, index) => (
-                <Box 
-                  key={`timeline-${timelines[index]?.id || index}`} 
-                  className={`timeline-item ${index%2==0? "even" : "odd"}`} 
-                  pb={index !== listTimeline.length-1 ? isMobile ? 20 : 50 : 0}
-                >
-                  <TimelineCard {...item} />
-                </Box>
+                <AnimatedText key={`timeline-${timelines[index]?.id || index}`} delay={0.2 + index * 0.15} animationType="fadeUp">
+                  <Box 
+                    className={`timeline-item ${index%2==0? "even" : "odd"}`} 
+                    pb={index !== listTimeline.length-1 ? isMobile ? 20 : 50 : 0}
+                  >
+                    <TimelineCard {...item} />
+                  </Box>
+                </AnimatedText>
               ))}
             </Box>
           </Stack>
@@ -183,7 +197,9 @@ export default function LandingPage() {
 
         {shouldShowProfitSharing && (
           <Stack id="profit-sharing" align='center' py={80} px={isMobile ? 20 : 100} gap={isMobile ? 32 : 64}>
-            <TopicTitle title="Berbagi Profit, Bukan Risiko" badge="Model Bisnis" />
+            <AnimatedText delay={0.1} animationType="fadeUp">
+              <TopicTitle title="Berbagi Profit, Bukan Risiko" badge="Model Bisnis" />
+            </AnimatedText>
 
             <Grid w='100%' gutter={isMobile ? 32 : 40} justify='center'>
               {listBussinessModel.map((item, index) => {
@@ -193,28 +209,30 @@ export default function LandingPage() {
 
                 return (
                   <Grid.Col span={{ base: 12, md: 12/colSpan }} key={`business-model-${item.id}`}>
-                    <RippleCard {...rest} ripple={index%2==0 ? ['bottom-left'] : ['top-right']}>
-                      <Stack>
-                        {tables?.map((tableprops, tableIndex) => {
-                          const columns = tableprops.columns || [];
-                          const datas = tableprops.datas || [];
-                          
-                          if (columns.length === 0 || datas.length === 0) {
-                            return null;
-                          }
+                    <AnimatedText delay={0.2 + index * 0.15} animationType="fadeUp">
+                      <RippleCard {...rest} ripple={index%2==0 ? ['bottom-left'] : ['top-right']}>
+                        <Stack>
+                          {tables?.map((tableprops, tableIndex) => {
+                            const columns = tableprops.columns || [];
+                            const datas = tableprops.datas || [];
+                            
+                            if (columns.length === 0 || datas.length === 0) {
+                              return null;
+                            }
 
-                          return (
-                            <Table
-                              key={`table-${item.id}-${tableIndex}`}
-                              columns={columns}
-                              datas={datas}
-                            />
-                          );
-                        })}
-                        {tnc && <MainText variant='body' fz={14}>{tnc}</MainText>}
+                            return (
+                              <Table
+                                key={`table-${item.id}-${tableIndex}`}
+                                columns={columns}
+                                datas={datas}
+                              />
+                            );
+                          })}
+                          {tnc && <MainText variant='body' fz={14}>{tnc}</MainText>}
 
-                      </Stack>
-                    </RippleCard>
+                        </Stack>
+                      </RippleCard>
+                    </AnimatedText>
                   </Grid.Col>
                 );
               })}
@@ -223,19 +241,27 @@ export default function LandingPage() {
         )}
 
         {shouldShowEvents && <Stack id="events" align='center' py={80} gap={isMobile ? 32 : 48}>
-          <TopicTitle title="Belajar Bareng, Raih Hasil Lebih Baik" badge="Acara Mendatang" px={isMobile ? 20 : 100}/>
-          <Stack gap={isMobile ? 24 : 32} w="100%">
-            <Carousel items={listEvents} renderDetail={ (props: CarouselCardT) => <CarouselCard {...props} />} />
-          </Stack>
+          <AnimatedText delay={0.1} animationType="fadeUp">
+            <TopicTitle title="Belajar Bareng, Raih Hasil Lebih Baik" badge="Acara Mendatang" px={isMobile ? 20 : 100}/>
+          </AnimatedText>
+          <AnimatedText delay={0.2} animationType="fadeUp">
+            <Stack gap={isMobile ? 24 : 32} w="100%">
+              <Carousel items={listEvents} renderDetail={ (props: CarouselCardT) => <CarouselCard {...props} />} />
+            </Stack>
+          </AnimatedText>
         </Stack>}
 
         {shouldShowLegal && <Stack id="legal" align='center' py={80} px={isMobile ? 20 : 100} gap={isMobile ? 32 : 64}>
-          <TopicTitle title="Ketentuan Layanan & Perlindungan Data" badge="Legal" />
+          <AnimatedText delay={0.1} animationType="fadeUp">
+            <TopicTitle title="Ketentuan Layanan & Perlindungan Data" badge="Legal" />
+          </AnimatedText>
           
           <Grid gutter={isMobile ? 32 : 40} justify='center'>
             {listLegal.map((item, index) => (
               <Grid.Col span={{ base: 12, md: 6 }} key={`legal-${legals[index]?.id || index}`}>
-                <TimelineCard {...item} withIndicator={false} h='100%'/>
+                <AnimatedText delay={0.2 + index * 0.15} animationType="fadeUp">
+                  <TimelineCard {...item} withIndicator={false} h='100%'/>
+                </AnimatedText>
               </Grid.Col>
             ))}
           </Grid>
@@ -243,29 +269,39 @@ export default function LandingPage() {
 
         {shouldShowQna && <Grid id="qna" justify='center' py={80} px={isMobile ? 20 : 100} gutter={isMobile ? 32 : 40} w='100%'>
           <Grid.Col span={{ base: 12, md: 4 }}>
-            <TopicTitle title="Pertanyaan yang Sering Diajukan" badge="F.A.Q" align={isMobile ? 'center' : 'left'} />
+            <AnimatedText delay={0.1} animationType="fadeUp">
+              <TopicTitle title="Pertanyaan yang Sering Diajukan" badge="F.A.Q" align={isMobile ? 'center' : 'left'} />
+            </AnimatedText>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 8 }}>
-            <Box>
-              <Accordion items={listQnA} />
-            </Box>
+            <AnimatedText delay={0.2} animationType="fadeUp">
+              <Box>
+                <Accordion items={listQnA} />
+              </Box>
+            </AnimatedText>
           </Grid.Col>
         </Grid>}
 
         {hasRegisterMenu && <Box id="register" py={80} px={isMobile ? 20 : 100}> 
-          <RippleCard 
-            ripple={['bottom-left', 'top-right']} 
-            rippleProps={{ type: 'circle', rippleSize: isMobile ? [300, 300] : [500, 500] }}
-          > 
-            <Stack align='center' gap={isMobile ? 24 : 48} py={50}>
-              <MainText variant={isMobile ? 'heading4' : 'heading2'} ta='center' maw={isMobile ? 320 : 720}>
-                Mulai Langkah Pertamamu, Menuju Trading yang Terukur
-              </MainText>
-              <Button className='main-button' size="xl" radius='xl' onClick={() => window.open(mainWhatsappLink, '_blank')}>
-                Daftar via WhatsApp
-              </Button>
-            </Stack>
-          </RippleCard>
+          <AnimatedText delay={0.1} animationType="fadeUp">
+            <RippleCard 
+              ripple={['bottom-left', 'top-right']} 
+              rippleProps={{ type: 'circle', rippleSize: isMobile ? [300, 300] : [500, 500] }}
+            > 
+              <Stack align='center' gap={isMobile ? 24 : 48} py={50}>
+                <AnimatedText delay={0.2} animationType="fadeUp">
+                  <MainText variant={isMobile ? 'heading4' : 'heading2'} ta='center' maw={isMobile ? 320 : 720}>
+                    Mulai Langkah Pertamamu, Menuju Trading yang Terukur
+                  </MainText>
+                </AnimatedText>
+                <AnimatedText delay={0.3} animationType="fadeUp">
+                  <Button className='main-button' size="xl" radius='xl' onClick={() => window.open(mainWhatsappLink, '_blank')}>
+                    Daftar via WhatsApp
+                  </Button>
+                </AnimatedText>
+              </Stack>
+            </RippleCard>
+          </AnimatedText>
         </Box>}
       </Stack>
     </LandingLayout>

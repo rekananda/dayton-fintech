@@ -3,10 +3,10 @@
   padding-inline: var(--mantine-spacing-md);
   width: unset;
 
-  &.active {
+  &:hover {
     background-color: var(--mantine-color-gray-2);
   }
-  &:hover {
+  &.active {
     background-color: var(--mantine-color-primary-0);
     color: var(--mantine-color-primary-6);
   }

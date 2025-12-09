@@ -23,6 +23,7 @@ import { notifications } from "@mantine/notifications";
 import useViewport from "@/hooks/useViewport";
 import "./style.css";
 import { Modal } from "@mantine/core";
+import GlobalIcon from "@/components/Atoms/Icon/GlobalIcon";
 
 const TableCard = <T,>({
   search,
@@ -59,11 +60,11 @@ const TableCard = <T,>({
       title: "Aksi",
       width: 120,
       render: (record) => (
-        <Group gap="xs">
-          {onEdit && <ActionIcon variant="outline" color="blue" radius="xl" size={24} aria-label="Edit" onClick={() => {handleModalEdit(record);}}>
-            <Icon name="IconPencil" size={"70%"}/>
+        <Group gap="xs" className="table-card-actions">
+          {onEdit && <ActionIcon variant="outline" color="gray" radius="xl" size={24} aria-label="Edit" onClick={() => {handleModalEdit(record);}}>
+            <GlobalIcon name="EditOutlined" size={16}/>
           </ActionIcon>}
-          {onDelete && <ActionIcon variant="outline" color="red" radius="xl" size={24} aria-label="Delete" onClick={() => confirmDelete([record], true)}>
+          {onDelete && <ActionIcon variant="outline" color="gray" radius="xl" size={24} aria-label="Delete" onClick={() => confirmDelete([record], true)}>
             <Icon name="IconTrash" size={"70%"}/>
           </ActionIcon>}
         </Group>

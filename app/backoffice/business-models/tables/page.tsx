@@ -3,7 +3,7 @@
 'use client';
 
 import { useEffect, useState, Suspense } from "react";
-import { Stack, Group, Button, TextInput, ActionIcon, Badge, Paper, Text, Modal, NumberInput } from "@mantine/core";
+import { Stack, Group, Button, TextInput, ActionIcon, Badge, Paper, Text, Modal, NumberInput, Table, Textarea } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useRouter, useSearchParams } from "next/navigation";
 import Icon from "@/components/Atoms/Icon";
@@ -575,46 +575,30 @@ const BusinessModelTablesPageContent = () => {
               </Group>
               
               {table.columns.length > 0 ? (
-                <Paper withBorder>
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                      <tr style={{ backgroundColor: "var(--mantine-color-gray-1)" }}>
+                  <Table>
+                    <Table.Thead>
+                      <Table.Tr bg="var(--mantine-color-gray-1)">
                         {table.columns.map((col) => (
-                          <th
-                            key={col.key}
-                            style={{
-                              padding: "12px",
-                              textAlign: "left",
-                              border: "1px solid var(--mantine-color-gray-3)",
-                            }}
-                          >
+                          <Table.Th key={col.key}>
                             {col.label}
-                          </th>
+                          </Table.Th>
                         ))}
-                        <th style={{ padding: "12px", border: "1px solid var(--mantine-color-gray-3)" }}>
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                        <Table.Th>Actions</Table.Th>
+                      </Table.Tr>
+                    </Table.Thead>
+                    <Table.Tbody>
                       {table.rows.map((row, rowIndex) => (
-                        <tr key={rowIndex}>
+                        <Table.Tr key={rowIndex}>
                           {table.columns.map((col) => {
                             const cell = row.cells.find((c) => c.columnKey === col.key);
                             
                             return (
-                              <td
-                                key={col.key}
-                                style={{
-                                  padding: "8px",
-                                  border: "1px solid var(--mantine-color-gray-3)",
-                                }}
-                              >
+                              <Table.Td key={col.key}>
                                 <Text size="sm">{cell?.value || "-"}</Text>
-                              </td>
+                              </Table.Td>
                             );
                           })}
-                          <td style={{ padding: "8px", border: "1px solid var(--mantine-color-gray-3)" }}>
+                          <Table.Td>
                             <ActionIcon
                               variant="subtle"
                               color="red"
@@ -622,12 +606,11 @@ const BusinessModelTablesPageContent = () => {
                             >
                               <IconTrash size={16} />
                             </ActionIcon>
-                          </td>
-                        </tr>
+                          </Table.Td>
+                        </Table.Tr>
                       ))}
-                    </tbody>
-                  </table>
-                </Paper>
+                    </Table.Tbody>
+                  </Table>
               ) : (
                 <Text c="dimmed" size="sm">
                   No columns or rows. Edit table to add columns and rows.
@@ -638,16 +621,15 @@ const BusinessModelTablesPageContent = () => {
         </Stack>
       )}
 
-      {/* Table Edit Modal */}
       <Modal
         opened={isTableModalOpen}
-      onClose={() => {
-        setIsTableModalOpen(false);
-        setSelectedTable(null);
-        setColumnErrors({});
-      }}
+        onClose={() => {
+          setIsTableModalOpen(false);
+          setSelectedTable(null);
+          setColumnErrors({});
+        }}
         title={isEditMode ? "Edit Table" : "Create Table"}
-        size="xl"
+        size="70dvw"
       >
         <form onSubmit={tableForm.onSubmit(handleSaveTable)}>
           <Stack gap="md">
@@ -685,7 +667,7 @@ const BusinessModelTablesPageContent = () => {
                     return (
                       <Group key={stableKey} gap="xs">
                         <TextInput
-                          placeholder="Column key (e.g., profit)"
+                          placeholder="Column key"
                           value={col.key}
                           onChange={(e) => {
                             const newValue = e.target.value.replace(/\s/g, '');
@@ -702,7 +684,7 @@ const BusinessModelTablesPageContent = () => {
                           size="xs"
                         />
                         <TextInput
-                          placeholder="Column label (e.g., Profit)"
+                          placeholder="Column label"
                           value={col.label}
                           onChange={(e) => handleUpdateColumn(col.key, "label", e.target.value)}
                           style={{ flex: 1 }}
@@ -736,101 +718,88 @@ const BusinessModelTablesPageContent = () => {
                 </Group>
 
                 {selectedTable.columns.length > 0 && selectedTable.rows.length > 0 && (
-                  <Paper withBorder p="xs">
-                    <div style={{ overflowX: "auto" }}>
-                      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px" }}>
-                        <thead>
-                          <tr style={{ backgroundColor: "var(--mantine-color-gray-1)" }}>
-                            {selectedTable.columns.map((col) => (
-                              <th
-                                key={col.key}
-                                style={{
-                                  padding: "8px",
-                                  border: "1px solid var(--mantine-color-gray-3)",
-                                  textAlign: "left",
-                                }}
-                              >
-                                {col.label}
-                              </th>
-                            ))}
-                            <th style={{ padding: "8px", border: "1px solid var(--mantine-color-gray-3)" }}>
-                              Actions
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {selectedTable.rows.map((row, rowIndex) => (
-                            <tr key={rowIndex}>
-                              {selectedTable.columns.map((col) => {
-                                const cell = row.cells.find((c) => c.columnKey === col.key);
-                                const isEditing = isEditingCell?.rowIndex === rowIndex && isEditingCell?.columnKey === col.key;
-                                
-                                return (
-                                  <td
-                                    key={col.key}
-                                    style={{
-                                      padding: "4px",
-                                      border: "1px solid var(--mantine-color-gray-3)",
-                                    }}
-                                  >
-                                    {isEditing ? (
-                                      <Group gap={4}>
-                                        <TextInput
-                                          value={cellEditValue}
-                                          onChange={(e) => setCellEditValue(e.target.value)}
-                                          size="xs"
-                                          style={{ flex: 1 }}
-                                          autoFocus
-                                          radius="xl"
-                                        />
-                                        <ActionIcon
-                                          variant="subtle"
-                                          color="green"
-                                          size="xs"
-                                          onClick={handleSaveCell}
-                                        >
-                                          <IconCheck size={14} />
-                                        </ActionIcon>
-                                        <ActionIcon
-                                          variant="subtle"
-                                          color="red"
-                                          size="xs"
-                                          onClick={handleCancelEditCell}
-                                        >
-                                          <IconX size={14} />
-                                        </ActionIcon>
-                                      </Group>
-                                    ) : (
-                                      <div
-                                        onClick={() => handleStartEditCell(rowIndex, col.key, cell?.value || "")}
-                                        style={{
-                                          cursor: "pointer",
-                                          padding: "2px 4px",
-                                          minHeight: "20px",
-                                        }}
-                                      >
-                                        {cell?.value || <Text c="dimmed" size="xs">Click</Text>}
-                                      </div>
-                                    )}
-                                  </td>
-                                );
-                              })}
-                              <td style={{ padding: "4px", border: "1px solid var(--mantine-color-gray-3)" }}>
-                                <ActionIcon
-                                  variant="subtle"
-                                  color="red"
-                                  size="xs"
-                                  onClick={() => handleDeleteRow(rowIndex)}
-                                >
-                                  <IconTrash size={14} />
-                                </ActionIcon>
-                              </td>
-                            </tr>
+                  <div style={{ overflowX: "auto" }}>
+                    <Table style={{ fontSize: "12px" }}>
+                      <Table.Thead>
+                        <Table.Tr bg="var(--mantine-color-gray-1)">
+                          {selectedTable.columns.map((col) => (
+                            <Table.Th key={col.key} style={{ padding: "8px" }}>
+                              {col.label}
+                            </Table.Th>
                           ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </Paper>
+                          <Table.Th style={{ padding: "8px" }}>Actions</Table.Th>
+                        </Table.Tr>
+                      </Table.Thead>
+                      <Table.Tbody>
+                        {selectedTable.rows.map((row, rowIndex) => (
+                          <Table.Tr key={rowIndex}>
+                            {selectedTable.columns.map((col) => {
+                              const cell = row.cells.find((c) => c.columnKey === col.key);
+                              const isEditing = isEditingCell?.rowIndex === rowIndex && isEditingCell?.columnKey === col.key;
+                              
+                              return (
+                                <Table.Td key={col.key} style={{ padding: "4px" }}>
+                                  {isEditing ? (
+                                    <Group gap={4}>
+                                      <Textarea
+                                        value={cellEditValue}
+                                        onChange={(e) => setCellEditValue(e.target.value)}
+                                        size="xs"
+                                        style={{ flex: 1 }}
+                                        autoFocus
+                                        radius="lg"
+                                        minRows={1}
+                                        maxRows={4}
+                                        autosize
+                                        resize="vertical"
+                                      />
+                                      <ActionIcon
+                                        variant="subtle"
+                                        color="green"
+                                        size="xs"
+                                        onClick={handleSaveCell}
+                                      >
+                                        <IconCheck size={14} />
+                                      </ActionIcon>
+                                      <ActionIcon
+                                        variant="subtle"
+                                        color="red"
+                                        size="xs"
+                                        onClick={handleCancelEditCell}
+                                      >
+                                        <IconX size={14} />
+                                      </ActionIcon>
+                                    </Group>
+                                  ) : (
+                                    <div
+                                      onClick={() => handleStartEditCell(rowIndex, col.key, cell?.value || "")}
+                                      style={{
+                                        cursor: "pointer",
+                                        padding: "2px 4px",
+                                        minHeight: "20px",
+                                      }}
+                                    >
+                                      {cell?.value || <Text c="dimmed" size="xs">Click</Text>}
+                                    </div>
+                                  )}
+                                </Table.Td>
+                              );
+                            })}
+                            <Table.Td style={{ padding: "4px" }}>
+                              <ActionIcon
+                                variant="subtle"
+                                color="red"
+                                size="xs"
+                                onClick={() => handleDeleteRow(rowIndex)}
+                              >
+                                <IconTrash size={14} />
+                              </ActionIcon>
+                            </Table.Td>
+                          </Table.Tr>
+                        ))}
+                      </Table.Tbody>
+                    </Table>
+                  </div>
                 )}
               </>
             )}

@@ -37,9 +37,9 @@ export async function POST(request: Request) {
       );
     }
 
-    if (newPassword.length < 5) {
+    if (newPassword.length < 8) {
       return NextResponse.json(
-        { success: false, message: "Password baru minimal 5 karakter." },
+        { success: false, message: "Password baru minimal 8 karakter." },
         { status: 400 }
       );
     }
@@ -86,10 +86,14 @@ export async function POST(request: Request) {
       );
     }
 
+    const now = new Date();
     const newPasswordHash = await bcrypt.hash(newPassword, 10);
     await prisma.user.update({
       where: { id: user.id },
-      data: { passwordHash: newPasswordHash },
+      data: { 
+        passwordHash: newPasswordHash,
+        updatedAt: now,
+      },
     });
 
     return NextResponse.json({

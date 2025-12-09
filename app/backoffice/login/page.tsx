@@ -16,22 +16,22 @@ import MainButton from '@/components/Atoms/Button/MainButton';
 import MainInput from '@/components/Atoms/FormInput/MainInput';
 import PasswordInput from '@/components/Atoms/FormInput/PasswordInput';
 import MainText from '@/components/Atoms/MainText';
+import { loginValidator } from '@/hooks/validator/loginValidation';
+import mainConfig from '@/config';
 
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-
+  const { canRegisterUser } = mainConfig;
   const form = useForm({
     initialValues: {
       username: '',
       password: '',
     },
-    validate: {
-      username: (value) => (value.length >= 3 ? null : 'Username minimal 3 karakter'),
-      password: (value) => (value.length >= 3 ? null : 'Password minimal 3 karakter'),
-    },
+    validateInputOnChange: true,
+    validate: loginValidator,
   });
 
   const handleSubmit = async (values: typeof form.values) => {
@@ -98,14 +98,14 @@ export default function LoginPage() {
             Login
           </MainButton>
 
-          <Group justify="center" gap={4}>
+          {canRegisterUser && <Group justify="center" gap={4}>
             <MainText variant="body" ta="center">
               Belum punya akun?
             </MainText>
             <MainText className="cursor-pointer" variant='body-bold' color="primary" onClick={() => router.push('/backoffice/register')}>
               Daftar disini
             </MainText>
-          </Group>
+          </Group>}
         </Stack>
       </form>
     </AuthLayout>

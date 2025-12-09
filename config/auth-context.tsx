@@ -147,13 +147,81 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const updateProfile = async (
+    email: string,
+    username: string,
+    name: string
+  ): Promise<{ success: boolean; message: string; user?: UserT }> => {
+    if (!user) {
+      return { success: false, message: 'User tidak ditemukan' };
+    }
+
+    try {
+      const token =
+        getCookie('auth_token') ??
+        (typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null);
+
+      if (!token) {
+        clearSessionArtifacts();
+        router.push('/backoffice/login');
+        return { success: false, message: 'Sesi tidak valid. Silakan login ulang.' };
+      }
+
+      const response = await fetch('/api/auth/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ email, username, name }),
+      });
+
+      if (response.status === 401) {
+        clearSessionArtifacts();
+        router.push('/backoffice/login');
+        return { success: false, message: 'Sesi berakhir. Silakan login kembali.' };
+      }
+
+      const data = await response.json().catch(() => null);
+      const success = Boolean(response.ok && data?.success);
+
+      if (success && data?.user) {
+        const updatedUser: UserT = {
+          email: data.user.email,
+          username: data.user.username,
+          name: data.user.name,
+          role: user.role,
+        };
+        setUser(updatedUser);
+        
+        // Update cookie
+        const userCookie = encodeURIComponent(JSON.stringify(updatedUser));
+        document.cookie = `auth_user=${userCookie}; Path=/; Max-Age=${60 * 60 * 24}; SameSite=Lax`;
+      }
+
+      return {
+        success,
+        message: data?.message ?? (success ? 'Profile berhasil diperbarui.' : 'Gagal memperbarui profile.'),
+        user: success && data?.user ? {
+          email: data.user.email,
+          username: data.user.username,
+          name: data.user.name,
+          role: user.role,
+        } : undefined,
+      };
+    } catch (error) {
+      console.error('Update profile error:', error);
+      return { success: false, message: 'Terjadi kesalahan saat memperbarui profile' };
+    }
+  };
+
   const logout = () => {
     clearSessionArtifacts();
     router.push('/backoffice/login');
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, changePassword, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, login, register, changePassword, updateProfile, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

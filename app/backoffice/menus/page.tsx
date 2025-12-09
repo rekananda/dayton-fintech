@@ -9,11 +9,14 @@ import { MenuDataT } from "@/config/types";
 import MenuForm from "@/components/Molecules/Forms/MenuForm";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setModalCRUD, setData, setLimit, setLoading, setPage, setSearch, setSortStatus, setTotalRecords } from "@/store/dataMenuSlice";
+import mainConfig from "@/config";
 
 const BackofficeMenusPage = () => {
   const [isMounted, setIsMounted] = useState(false);
   const prevSearchRef = useRef<string>("");
   const skipLoadRef = useRef<boolean>(false);
+
+  const { canAddNewMenu } = mainConfig;
   
   const { 
     modalCRUD,
@@ -66,29 +69,29 @@ const BackofficeMenusPage = () => {
     }
   }, [dispatch, page, limit, search, sortStatus]);
 
-  // const handleCreate = useCallback(async (values: Partial<MenuDataT>) => {
-  //   try {
-  //     const response = await fetch("/api/menus", {
-  //       method: "POST",
-  //       body: JSON.stringify({label: values.label, order: values.order}),
-  //     });
-  //     if (!response.ok) {
-  //       throw new Error("Gagal membuat menu");
-  //     }
-  //     loadDatas();
-  //     notifications.show({
-  //       color: "green",
-  //       title: "Berhasil membuat menu",
-  //       message: "Menu berhasil dibuat",
-  //     });
-  //   } catch (error) {
-  //     notifications.show({
-  //       color: "red",
-  //       title: "Gagal membuat menu",
-  //       message: (error as Error).message,
-  //     });
-  //   }
-  // }, [loadDatas]);
+  const handleCreate = useCallback(async (values: Partial<MenuDataT>) => {
+    try {
+      const response = await fetch("/api/menus", {
+        method: "POST",
+        body: JSON.stringify({label: values.label, order: values.order}),
+      });
+      if (!response.ok) {
+        throw new Error("Gagal membuat menu");
+      }
+      loadDatas();
+      notifications.show({
+        color: "green",
+        title: "Berhasil membuat menu",
+        message: "Menu berhasil dibuat",
+      });
+    } catch (error) {
+      notifications.show({
+        color: "red",
+        title: "Gagal membuat menu",
+        message: (error as Error).message,
+      });
+    }
+  }, [loadDatas]);
 
   const handleEdit = useCallback(async (values: Partial<MenuDataT>) => {
     dispatch(setLoading(true));
@@ -117,33 +120,33 @@ const BackofficeMenusPage = () => {
     }
   }, [loadDatas, dispatch]);
 
-  // const preCondDelete = useCallback(async (value: Partial<MenuDataT>) => {
-  //   handleDelete([value]);
-  // }, []);
+  const preCondDelete = useCallback(async (value: Partial<MenuDataT>) => {
+    handleDelete([value]);
+  }, []);
 
-  // const handleDelete = useCallback(async (values: Partial<MenuDataT>[]) => {
-  //   try {
-  //     const response = await fetch("/api/menus", {
-  //       method: "DELETE",
-  //       body: JSON.stringify({ids: values.map((value) => value.id)}),
-  //     });
-  //     if (!response.ok) {
-  //       throw new Error("Gagal menghapus data menu");
-  //     }
-  //     loadDatas();
-  //     notifications.show({
-  //       color: "green",
-  //       title: "Berhasil menghapus data menu",
-  //       message: "Data menu berhasil dihapus",
-  //     });
-  //   } catch (error) {
-  //     notifications.show({
-  //       color: "red",
-  //       title: "Gagal menghapus data menu",
-  //       message: (error as Error).message,
-  //     });
-  //   }
-  // }, [loadDatas]);
+  const handleDelete = useCallback(async (values: Partial<MenuDataT>[]) => {
+    try {
+      const response = await fetch("/api/menus", {
+        method: "DELETE",
+        body: JSON.stringify({ids: values.map((value) => value.id)}),
+      });
+      if (!response.ok) {
+        throw new Error("Gagal menghapus data menu");
+      }
+      loadDatas();
+      notifications.show({
+        color: "green",
+        title: "Berhasil menghapus data menu",
+        message: "Data menu berhasil dihapus",
+      });
+    } catch (error) {
+      notifications.show({
+        color: "red",
+        title: "Gagal menghapus data menu",
+        message: (error as Error).message,
+      });
+    }
+  }, [loadDatas]);
 
   useEffect(() => {
     if (isMounted && search !== prevSearchRef.current) {
@@ -165,8 +168,8 @@ const BackofficeMenusPage = () => {
       <Stack>
         <ControlLayout
           title="Menu Management"
-          // modalLabel="Tambah Menu"
-          // openModal={() => dispatch(setModalCRUD(true))}
+          modalLabel={canAddNewMenu ? "Tambah Menu" : undefined}
+          openModal={canAddNewMenu ? () => dispatch(setModalCRUD(true)) : () => {}}
         />
       </Stack>
     );
@@ -176,8 +179,8 @@ const BackofficeMenusPage = () => {
     <Stack>
       <ControlLayout
         title="Menu Management"
-        // modalLabel="Tambah Menu"
-        // openModal={() => dispatch(setModalCRUD(true))}
+        modalLabel={canAddNewMenu ? "Tambah Menu" : undefined}
+        openModal={canAddNewMenu ? () => dispatch(setModalCRUD(true)) : () => {}}
       />
       <TableCard<MenuDataT>
         records={data}
@@ -207,11 +210,11 @@ const BackofficeMenusPage = () => {
           onSearchChange: (value) => dispatch(setSearch(value)),
         }}
         FormData={MenuForm}
-        // onCreate={handleCreate}
+        onCreate={canAddNewMenu ? handleCreate : undefined}
         onEdit={handleEdit}
-        // onDelete={preCondDelete}
-        // onDeleteAll={handleDelete}
-        // canBulkAction={true}
+        onDelete={canAddNewMenu ? preCondDelete : undefined}
+        // onDeleteAll={canAddNewMenu ? handleDelete : undefined}
+        // canBulkAction={canAddNewMenu ? true : false}
         sortStatus={sortStatus}
         onSortStatusChange={(value) => dispatch(setSortStatus(value))}
         isModalOpen={modalCRUD}

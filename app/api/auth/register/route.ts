@@ -34,9 +34,9 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!password || password.length < 5) {
+    if (!password || password.length < 8) {
       return NextResponse.json(
-        { success: false, message: "Password minimal 5 karakter." },
+        { success: false, message: "Password minimal 8 karakter." },
         { status: 400 }
       );
     }

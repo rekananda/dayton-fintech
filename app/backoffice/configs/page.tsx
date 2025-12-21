@@ -218,7 +218,7 @@ const BackofficeConfigsPage = () => {
                 // Not a valid JSON, treat as string
               }
               
-              return <span>{value}</span>;
+              return <span style={{ whiteSpace: 'pre-line' }}>{value}</span>;
             },
           },
           {

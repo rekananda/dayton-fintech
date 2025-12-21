@@ -86,6 +86,6 @@ export const listLegal: TimelineCardT[] = [
   {
     numberedIcon: 2,
     title: 'Privacy Policy',
-    description: 'Kami hanya mengumpulkan data yang Anda berikan secara sukarela untuk keperluan onboarding, operasional profit sharing, dan dukungan layanan. Data tidak dijual ke pihak ketiga. Untuk akses/koreksi/penghapusan data, hubungi hello@daytonfintech.com.',
+    description: 'Kami hanya mengumpulkan data yang Anda berikan secara sukarela untuk keperluan onboarding, operasional profit sharing, dan dukungan layanan. Data tidak dijual ke pihak ketiga. Untuk akses/koreksi/penghapusan data, hubungi admin@daytonfintech.co.id.',
   },
 ];

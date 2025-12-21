@@ -11,12 +11,6 @@
   border-radius: 0 var(--width-ripple) var(--width-ripple) 0;
 }
 
-
-.ripple-effect-main:has(.ripple-effect-inner-right) {
-  /* border-radius: 0; */
-  /* clip-path: inset(0 50% 0 0 round 50% 0 0 50%); */
-}
-
 .ripple-effect-inner {
   position: absolute;
 }

@@ -10,7 +10,7 @@ const Accordion = ({ items = [], ...rest }: AccordionT) => (
     {items.map((item) => (
       <MantineAccordion.Item key={item.value} value={item.value}>
         <MantineAccordion.Control>{item.title}</MantineAccordion.Control>
-        <MantineAccordion.Panel>{item.content}</MantineAccordion.Panel>
+        <MantineAccordion.Panel style={{ whiteSpace: 'pre-line' }}>{item.content}</MantineAccordion.Panel>
       </MantineAccordion.Item>
     ))}
   </MantineAccordion>

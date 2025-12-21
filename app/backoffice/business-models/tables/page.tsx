@@ -594,7 +594,7 @@ const BusinessModelTablesPageContent = () => {
                             
                             return (
                               <Table.Td key={col.key}>
-                                <Text size="sm">{cell?.value || "-"}</Text>
+                                <Text size="sm" style={{ whiteSpace: 'pre-line' }}>{cell?.value || "-"}</Text>
                               </Table.Td>
                             );
                           })}

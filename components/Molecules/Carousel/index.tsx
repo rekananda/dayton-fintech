@@ -86,7 +86,7 @@ export const CarouselCard = ({ date, title, description, extraDetail }: Carousel
         <MainText variant="heading4" fz={isMobile ? 24 : 32}>
           {title}
         </MainText>
-        <MainText variant="body" c="gray" fz={isMobile ? 16 : 20}>
+        <MainText variant="body" c="gray" fz={isMobile ? 16 : 20} style={{ whiteSpace: 'pre-line' }}>
           {description}
         </MainText>
         {extraDetail && (

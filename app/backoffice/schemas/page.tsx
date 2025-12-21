@@ -215,6 +215,9 @@ const BackofficeSchemasPage = () => {
             accessor: "description",
             title: "Description",
             sortable: false,
+            render: (record: TimelineDataT) => {
+              return <span style={{ whiteSpace: 'pre-line' }}>{record.description}</span>;
+            },
           },
           {
             accessor: "color",

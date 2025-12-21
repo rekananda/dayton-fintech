@@ -1,14 +1,14 @@
 import { NavbarButtonItemT, NavbarButtonSubItemT } from "@/components/Atoms/Button/NavbarButton/type";
 import { BussinessModelDataT, EventDataT, LegalDataT, MenuDataT, QnADataT, TimelineDataT } from "@/config/types";
 
-export const mainWhatsappNumber = '6281234567890';
+export const mainWhatsappNumber = '6282111009000';
 export const mainWhatsappMessage = encodeURIComponent('Halo, saya ingin bertanya tentang layanan Dayton Fintech.');
 export const mainWhatsappLink = `https://api.whatsapp.com/send?phone=${mainWhatsappNumber}&text=${mainWhatsappMessage}`;
-export const mainEmail = 'hello@daytonfintech.com';
-export const mainTitle = 'Trading Emas Otomatis, Aman dan Terukur';
-export const mainDescription = 'Pendekatan trend-following yang disiplin dengan target adaptif mengikuti volatilitas, pengendalian eksposur, serta jeda otomatis saat rilis data berdampak tinggi.';
-export const mainBadges = ['Gold • XAUUSD • H1 • Tren'];
-export const secondaryBadges = ['Profit Sharing <b>25%</b>', 'Referral hingga <b>10%</b>', '<b>Broker MT4 • H1</b>'];
+export const mainEmail = 'admin@daytonfintech.co.id';
+export const mainTitle = 'Trading Emas Otomatis, Aman dan Dinamis';
+export const mainDescription = "Nevada Fintech Sniper Strategy adalah pendekatan trading berbasis presisi yang mengutamakan akurasi, disiplin, dan manajemen risiko.\n\nDikembangkan dengan mindset sniper, strategi ini fokus pada entry berkualitas tinggi, eksekusi terukur, dan perlindungan dari volatilitas pasar, bukan over-trading atau spekulasi berlebihan.\n\nDirancang untuk trader yang menginginkan konsistensi jangka panjang, bukan sekadar hasil sesaat.";
+export const mainBadges = ["Gold • XAUUSD • H1 • MT4"];
+export const secondaryBadges = ["Profit Sharing <b>25%</b>","Referral hingga <b>15%</b>","<b>Broker MT4 • H1</b>"];
 
 export const DataMenus: MenuDataT[] = [
   { id: 1, label: 'Home', href: 'home', order: 1 },
@@ -32,24 +32,24 @@ export const DataTimeline: TimelineDataT[] = [
   { 
     id: 2, 
     icon: 'TrackChangesOutlined', 
-    title: 'Target yang Elastis', 
-    description: 'Target keuntungan menyesuaikan dinamika volatilitas sehingga tetap relevan di berbagai kondisi pasar.', 
+    title: 'Target yang Fleksibel', 
+    description: 'Target keuntungan menyesuaikan dinamika volatilitas sehingga tetap relevan di berbagai kondisi pasar trading.', 
     color: 'primary', 
     order: 2 
   },
   { 
     id: 3, 
     icon: 'CrisisAlertOutlined', 
-    title: 'Hindari Momen Rawan', 
-    description: 'Pembukaan posisi ditahan saat periode rilis data ekonomi berdampak tinggi untuk meminimalkan lonjakan spread/slippage.', 
+    title: 'Risiko Terkontrol', 
+    description: 'Jumlah posisi dan batas risiko harian dikontrol agar eksposur tidak berlebihan.', 
     color: 'primary', 
     order: 3 
   },
   { 
     id: 4, 
     icon: 'ShowChartOutlined', 
-    title: 'Paparan Terkendali', 
-    description: 'Jumlah posisi dan batas risiko harian dikontrol agar eksposur tidak berlebihan.', 
+    title: 'Hindari Zona Risiko', 
+    description: 'Pembukaan posisi ditahan saat periode rilis data ekonomi berdampak tinggi untuk meminimalkan lonjakan spread/slippage.', 
     color: 'primary', 
     order: 4 
   },
@@ -59,7 +59,7 @@ export const DataBussinessModel: BussinessModelDataT[] = [
   { 
     id: 1, 
     title: 'Profit Sharing', 
-    description: 'Setiap akhir pekan, total profit bersih akun dihitung. Anda membayar 25% dari profit kepada Dayton Fintech. Jika tidak profit, tidak ada tagihan.', 
+    description: 'Setiap akhir pekan, total profit bersih akun dihitung. Anda membayar 25% dari profit kepada Dayton Fintech. Jika tidak profit, maka tidak ada bill.', 
     tags: ['MINGGUAN'], 
     order: 1, 
     tables: [{
@@ -76,7 +76,7 @@ export const DataBussinessModel: BussinessModelDataT[] = [
   { 
     id: 2, 
     title: 'Referral/Team', 
-    description: 'Setiap akhir pekan, total profit bersih akun dihitung. Anda membayar 25% dari profit kepada Dayton Fintech. Jika tidak profit, tidak ada tagihan.', 
+    description: 'Setiap akhir pekan, total profit bersih akun dihitung. Anda membayar 25% dari profit kepada Dayton Fintech. Jika tidak profit, maka tidak ada bill.', 
     tags: ['HINGGA 10%'], 
     order: 2, 
     tables: [{
@@ -143,7 +143,7 @@ export const DataLegal: LegalDataT[] = [
   {
     id: 2,
     title: 'Privacy Policy',
-    description: 'Kami hanya mengumpulkan data yang Anda berikan secara sukarela untuk keperluan onboarding, operasional profit sharing, dan dukungan layanan. Data tidak dijual ke pihak ketiga. Untuk akses/koreksi/penghapusan data, hubungi hello@daytonfintech.com.',
+    description: 'Kami hanya mengumpulkan data yang Anda berikan secara sukarela untuk keperluan onboarding, operasional profit sharing, dan dukungan layanan. Data tidak dijual ke pihak ketiga. Untuk akses/koreksi/penghapusan data, hubungi admin@daytonfintech.co.id.',
     order: 2
   },
 ];

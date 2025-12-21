@@ -143,7 +143,7 @@ export default function LandingPage() {
               </MainText>
             </AnimatedText>
             <AnimatedText delay={0.3} animationType="fadeUp">
-              <MainText variant='body' maw={isMobile ? 320 : 650} ta='center' fz={20}>
+              <MainText variant='body' maw={isMobile ? 320 : 650} ta='center' fz={20} style={{ whiteSpace: 'pre-line' }}>
                 {config.mainDescription}
               </MainText>
             </AnimatedText>
@@ -182,14 +182,13 @@ export default function LandingPage() {
               <Box className='timeline-ornament' w={isMobile ? '60dvw' : '30dvw'} />
               <Box className='timeline-line' w={2}/>
               {listTimeline.map((item, index) => (
-                <AnimatedText key={`timeline-${timelines[index]?.id || index}`} delay={0.2 + index * 0.15} animationType="fadeUp">
                   <Box 
                     className={`timeline-item ${index%2==0? "even" : "odd"}`} 
                     pb={index !== listTimeline.length-1 ? isMobile ? 20 : 50 : 0}
+                    key={`timeline-item-${index}`}
                   >
                     <TimelineCard {...item} />
                   </Box>
-                </AnimatedText>
               ))}
             </Box>
           </Stack>
@@ -209,7 +208,6 @@ export default function LandingPage() {
 
                 return (
                   <Grid.Col span={{ base: 12, md: 12/colSpan }} key={`business-model-${item.id}`}>
-                    <AnimatedText delay={0.2 + index * 0.15} animationType="fadeUp">
                       <RippleCard {...rest} ripple={index%2==0 ? ['bottom-left'] : ['top-right']}>
                         <Stack>
                           {tables?.map((tableprops, tableIndex) => {
@@ -228,11 +226,10 @@ export default function LandingPage() {
                               />
                             );
                           })}
-                          {tnc && <MainText variant='body' fz={14}>{tnc}</MainText>}
+                          {tnc && <MainText variant='body' fz={14} style={{ whiteSpace: 'pre-line' }}>{tnc}</MainText>}
 
                         </Stack>
                       </RippleCard>
-                    </AnimatedText>
                   </Grid.Col>
                 );
               })}
@@ -259,9 +256,7 @@ export default function LandingPage() {
           <Grid gutter={isMobile ? 32 : 40} justify='center'>
             {listLegal.map((item, index) => (
               <Grid.Col span={{ base: 12, md: 6 }} key={`legal-${legals[index]?.id || index}`}>
-                <AnimatedText delay={0.2 + index * 0.15} animationType="fadeUp">
                   <TimelineCard {...item} withIndicator={false} h='100%'/>
-                </AnimatedText>
               </Grid.Col>
             ))}
           </Grid>
@@ -283,7 +278,6 @@ export default function LandingPage() {
         </Grid>}
 
         {hasRegisterMenu && <Box id="register" py={80} px={isMobile ? 20 : 100}> 
-          <AnimatedText delay={0.1} animationType="fadeUp">
             <RippleCard 
               ripple={['bottom-left', 'top-right']} 
               rippleProps={{ type: 'circle', rippleSize: isMobile ? [300, 300] : [500, 500] }}
@@ -301,7 +295,6 @@ export default function LandingPage() {
                 </AnimatedText>
               </Stack>
             </RippleCard>
-          </AnimatedText>
         </Box>}
       </Stack>
     </LandingLayout>

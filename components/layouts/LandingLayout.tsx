@@ -56,12 +56,12 @@ export function LandingLayout({ children }: LandingLayoutI) {
       padding={0}
     >
       <AppShell.Header className='glassmorphism'>
-        <Container size="1440px" h="100%" px={100}>
+        <Container size="1440px" h="100%" px={isDesktop ? 100 : 32}>
           <Group h="100%" justify="space-between">
             <Group gap="sm">
               <Group>
                 <MainLogo size={50} />
-                <Stack gap={2}>
+                <Stack gap={2} visibleFrom='sm'>
                   <MainText variant="body-bold" size='20px'>Dayton Fintech</MainText>
                   <MainText variant="body" size='14px'>AAUSD Trend Strategy</MainText>
                 </Stack>

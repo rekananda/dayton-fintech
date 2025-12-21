@@ -7,7 +7,7 @@ const NavbarLandingPage = () => {
   const menus = useAppSelector((state) => state.landing.menus);
 
   return (
-    <Group gap={41}>
+    <Group gap={41} visibleFrom='sm'>
       {menus.map((item) => (
         <span
           key={item.id}

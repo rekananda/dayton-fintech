@@ -202,6 +202,9 @@ const BackofficeLegalsPage = () => {
             accessor: "description",
             title: "Description",
             sortable: false,
+            render: (record: LegalDataT) => {
+              return <span style={{ whiteSpace: 'pre-line' }}>{record.description}</span>;
+            },
           },
           {
             accessor: "order",

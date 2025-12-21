@@ -323,7 +323,8 @@ const BackofficeEventsPageContent = () => {
                   textOverflow: "ellipsis", 
                   display: "-webkit-box",
                   WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical"
+                  WebkitBoxOrient: "vertical",
+                  whiteSpace: 'pre-line',
                 }}>
                   {record.description}
                 </div>

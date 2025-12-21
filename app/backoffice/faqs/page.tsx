@@ -187,12 +187,18 @@ const BackofficeFaqsPage = () => {
             accessor: "question",
             title: "Question",
             sortable: true,
+            render: (record: QnADataT) => {
+              return <span style={{ whiteSpace: 'pre-line' }}>{record.question}</span>;
+            },
           },
           {
             accessor: "answer",
             title: "Answer",
             sortable: false,
             width: "40%",
+            render: (record: QnADataT) => {
+              return <span style={{ whiteSpace: 'pre-line' }}>{record.answer}</span>;
+            },
           },
           {
             accessor: "order",

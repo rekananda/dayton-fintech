@@ -22,6 +22,8 @@ const EventForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false,
   const [file, setFile] = useState<FileWithPath | null>(null);
   const [imageUrlInput, setImageUrlInput] = useState<string>("");
   const [inputMode, setInputMode] = useState<"upload" | "url">("upload");
+  const [useLocalStorage, setUseLocalStorage] = useState<boolean>(false);
+  const [storageStatus, setStorageStatus] = useState<{ remainingMB: number; usagePercent: number } | null>(null);
   const openRef = useRef<() => void>(null);
   const prevDefaultValuesRef = useRef<typeof defaultValues>(undefined);
   const prevForEditRef = useRef<boolean>(false);
@@ -39,6 +41,26 @@ const EventForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false,
     validateInputOnChange: true,
     validate: eventValidator,
   });
+
+  // Fetch storage config and status
+  useEffect(() => {
+    const fetchStorageConfig = async () => {
+      try {
+        const response = await fetch('/api/upload/storage-status');
+        if (response.ok) {
+          const data = await response.json();
+          setUseLocalStorage(data.useLocalStorage || false);
+          setStorageStatus({
+            remainingMB: data.remainingMB || 0,
+            usagePercent: data.usagePercent || 0,
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch storage config:', error);
+      }
+    };
+    fetchStorageConfig();
+  }, []);
 
   useEffect(() => {
     if (forEdit && defaultValues) {
@@ -186,6 +208,54 @@ const EventForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false,
     return result.url;
   };
 
+  const uploadFileToLocalStorage = async (fileToUpload: FileWithPath): Promise<string> => {
+    // Check storage status before upload
+    const statusResponse = await fetch('/api/upload/storage-status');
+    if (!statusResponse.ok) {
+      throw new Error('Gagal memeriksa status storage');
+    }
+    
+    const statusData = await statusResponse.json();
+    if (statusData.remainingMB < (fileToUpload.size / (1024 * 1024))) {
+      const usedGB = statusData.currentSizeGB || 0;
+      const maxGB = statusData.maxSizeGB || 0;
+      throw new Error(
+        `Storage limit tercapai! Digunakan: ${usedGB}GB / ${maxGB}GB. ` +
+        `Sisa: ${statusData.remainingMB.toFixed(2)}MB. ` +
+        `Silakan hapus beberapa file untuk membebaskan ruang.`
+      );
+    }
+
+    const formData = new FormData();
+    formData.append('file', fileToUpload);
+
+    const response = await fetch('/api/upload/local', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      
+      if (response.status === 413) {
+        // Storage limit exceeded
+        const usedGB = errorData.storageInfo?.usedGB || 0;
+        const maxGB = errorData.storageInfo?.maxGB || 0;
+        const remainingMB = errorData.storageInfo?.remainingMB || 0;
+        throw new Error(
+          `Storage limit tercapai! Digunakan: ${usedGB}GB / ${maxGB}GB. ` +
+          `Sisa: ${remainingMB.toFixed(2)}MB. ` +
+          `Silakan hapus beberapa file untuk membebaskan ruang.`
+        );
+      }
+      
+      throw new Error(errorData.message || 'Gagal upload gambar');
+    }
+
+    const result = await response.json();
+    return result.url;
+  };
+
   const onSubmit = form.onSubmit(async (values) => {
     if (inputMode === "url") {
       if (imageUrlInput && imageUrlInput.trim()) {
@@ -221,7 +291,10 @@ const EventForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false,
 
     setUploading(true);
     try {
-      const uploadedUrl = await uploadFileToGoogleDrive(file);
+      // Check storage config and upload accordingly
+      const uploadedUrl = useLocalStorage 
+        ? await uploadFileToLocalStorage(file)
+        : await uploadFileToGoogleDrive(file);
       
       const finalValues = {
         ...values,
@@ -231,6 +304,18 @@ const EventForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false,
       await handleSubmit(finalValues);
       
       setFile(null);
+      
+      // Refresh storage status after upload
+      if (useLocalStorage) {
+        const statusResponse = await fetch('/api/upload/storage-status');
+        if (statusResponse.ok) {
+          const data = await statusResponse.json();
+          setStorageStatus({
+            remainingMB: data.remainingMB || 0,
+            usagePercent: data.usagePercent || 0,
+          });
+        }
+      }
     } catch (error) {
       notifications.show({
         color: "red",
@@ -249,9 +334,16 @@ const EventForm = ({ handleSubmit, handleCancel, isLoading=false, forEdit=false,
         <Stack>
           <Box>
             <Group justify="space-between" mb={10}>
-              <Text size="sm" fw={500}>
-                Image <span style={{ color: 'red' }}>*</span>
-              </Text>
+              <Group gap={8} align="center">
+                <Text size="sm" fw={500}>
+                  Image <span style={{ color: 'red' }}>*</span>
+                </Text>
+                {useLocalStorage && storageStatus && (
+                  <Text size="xs" c="dimmed" fw={400} component="span">
+                    (Storage: {storageStatus.usagePercent.toFixed(1)}% digunakan, {storageStatus.remainingMB.toFixed(2)}MB tersisa)
+                  </Text>
+                )}
+              </Group>
               <SegmentedControl
                 value={inputMode}
                 onChange={(value) => {

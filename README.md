@@ -51,11 +51,19 @@ Platform fintech modern yang dibangun dengan Next.js 16, Mantine UI, dan Tailwin
   - Validasi duplicate key columns dengan error display di field input
   - Support untuk multiple tables per business model
   - Flexible table data structure untuk berbagai tipe data
-- **Google Drive Integration**: Upload dan manajemen file gambar ke Google Drive
-  - Upload file ke Google Drive dengan OAuth 2.0
-  - Auto-delete file dari Drive saat event dihapus
+- **Image Storage Management**: Upload dan manajemen file gambar dengan dua opsi storage
+  - **Google Drive Integration** (opsional):
+    - Upload file ke Google Drive dengan OAuth 2.0
+    - Auto-delete file dari Drive saat event dihapus
+    - Auto-refresh token mechanism
+  - **Local Storage** (default):
+    - Upload file ke local server di `public/events/img/`
+    - Storage limit management (default: 5GB, dapat dikonfigurasi)
+    - Auto-delete file dari local storage saat event dihapus
+    - Real-time storage status dengan format otomatis (GB/MB/KB)
+    - Warning saat storage limit tercapai
   - Support input URL eksternal (tidak harus upload)
-  - Auto-refresh token mechanism
+  - Toggle storage method melalui config (`useLocalStorage` di `config/index.ts`)
 
 ## 🛠️ Tech Stack
 
@@ -167,7 +175,8 @@ Aplikasi menggunakan PostgreSQL dengan Prisma ORM. Setup database menggunakan Pr
    JWT_SECRET="ganti-dengan-secret-jwt-yang-kuat"
    JWT_EXPIRES_IN="1d"  # Opsional: default 1d
    
-   # Google Drive OAuth Configuration (untuk upload images)
+   # Google Drive OAuth Configuration (opsional - hanya jika menggunakan Google Drive)
+   # Jika menggunakan local storage, tidak perlu setup Google Drive
    GOOGLE_OAUTH_CLIENT_ID="your-google-oauth-client-id"
    GOOGLE_OAUTH_CLIENT_SECRET="your-google-oauth-client-secret"
    GOOGLE_OAUTH_REDIRECT_URI="http://localhost:3000/api/upload/gdrive/callback"
@@ -176,6 +185,15 @@ Aplikasi menggunakan PostgreSQL dengan Prisma ORM. Setup database menggunakan Pr
    # Next.js Public URL
    NEXT_PUBLIC_APP_URL="http://localhost:3000"
    ```
+   
+   **Catatan Storage Configuration:**
+   - Storage method dikonfigurasi di `config/index.ts`:
+     - `useLocalStorage: true` → menggunakan local storage (default)
+     - `useLocalStorage: false` → menggunakan Google Drive
+   - Storage limit dapat dikonfigurasi di `config/index.ts`:
+     - `maxStorageSize: 5 * 1024 * 1024 * 1024` → 5GB (default, dapat diubah)
+   - File local storage disimpan di `public/events/img/`
+   - Jika menggunakan local storage, tidak perlu setup Google Drive OAuth
 
    **Catatan untuk Supabase:**
    - Gunakan `sslmode=require` atau `sslmode=prefer` untuk development
@@ -235,14 +253,30 @@ Aplikasi menggunakan PostgreSQL dengan Prisma ORM. Setup database menggunakan Pr
    
    f. Copy Folder ID dari URL Google Drive folder
 
-6. **Connect Google Drive (Jika menggunakan upload images)**
+6. **Storage Configuration**
 
-   Setelah setup OAuth credentials:
-   - Login ke backoffice
-   - Masuk ke halaman Events (`/backoffice/events`)
-   - Klik tombol "Hubungkan Google Drive"
-   - Authorize aplikasi untuk akses Google Drive
-   - Token akan disimpan di database dan auto-refresh saat expired
+   Aplikasi mendukung dua metode storage untuk images:
+   
+   **a. Local Storage (Default & Recommended)**
+   - Tidak perlu setup tambahan
+   - File disimpan di `public/events/img/`
+   - Storage limit: 5GB (dapat dikonfigurasi di `config/index.ts`)
+   - Real-time storage status di UI
+   - Auto-delete file saat event dihapus
+   
+   **b. Google Drive (Opsional)**
+   - Memerlukan setup OAuth credentials (lihat step 2)
+   - Setelah setup OAuth credentials:
+     - Login ke backoffice
+     - Masuk ke halaman Events (`/backoffice/events`)
+     - Klik tombol "Hubungkan Google Drive"
+     - Authorize aplikasi untuk akses Google Drive
+     - Token akan disimpan di database dan auto-refresh saat expired
+   
+   **Mengubah Storage Method:**
+   - Edit file `config/index.ts`
+   - Set `useLocalStorage: true` untuk local storage
+   - Set `useLocalStorage: false` untuk Google Drive
 
 7. **Database Setup Scripts**
 
@@ -304,7 +338,7 @@ dayton-fintech/
 │   │   │   └── session/           # GET /api/auth/session
 │   │   ├── landing/               # GET /api/landing (data untuk landing page)
 │   │   ├── menus/                 # GET, POST /api/menus (Menu management)
-│   │   ├── events/                # GET, POST, PUT, DELETE /api/events
+│   │   ├── events/                # GET, POST, PUT, DELETE /api/events (dengan auto-delete images)
 │   │   ├── faqs/                  # GET, POST, PUT, DELETE /api/faqs
 │   │   ├── legals/                # GET, POST, PUT, DELETE /api/legals
 │   │   ├── configs/               # GET, POST, PUT, DELETE /api/configs
@@ -312,20 +346,24 @@ dayton-fintech/
 │   │   ├── business-models/       # GET, POST, PUT, DELETE /api/business-models
 │   │   │   └── tables/            # GET, POST, PUT, DELETE /api/business-models/tables
 │   │   └── upload/                # File upload endpoints
-│   │       └── gdrive/            # Google Drive upload
-│   │           ├── auth/          # GET /api/upload/gdrive/auth (OAuth URL)
-│   │           ├── callback/      # GET /api/upload/gdrive/callback (OAuth callback)
-│   │           ├── delete/        # POST /api/upload/gdrive/delete
-│   │           ├── status/        # GET /api/upload/gdrive/status
-│   │           ├── test/          # GET /api/upload/gdrive/test
-│   │           └── route.ts       # POST /api/upload/gdrive (upload file)
+│   │       ├── gdrive/            # Google Drive upload (opsional)
+│   │       │   ├── auth/          # GET /api/upload/gdrive/auth (OAuth URL)
+│   │       │   ├── callback/      # GET /api/upload/gdrive/callback (OAuth callback)
+│   │       │   ├── delete/        # POST /api/upload/gdrive/delete
+│   │       │   ├── status/        # GET /api/upload/gdrive/status
+│   │       │   ├── test/          # GET /api/upload/gdrive/test
+│   │       │   └── route.ts       # POST /api/upload/gdrive (upload file)
+│   │       ├── local/             # Local storage upload
+│   │       │   ├── utils.ts       # Utility functions (delete, check size, etc.)
+│   │       │   └── route.ts       # POST /api/upload/local (upload file)
+│   │       └── storage-status/    # GET /api/upload/storage-status (storage info)
 │   ├── backoffice/                # Backoffice pages (Protected)
 │   │   ├── login/                 # Halaman login admin
 │   │   ├── register/              # Halaman register admin
 │   │   ├── profile/               # Halaman profile management
 │   │   ├── change-password/       # Halaman ubah password
 │   │   ├── menus/                 # Menu management
-│   │   ├── events/                # Event management
+│   │   ├── events/                # Event management dengan image upload (local storage atau Google Drive)
 │   │   ├── faqs/                  # FAQ management
 │   │   ├── legals/                # Legal documents management
 │   │   ├── configs/               # Configuration management
@@ -406,6 +444,7 @@ dayton-fintech/
 │   ├── dataBusinessModelSlice.ts  # Business model data slice
 ├── hooks/
 │   ├── useViewport.tsx            # Custom hook untuk viewport detection
+│   ├── useStorageStatus.tsx       # Custom hook untuk storage status dengan format size (GB/MB/KB)
 │   └── validator/                 # Form validation hooks
 │       ├── index.ts               # Validation schemas (zod)
 │       ├── eventValidation.ts     # Event form validation
@@ -420,6 +459,8 @@ dayton-fintech/
 ├── variables/
 │   └── dummyData.ts               # Dummy data
 ├── public/
+│   ├── events/                    # Event images (jika menggunakan local storage)
+│   │   └── img/                   # Uploaded event images
 │   ├── logo.png                   # Logo aplikasi
 │   └── favicon.ico                # Favicon
 ├── next.config.ts                 # Next.js configuration
@@ -558,6 +599,8 @@ Protected Route → Check Cookie → Verify JWT → Allow Access / Redirect to L
 | `/api/schemas` | GET, POST, PUT, DELETE | CRUD schemas | ✅ |
 | `/api/business-models` | GET, POST, PUT, DELETE | CRUD business models | ✅ |
 | `/api/business-models/tables` | GET, POST, PUT, DELETE | CRUD tables untuk business model | ✅ |
+| `/api/upload/local` | POST | Upload file ke local storage | ✅ |
+| `/api/upload/storage-status` | GET | Get storage status (size, limit, remaining) | ✅ |
 | `/api/upload/gdrive` | POST | Upload file ke Google Drive | ✅ |
 | `/api/upload/gdrive/auth` | GET | Get Google OAuth URL | ✅ |
 | `/api/upload/gdrive/callback` | GET | OAuth callback handler | ✅ |
@@ -598,6 +641,32 @@ export const mantineColor: Record<ExtendedColors, MantineColorsTuple> = {
 
 Theme digunakan melalui `AppProviders` di `app/providers.tsx`.
 
+### Storage Configuration
+
+Aplikasi mendukung dua metode storage untuk images:
+
+**1. Local Storage (Default)**
+- File disimpan di `public/events/img/`
+- Konfigurasi di `config/index.ts`:
+  ```typescript
+  useLocalStorage: true,  // Set ke true untuk local storage
+  maxStorageSize: 5 * 1024 * 1024 * 1024,  // 5GB (dapat diubah)
+  ```
+
+**2. Google Drive (Opsional)**
+- Memerlukan setup OAuth credentials (lihat Setup Database)
+- Konfigurasi di `config/index.ts`:
+  ```typescript
+  useLocalStorage: false,  // Set ke false untuk Google Drive
+  ```
+
+**Storage Features:**
+- Real-time storage monitoring dengan `useStorageStatus` hook
+- Auto-format size (GB/MB/KB) berdasarkan ukuran
+- Warning saat storage limit tercapai
+- Auto-delete images saat event dihapus atau diupdate
+- Storage status ditampilkan di UI (persentase penggunaan dan sisa ruang)
+
 ### Tailwind Config
 
 Tailwind v4 menggunakan CSS variables. Edit di `app/globals.css` dan `tailwind.config.ts`.
@@ -611,6 +680,38 @@ Aplikasi menggunakan **Atomic Design Pattern**:
 
 Semua komponen custom berada di folder `components/` dengan struktur yang terorganisir.
 
+### Custom Hooks
+
+Aplikasi menyediakan beberapa custom hooks:
+
+**useStorageStatus** - Hook untuk monitoring storage status dengan format otomatis:
+```tsx
+import { useStorageStatus } from '@/hooks/useStorageStatus';
+
+const {
+  data,                    // Storage data lengkap (currentSize, maxSize, remaining, dll)
+  isLoading,               // Loading state
+  error,                   // Error state
+  googleDriveConnected,     // Google Drive connection status (jika tidak pakai local storage)
+  formatSize,              // Format bytes ke satuan tertentu
+  getAutoFormattedRemaining, // Auto-format remaining space (GB/MB/KB)
+  refresh,                 // Refresh storage status
+} = useStorageStatus();
+
+// Contoh penggunaan
+<Text>
+  Storage: {data?.usagePercent.toFixed(1)}% digunakan 
+  ({getAutoFormattedRemaining()} tersisa)
+</Text>
+```
+
+**useViewport** - Hook untuk deteksi viewport:
+```tsx
+import useViewport from '@/hooks/useViewport';
+
+const { isMobile, isDesktop, isTablet } = useViewport();
+```
+
 ### Path Aliases
 
 TypeScript path aliases dikonfigurasi di `tsconfig.json`:
@@ -621,6 +722,7 @@ Contoh penggunaan:
 import { prisma } from '@/config/prisma';
 import { useAuth } from '@/config/auth-context';
 import { useAppSelector } from '@/store/hooks';
+import { useStorageStatus } from '@/hooks/useStorageStatus';
 ```
 
 ## 📚 Dokumentasi
@@ -685,9 +787,13 @@ Jika komponen custom tidak muncul atau error:
 - [x] Menu management API dan halaman
 - [x] Event management dengan CRUD lengkap
 - [x] FAQ, Legal, Config, Schema management
-- [x] Google Drive integration untuk upload images
+- [x] Image storage management dengan dua opsi (Local Storage & Google Drive)
+- [x] Local storage dengan limit management (5GB default, dapat dikonfigurasi)
+- [x] Storage status hook (`useStorageStatus`) dengan format otomatis (GB/MB/KB)
+- [x] Real-time storage monitoring dan warning saat limit tercapai
+- [x] Google Drive integration untuk upload images (opsional)
 - [x] Google Calendar integration di Carousel
-- [x] Auto-delete Google Drive files saat event dihapus
+- [x] Auto-delete images (local storage & Google Drive) saat event dihapus
 - [x] Support input URL eksternal untuk images
 - [x] Auto-refresh Google Drive OAuth token
 - [x] Business Model management dengan nested tables dan dynamic table editor
@@ -710,6 +816,7 @@ Jika komponen custom tidak muncul atau error:
 ## 👨‍💻 Development Team
 
 Developed by Dayton Fintech Team
+@github.com/rekananda
 
 ---
 

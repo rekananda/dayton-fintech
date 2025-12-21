@@ -274,6 +274,7 @@ const TableCard = <T,>({
         title={isModalForEdit ? "Edit Menu" : "Tambah Menu"}
         centered
         keepMounted={false}
+        size="xl"
       >
         {isModalForEdit && defaultValues ? (
           <FormData 

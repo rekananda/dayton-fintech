@@ -37,9 +37,9 @@ async function seedTimelines() {
       },
       {
         icon: "TrackChangesOutlined",
-        title: "Target yang Elastis",
+        title: "Target yang Fleksibel",
         description:
-          "Target keuntungan menyesuaikan dinamika volatilitas sehingga tetap relevan di berbagai kondisi pasar.",
+          "Target keuntungan menyesuaikan dinamika volatilitas sehingga tetap relevan di berbagai kondisi pasar trading.",
         color: "primary",
         order: 2,
         createdBy: "admin",
@@ -47,9 +47,9 @@ async function seedTimelines() {
       },
       {
         icon: "CrisisAlertOutlined",
-        title: "Hindari Momen Rawan",
+        title: "Risiko Terkontrol",
         description:
-          "Pembukaan posisi ditahan saat periode rilis data ekonomi berdampak tinggi untuk meminimalkan lonjakan spread/slippage.",
+          "Jumlah posisi dan batas risiko harian dikontrol agar eksposur tidak berlebihan.",
         color: "primary",
         order: 3,
         createdBy: "admin",
@@ -57,9 +57,9 @@ async function seedTimelines() {
       },
       {
         icon: "ShowChartOutlined",
-        title: "Paparan Terkendali",
+        title: "Hindari Zona Risiko",
         description:
-          "Jumlah posisi dan batas risiko harian dikontrol agar eksposur tidak berlebihan.",
+          "Pembukaan posisi ditahan saat periode rilis data ekonomi berdampak tinggi untuk meminimalkan lonjakan spread/slippage.",
         color: "primary",
         order: 4,
         createdBy: "admin",
@@ -328,7 +328,7 @@ async function seedDefaultAdmin() {
   const passwordHash = await bcrypt.hash("admin", 10);
   await prisma.user.create({
     data: {
-      email: "admin@daytonfintech.com",
+      email: "admin@daytonfintech.co.id",
       username: "admin",
       name: "Admin",
       passwordHash,
@@ -344,42 +344,42 @@ async function seedConfig() {
     data: [
       {
         key: "whatsapp_number",
-        value: "6281234567890",
+        value: "6282111009000",
         description: "WhatsApp number for contact",
         createdBy: "admin",
         updatedBy: "admin",
       },
       {
         key: "email",
-        value: "admin@daytonfintech.com",
+        value: "admin@daytonfintech.co.id",
         description: "Email for contact",
         createdBy: "admin",
         updatedBy: "admin",
       },
       {
         key: "main-title",
-        value: "Trading Emas Otomatis, Aman dan Terukur",
+        value: "Trading Emas Otomatis, Aman dan Dinamis",
         description: "Kalimat utama untuk landing page",
         createdBy: "admin",
         updatedBy: "admin",
       },
       {
         key: "main-description",
-        value: "Pendekatan trend-following yang disiplin dengan target adaptif mengikuti volatilitas, pengendalian eksposur, serta jeda otomatis saat rilis data berdampak tinggi.",
+        value: "Nevada Fintech Sniper Strategy adalah pendekatan trading berbasis presisi yang mengutamakan akurasi, disiplin, dan manajemen risiko.\n\nDikembangkan dengan mindset sniper, strategi ini fokus pada entry berkualitas tinggi, eksekusi terukur, dan perlindungan dari volatilitas pasar, bukan over-trading atau spekulasi berlebihan.\n\nDirancang untuk trader yang menginginkan konsistensi jangka panjang, bukan sekadar hasil sesaat.",
         description: "Deskripsi utama untuk landing page",
         createdBy: "admin",
         updatedBy: "admin",
       },
       {
         key: "main-badges",
-        value: JSON.stringify(["Gold • XAUUSD • H1 • Tren"]),
+        value: JSON.stringify(["Gold • XAUUSD • H1 • MT4"]),
         description: "Badges utama untuk landing page",
         createdBy: "admin",
         updatedBy: "admin",
       },
       {
         key: "secondary-badges",
-        value: JSON.stringify(["Profit Sharing <b>25%</b>", "Referral hingga <b>10%</b>", "<b>Broker MT4 • H1</b>"]),
+        value: JSON.stringify(["Profit Sharing <b>25%</b>", "Referral hingga <b>15%</b>", "<b>Broker MT4 • H1</b>"]),
         description: "Badges sekunder untuk landing page",
         createdBy: "admin",
         updatedBy: "admin",

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, Suspense } from "react";
 import ControlLayout from "@/components/layouts/ControlLayoutClient";
-import { Stack, Image, AspectRatio, Anchor, Button, Group, LoadingOverlay } from "@mantine/core";
+import { Stack, Image, AspectRatio, Anchor, Button, Group, LoadingOverlay, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import TableCard from "@/components/Molecules/Cards/TableCard";
 import { EventDataT } from "@/config/types";
@@ -11,13 +11,20 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setModalCRUD, setData, setLimit, setLoading, setPage, setSearch, setSortStatus, setTotalRecords } from "@/store/dataEventSlice";
 import { useSearchParams } from "next/navigation";
 import Icon from "@/components/Atoms/Icon";
+import { useStorageStatus } from "@/hooks/useStorageStatus";
 
 const BackofficeEventsPageContent = () => {
   const [isMounted, setIsMounted] = useState(false);
-  const [googleDriveConnected, setGoogleDriveConnected] = useState(false);
   const prevSearchRef = useRef<string>("");
   const skipLoadRef = useRef<boolean>(false);
   const searchParams = useSearchParams();
+  
+  const {
+    data: storageData,
+    googleDriveConnected,
+    getAutoFormattedRemaining,
+    refresh: refreshStorageStatus,
+  } = useStorageStatus();
   
   const { 
     modalCRUD,
@@ -35,24 +42,6 @@ const BackofficeEventsPageContent = () => {
     setIsMounted(true);
   }, []);
 
-  useEffect(() => {
-    const checkGoogleDriveStatus = async () => {
-      try {
-        const response = await fetch('/api/upload/gdrive/status');
-        if (response.ok) {
-          const data = await response.json();
-          setGoogleDriveConnected(data.connected || false);
-        }
-      } catch (error) {
-        console.error('Failed to check Google Drive status:', error);
-        setGoogleDriveConnected(false);
-      }
-    };
-
-    if (isMounted) {
-      checkGoogleDriveStatus();
-    }
-  }, [isMounted]);
 
   useEffect(() => {
     if (isMounted) {
@@ -65,7 +54,7 @@ const BackofficeEventsPageContent = () => {
           title: "Google Drive terhubung",
           message: "Google Drive berhasil dihubungkan. Anda sekarang bisa upload image.",
         });
-        setGoogleDriveConnected(true);
+        refreshStorageStatus();
         window.history.replaceState({}, '', window.location.pathname);
       } else if (error) {
         notifications.show({
@@ -73,11 +62,11 @@ const BackofficeEventsPageContent = () => {
           title: "Gagal menghubungkan Google Drive",
           message: decodeURIComponent(error),
         });
-        setGoogleDriveConnected(false);
+        refreshStorageStatus();
         window.history.replaceState({}, '', window.location.pathname);
       }
     }
-  }, [isMounted, searchParams]);
+  }, [isMounted, searchParams, refreshStorageStatus]);
 
   const handleAuthorizeGoogleDrive = async () => {
     try {
@@ -272,7 +261,14 @@ const BackofficeEventsPageContent = () => {
         modalLabel="Tambah Event"
         openModal={() => dispatch(setModalCRUD(true))}
       />
-      {!googleDriveConnected && (
+      {storageData?.useLocalStorage && (
+        <Group justify="flex-end" mb="md">
+          <Text size="sm" c="dimmed">
+            Storage: {storageData.usagePercent.toFixed(1)}% digunakan ({getAutoFormattedRemaining()} tersisa)
+          </Text>
+        </Group>
+      )}
+      {!storageData?.useLocalStorage && googleDriveConnected === false && (
         <Group justify="flex-end">
           <Button
             variant="light"

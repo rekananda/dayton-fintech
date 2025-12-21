@@ -3,6 +3,7 @@ import { prisma } from "@/config/prisma";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/config/jwt";
 import { extractFileIdFromUrl, isGoogleDriveUrl, deleteFileFromGoogleDrive } from "../upload/gdrive/delete/route";
+import { isLocalStorageUrl, deleteLocalFileByUrl } from "../upload/local/utils";
 
 type EventWhere = NonNullable<Parameters<typeof prisma.event.findMany>[0]>["where"];
 type EventOrderBy = NonNullable<Parameters<typeof prisma.event.findMany>[0]>["orderBy"];
@@ -159,6 +160,7 @@ export async function PUT(request: Request) {
     }
 
     if (existingEvent.imageUrl !== imageUrl && existingEvent.imageUrl) {
+      // Delete old image from Google Drive if it's a Google Drive URL
       if (isGoogleDriveUrl(existingEvent.imageUrl)) {
         const fileId = extractFileIdFromUrl(existingEvent.imageUrl);
         if (fileId) {
@@ -168,6 +170,17 @@ export async function PUT(request: Request) {
           } catch (error) {
             console.error(`Failed to delete old Google Drive image for event ${id}:`, error);
           }
+        }
+      }
+      // Delete old image from local storage if it's a local storage URL
+      else if (isLocalStorageUrl(existingEvent.imageUrl)) {
+        try {
+          const deleted = await deleteLocalFileByUrl(existingEvent.imageUrl);
+          if (deleted) {
+            console.log(`Deleted old local storage image for event ${id}`);
+          }
+        } catch (error) {
+          console.error(`Failed to delete old local storage image for event ${id}:`, error);
         }
       }
     }
@@ -235,16 +248,31 @@ export async function DELETE(request: Request) {
       select: { id: true, imageUrl: true },
     });
 
-    // Delete images from Google Drive if they are from Drive
+    // Delete images from storage (Google Drive or local storage)
     for (const event of eventsToDelete) {
-      if (event.imageUrl && isGoogleDriveUrl(event.imageUrl)) {
-        const fileId = extractFileIdFromUrl(event.imageUrl);
-        if (fileId) {
+      if (event.imageUrl) {
+        // Delete from Google Drive if it's a Google Drive URL
+        if (isGoogleDriveUrl(event.imageUrl)) {
+          const fileId = extractFileIdFromUrl(event.imageUrl);
+          if (fileId) {
+            try {
+              await deleteFileFromGoogleDrive(fileId, userId);
+              console.log(`Deleted Google Drive image for event ${event.id}`);
+            } catch (error) {
+              console.error(`Failed to delete Google Drive image for event ${event.id}:`, error);
+              // Continue with event deletion even if image deletion fails
+            }
+          }
+        }
+        // Delete from local storage if it's a local storage URL
+        else if (isLocalStorageUrl(event.imageUrl)) {
           try {
-            await deleteFileFromGoogleDrive(fileId, userId);
-            console.log(`Deleted Google Drive image for event ${event.id}`);
+            const deleted = await deleteLocalFileByUrl(event.imageUrl);
+            if (deleted) {
+              console.log(`Deleted local storage image for event ${event.id}`);
+            }
           } catch (error) {
-            console.error(`Failed to delete Google Drive image for event ${event.id}:`, error);
+            console.error(`Failed to delete local storage image for event ${event.id}:`, error);
             // Continue with event deletion even if image deletion fails
           }
         }

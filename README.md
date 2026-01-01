@@ -183,7 +183,7 @@ Aplikasi menggunakan PostgreSQL dengan Prisma ORM. Setup database menggunakan Pr
    GOOGLE_DRIVE_FOLDER_ID="your-google-drive-folder-id"
    
    # Next.js Public URL
-   NEXT_PUBLIC_APP_URL="http://localhost:3000"
+   GOOGLE_DRIVE_CALLBACK_URL="http://localhost:3000"
    ```
    
    **Catatan Storage Configuration:**

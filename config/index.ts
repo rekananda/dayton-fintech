@@ -11,7 +11,7 @@ const mainConfig: MainConfigT = {
   canRegisterUser: false,
   canAddNewMenu: false,
   canAddNewConfig: false,
-  useLocalStorage: false, // Set to true to use local storage instead of Google Drive
+  useLocalStorage: true, // Set to true to use local storage instead of Google Drive
   maxStorageSize: 5 * 1024 * 1024 * 1024, // 5GB in bytes
 };
 

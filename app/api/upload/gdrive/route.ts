@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
         const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID;
         const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
         const redirectUri = process.env.GOOGLE_OAUTH_REDIRECT_URI || 
-          `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/upload/gdrive/callback`;
+          `${process.env.GOOGLE_DRIVE_CALLBACK_URL || 'http://localhost:3000'}/api/upload/gdrive/callback`;
 
         if (!clientId || !clientSecret) {
           throw new Error("OAuth credentials not configured");
